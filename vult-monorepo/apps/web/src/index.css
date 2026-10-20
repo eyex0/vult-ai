@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Marketing (light) */
+  --color-ink: #16171a;
+  --color-ink-2: #4b4f5c;
+  --color-muted: #7c808c;
+  --color-subtle: #6b6f7b; /* muted that passes 4.5:1 on white/soft for small text */
+  --color-line: #e7e8ec;
+  --color-line-strong: #d6d8de;
+  --color-soft: #f6f7f9;
+  --color-soft-2: #f1f2f4;
+  --color-accent: #3b5bfd;
+  --color-accent-ink: #2c46c9;
+  --color-accent-soft: #e3e9ff;
+  --color-night: #0e0f11;
+  --color-night-line: #232428;
+
+  /* App (dark) */
+  --color-app: #101112;
+  --color-app-side: #0b0c0d;
+  --color-app-line: #242526;
+  --color-app-line-soft: #1c1d1f;
+  --color-app-panel: #131416;
+  --color-app-raise: #17181a;
+  --color-app-hover: #1c1d20;
+  --color-app-input: #0f1011;
+  --color-app-text: #e9eaee;
+  --color-app-dim: #a9acb6;
+  --color-app-mute: #8a8d96;
+  --color-app-accent: #6f87ff;
+
+  /* Status */
+  --color-success: #17703f;
+  --color-success-soft: #e3f5ea;
+  --color-warning: #a64b07;
+  --color-warning-soft: #fff1e2;
+  --color-danger: #c92a2a;
+  --color-danger-soft: #fdecec;
+
+  --radius-btn: 8px;
+  --radius-card: 16px;
+  --radius-panel: 18px;
+
+  --shadow-soft: 0 1px 2px rgb(16 17 26 / 0.04), 0 4px 12px -6px rgb(16 17 26 / 0.08);
+  --shadow-card: 0 1px 2px rgb(16 17 26 / 0.04), 0 12px 32px -12px rgb(16 17 26 / 0.14);
+  --shadow-pop: 0 1px 2px rgb(16 17 26 / 0.05), 0 24px 48px -16px rgb(16 17 26 / 0.2);
+  --shadow-window: 0 1px 2px rgb(16 17 26 / 0.04), 0 24px 64px -24px rgb(16 17 26 / 0.28), 0 64px 120px -48px rgb(16 17 26 / 0.25);
+  --shadow-dark-pop: 0 40px 80px -20px rgb(0 0 0 / 0.8);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121 24.3%, 1.13, 1.12 30.3%, 1.017 39.4%, 0.991 44.6%, 1.001 63.4%, 1);
+
+  --tracking-display: -0.04em;
+  --tracking-tightest: -0.05em;
+
+  --animate-fade-up: fade-up 0.6s var(--ease-out-expo) both;
+  --animate-pop: pop 0.32s var(--ease-spring) both;
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+}
+
+/* Semantic tokens: components use these so they work in the light site and the dark app. */
+:root {
+  --fg: #16171a;
+  --fg-2: #4b4f5c;
+  --fg-3: #6b6f7b;
+  --surface: #ffffff;
+  --surface-2: #f6f7f9;
+  --surface-hover: #f1f2f4;
+  --border: #e7e8ec;
+  --border-strong: #d6d8de;
+  --input: #ffffff;
+  --pop: #ffffff;
+  --overlay: rgb(16 17 26 / 0.4);
+  --primary: #16171a;
+  --primary-fg: #ffffff;
+  --primary-hover: #2a2c31;
+  --ring: #3b5bfd;
+}
+.theme-dark {
+  --fg: #e9eaee;
+  --fg-2: #a9acb6;
+  --fg-3: #8a8d96;
+  --surface: #101112;
+  --surface-2: #131416;
+  --surface-hover: #1c1d20;
+  --border: #242526;
+  --border-strong: #2e3033;
+  --input: #0f1011;
+  --pop: #17181a;
+  --overlay: rgb(0 0 0 / 0.6);
+  --primary: #ffffff;
+  --primary-fg: #16171a;
+  --primary-hover: #e3e4e8;
+  --ring: #6f87ff;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-pop: var(--pop);
+  --color-overlay: var(--overlay);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-hover: var(--primary-hover);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-ink;
+    font-feature-settings: "cv11", "ss01";
+    min-width: 320px;
+  }
+  button { cursor: pointer; }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection { background: rgb(59 91 253 / 0.18); }
+  .theme-dark ::selection { background: rgb(111 135 255 / 0.35); }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .sr-only-focusable:not(:focus) {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .rail { @apply mx-auto max-w-[1200px] border-x border-line; }
+  .rail-dark { @apply mx-auto max-w-[1200px] border-x border-night-line; }
+  .hatch {
+    background-color: #e3e8ff;
+    background-image: repeating-linear-gradient(90deg, rgb(59 91 253 / 0.3) 0 1px, transparent 1px 7px);
+  }
+  .dot-grid {
+    background-image: radial-gradient(#d9dbe1 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .dot-grid-dark {
+    background-image: radial-gradient(#1f2023 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: #2e3033 transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -27,9 +27,9 @@ async function main() {
         isSystem: true,
         attributes: {
           create: [
-            { tenantId, name: 'Company name', slug: 'name', dataType: 'TEXT', isRequired: true },
-            { tenantId, name: 'Partita IVA', slug: 'vat_number', dataType: 'TEXT' },
-            { tenantId, name: 'Industry', slug: 'industry', dataType: 'STATUS' }
+            { name: 'Company name', slug: 'name', dataType: 'TEXT', isRequired: true },
+            { name: 'Partita IVA', slug: 'vat_number', dataType: 'TEXT' },
+            { name: 'Industry', slug: 'industry', dataType: 'STATUS' }
           ]
         }
       }
@@ -44,9 +44,9 @@ async function main() {
         isSystem: true,
         attributes: {
           create: [
-            { tenantId, name: 'Deal name', slug: 'name', dataType: 'TEXT', isRequired: true },
-            { tenantId, name: 'Stage', slug: 'stage', dataType: 'STATUS' },
-            { tenantId, name: 'Value', slug: 'value', dataType: 'CURRENCY' }
+            { name: 'Deal name', slug: 'name', dataType: 'TEXT', isRequired: true },
+            { name: 'Stage', slug: 'stage', dataType: 'STATUS' },
+            { name: 'Value', slug: 'value', dataType: 'CURRENCY' }
           ]
         }
       }
