@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vult · The AI-native CRM</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F7F9}
+a{color:#16171A;text-decoration:none}a:hover{color:#3B5BFD}
+.v-root *{box-sizing:border-box}
+.v-root button{font-family:inherit;cursor:pointer}
+.v-root a:focus-visible,.v-root button:focus-visible,.v-root input:focus-visible{outline:2px solid #3B5BFD;outline-offset:2px;border-radius:8px}
+.v-rail{max-width:1200px;margin:0 auto;border-left:1px solid #E7E8EC;border-right:1px solid #E7E8EC}
+.v-rail-d{max-width:1200px;margin:0 auto;border-left:1px solid #232428;border-right:1px solid #232428}
+.v-logo-l img{mix-blend-mode:multiply}
+.v-logo-d img{filter:invert(1);mix-blend-mode:screen}
+.v-btn{transition:background .15s,border-color .15s,transform .15s,box-shadow .15s,color .15s}
+.v-btn .v-arrow{transition:transform .15s}
+.v-btn:hover .v-arrow{transform:translateX(3px)}
+.v-dark-btn:hover{background:#2A2C31 !important;color:#FFFFFF !important}
+.v-ghost-btn:hover{background:#F6F7F9 !important;color:#16171A !important}
+.v-navlink{transition:background .15s,color .15s}
+.v-navlink:hover{background:#EEF0F3;color:#16171A}
+.v-cell{transition:background .15s}
+.v-cell:hover{background:#FBFBFC !important}
+.v-menuitem{transition:background .15s}
+.v-menuitem:hover{background:#F6F7F9;color:#16171A}
+.v-row{transition:background .15s}
+.v-row:hover{background:#17181A}
+.v-tab{transition:color .15s}
+.v-tab:hover{color:#FFFFFF !important}
+.v-burger{display:none !important}
+@media (max-width:960px){.v-nav,.v-signin{display:none !important}.v-burger{display:inline-flex !important}}
+@media (max-width:720px){.v-sidebar-mock{display:none !important}.v-hide-sm{display:none !important}}
+.v-root{--spring:linear(0,.009,.035 2.1%,.141,.281 6.7%,.723 12.9%,.938 16.7%,1.017,1.077,1.121 24.3%,1.13,1.12 30.3%,1.017 39.4%,.991 44.6%,1.001 63.4%,1);--out:cubic-bezier(.16,1,.3,1)}
+.v-btn{transition:background .15s,border-color .15s,box-shadow .2s,color .15s,transform .5s var(--spring) !important}
+.v-btn:hover{transform:translateY(-1px)}
+.v-btn:active,.v-root button:active{transform:scale(.96);transition-duration:.08s !important}
+.v-btn .v-arrow{transition:transform .45s var(--spring) !important}
+.v-lift{transition:transform .55s var(--spring),box-shadow .3s,border-color .2s}
+.v-lift:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(16,17,26,.25)}
+.v-cell>div:last-child,.v-cell>.v-ico{transition:transform .6s var(--spring)}
+.v-cell:hover>div:last-child{transform:translateY(-4px)}
+.v-ico{transition:transform .6s var(--spring)}
+.v-cell:hover .v-ico{transform:rotate(-8deg) scale(1.12)}
+@keyframes vFadeUp{from{opacity:0;transform:translateY(28px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vWord{from{opacity:0;transform:translateY(.5em) rotate(2deg);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vTilt{from{transform:perspective(1600px) rotateX(24deg) scale(.9) translateY(40px);opacity:.3}to{transform:perspective(1600px) rotateX(0) scale(1);opacity:1}}
+@keyframes vSwap{from{opacity:0;transform:translateY(14px) scale(.98);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vDrop{from{transform:translateY(-100%)}to{transform:none}}
+@keyframes vBreathe{0%,100%{scale:1;opacity:1}50%{scale:1.14;opacity:.7}}
+@keyframes vDraw{from{stroke-dashoffset:1400}to{stroke-dashoffset:0}}
+@keyframes vGrowY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes vPop{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+.v-enter>*{animation:vFadeUp 1s var(--out) both}
+.v-enter>*:nth-child(2){animation-delay:.35s}.v-enter>*:nth-child(3){animation-delay:.45s}.v-enter>*:nth-child(4){animation-delay:.55s}
+.v-word{display:inline-block;animation:vWord 1s var(--out) both}
+.v-tilt{transform-origin:50% 0;animation:vTilt 1.4s var(--out) .5s both}
+.v-swap{animation:vSwap .7s var(--spring) both}
+.v-drop{animation:vDrop .6s var(--out) both}
+.v-breathe{animation:vBreathe 9s ease-in-out infinite}
+.v-draw{stroke-dasharray:1400;animation:vDraw 2.4s var(--out) both}
+.v-stagger>*{animation:vFadeUp .9s var(--out) both}
+.v-stagger>*:nth-child(2){animation-delay:.06s}.v-stagger>*:nth-child(3){animation-delay:.12s}.v-stagger>*:nth-child(4){animation-delay:.18s}.v-stagger>*:nth-child(5){animation-delay:.24s}.v-stagger>*:nth-child(6){animation-delay:.3s}.v-stagger>*:nth-child(7){animation-delay:.36s}.v-stagger>*:nth-child(8){animation-delay:.42s}.v-stagger>*:nth-child(9){animation-delay:.48s}.v-stagger>*:nth-child(10){animation-delay:.54s}.v-stagger>*:nth-child(n+11){animation-delay:.6s}
+.v-flow-line{transform-origin:top;animation:vGrowY .6s var(--out) both}
+@keyframes vStep{0%,8%{opacity:.35}14%,100%{opacity:1}}
+@keyframes vCheck{0%,12%{background:#242526;border-color:#3A3C40}18%,100%{background:#3B5BFD;border-color:#3B5BFD}}
+@keyframes vGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes vPulse{0%,100%{opacity:1}50%{opacity:.4}}
+.v-reveal{animation:vFadeUp .9s var(--out) both}
+.v-pop{animation:vPop .38s var(--spring) both}
+.v-step{animation:vStep 6s infinite both}
+.v-check{animation:vCheck 6s infinite both}
+.v-bar{transform-origin:bottom;animation:vGrow 1.1s cubic-bezier(.2,.7,.2,1) both}
+.v-pulse{animation:vPulse 1.6s ease-in-out infinite}
+@supports (animation-timeline: view()){
+.v-reveal,.v-stagger>*{animation:vFadeUp linear both;animation-timeline:view();animation-range:entry 0% cover 26%}
+.v-stagger>*:nth-child(3n+2){animation-range:entry 6% cover 30%}
+.v-stagger>*:nth-child(3n){animation-range:entry 12% cover 34%}
+.v-bar{animation:vGrow linear both;animation-timeline:view();animation-range:entry 10% cover 42%}
+.v-draw{animation:vDraw linear both;animation-timeline:view();animation-range:entry 0% cover 60%}
+.v-flow-line{animation:vGrowY linear both;animation-timeline:view();animation-range:entry 10% cover 35%}
+.v-parallax{animation:vPar linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+@keyframes vPar{from{translate:0 60px}to{translate:0 -60px}}
+}
+@media (prefers-reduced-motion:reduce){.v-root *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="v-root" style="font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #16171A; background: #F6F7F9; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden">
+
+<!-- Announcement bar -->
+<sc-if value="{{showBar}}" hint-placeholder-val="{{ true }}">
+<div class="v-drop" style="background: #0E0F11; color: #FFFFFF; height: 40px; display: flex; align-items: center; justify-content: center; position: relative; padding: 0 48px; font-size: 13px">
+<a href="Agents.dc.html" class="v-btn" style="color: #FFFFFF; display: inline-flex; align-items: center; gap: 8px; font-weight: 500">
+Introducing Vult Agents
+<svg class="v-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+</a>
+<button type="button" aria-label="Dismiss announcement" onClick="{{dismissBar}}" style="position: absolute; right: 6px; top: 2px; width: 36px; height: 36px; border: 0; background: transparent; color: #A3A6B0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</button>
+</div>
+</sc-if>
+
+<!-- Header -->
+<header style="position: sticky; top: 0; z-index: 50; height: 64px; background: rgba(255,255,255,0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid #E7E8EC">
+<div style="max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 20px; display: flex; align-items: center; gap: 28px">
+<a href="Main.dc.html" aria-label="Vult home" style="display: inline-flex; align-items: center; gap: 7px; flex: none">
+<span class="v-logo-l" style="width: 26px; height: 26px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 39px; height: 39px; flex: none"></span>
+<span style="font-weight: 700; font-size: 21px; letter-spacing: -0.05em; color: #16171A">vult</span>
+</a>
+<nav class="v-nav" aria-label="Main" style="flex: 1; display: flex; align-items: center; gap: 2px; position: relative">
+<button type="button" class="v-navlink" aria-haspopup="true" aria-expanded="{{platformOpen}}" onClick="{{togglePlatform}}" style="height: 36px; padding: 0 12px; border: 0; background: transparent; border-radius: 8px; font-size: 14.5px; font-weight: 450; color: #16171A; display: inline-flex; align-items: center; gap: 4px">Platform <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C808C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button type="button" class="v-navlink" aria-haspopup="true" aria-expanded="{{resourcesOpen}}" onClick="{{toggleResources}}" style="height: 36px; padding: 0 12px; border: 0; background: transparent; border-radius: 8px; font-size: 14.5px; font-weight: 450; color: #16171A; display: inline-flex; align-items: center; gap: 4px">Resources <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C808C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<a href="#customers" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; font-weight: 450; display: inline-flex; align-items: center">Customers</a>
+<a href="Pricing.dc.html" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; font-weight: 450; display: inline-flex; align-items: center">Pricing</a>
+<a href="#changelog" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; font-weight: 450; display: inline-flex; align-items: center">Changelog</a>
+
+<sc-if value="{{platformOpen}}" hint-placeholder-val="{{ false }}">
+<div class="v-pop" role="menu" aria-label="Platform" style="position: absolute; top: 50px; left: 0; width: 760px; max-width: calc(100vw - 48px); background: #FFFFFF; border: 1px solid #E7E8EC; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,17,26,.04), 0 24px 48px -16px rgba(16,17,26,.18); padding: 10px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 10px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px">
+<sc-for list="{{platformItems}}" as="it" hint-placeholder-count="5">
+<a href="{{it.href}}" role="menuitem" class="v-menuitem" style="display: flex; gap: 12px; padding: 10px; border-radius: 10px; align-items: flex-start">
+<span style="width: 34px; height: 34px; flex: none; border-radius: 9px; border: 1px solid #E7E8EC; background: #F6F7F9; display: inline-flex; align-items: center; justify-content: center; color: #16171A; font-size: 12px; font-weight: 650">{{it.glyph}}</span>
+<span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 600; color: #16171A">{{it.title}}</span><span style="font-size: 12.5px; color: #4B4F5C; line-height: 1.4">{{it.desc}}</span></span>
+</a>
+</sc-for>
+</div>
+<a href="Agents.dc.html" style="background: #0E0F11; color: #FFFFFF; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; position: relative; overflow: hidden">
+<span style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(59,91,253,.55), rgba(59,91,253,0) 70%)"></span>
+<span style="font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #A3A6B0; font-weight: 600">Featured</span>
+<span style="display: flex; flex-direction: column; gap: 6px; position: relative"><span style="font-size: 18px; font-weight: 600; letter-spacing: -0.03em">Vult Agents</span><span style="font-size: 13px; color: #C9CBD2">Research accounts, draft follow-ups and update records while you sell.</span><span style="font-size: 13px; color: #FFFFFF; font-weight: 550">Explore agents →</span></span>
+</a>
+</div>
+</sc-if>
+
+<sc-if value="{{resourcesOpen}}" hint-placeholder-val="{{ false }}">
+<div class="v-pop" role="menu" aria-label="Resources" style="position: absolute; top: 50px; left: 60px; width: 680px; max-width: calc(100vw - 48px); background: #FFFFFF; border: 1px solid #E7E8EC; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,17,26,.04), 0 24px 48px -16px rgba(16,17,26,.18); padding: 10px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{resourceItems}}" as="it" hint-placeholder-count="5">
+<a href="#" role="menuitem" class="v-menuitem" style="display: flex; gap: 12px; padding: 10px; border-radius: 10px; align-items: flex-start">
+<span style="width: 34px; height: 34px; flex: none; border-radius: 9px; border: 1px solid #E7E8EC; background: #F6F7F9; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 650">{{it.glyph}}</span>
+<span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 600; color: #16171A">{{it.title}}</span><span style="font-size: 12.5px; color: #4B4F5C; line-height: 1.4">{{it.desc}}</span></span>
+</a>
+</sc-for>
+</div>
+<a href="#changelog" style="background: #F6F7F9; border: 1px solid #E7E8EC; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #6B6F7B; font-weight: 600">Changelog · Oct 14</span>
+<span style="height: 96px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E7E8EC; display: flex; flex-direction: column; gap: 6px; padding: 12px"><span style="height: 8px; width: 60%; background: #E7E8EC; border-radius: 4px"></span><span style="height: 8px; width: 80%; background: #E7E8EC; border-radius: 4px"></span><span style="height: 22px; width: 40%; background: #3B5BFD; border-radius: 6px; margin-top: auto"></span></span>
+<span style="font-size: 15px; font-weight: 600; letter-spacing: -0.02em; color: #16171A">Kanban swimlanes and saved board views</span>
+</a>
+</div>
+</sc-if>
+</nav>
+<div style="display: flex; align-items: center; gap: 8px; margin-left: auto; flex: none">
+<a href="Signin.dc.html" class="v-signin v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; font-weight: 450; display: inline-flex; align-items: center">Sign in</a>
+<a href="Signin.dc.html" class="v-btn v-dark-btn" style="height: 36px; padding: 0 14px; border-radius: 8px; background: #16171A; color: #FFFFFF; font-size: 14px; font-weight: 550; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.12)">Start for free</a>
+<button type="button" class="v-burger" aria-label="Open menu" aria-expanded="{{drawerOpen}}" onClick="{{toggleDrawer}}" style="width: 40px; height: 40px; border: 1px solid #E7E8EC; background: #FFFFFF; border-radius: 8px; align-items: center; justify-content: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16171A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Mobile drawer -->
+<sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
+<div role="dialog" aria-modal="true" aria-label="Menu" style="position: fixed; inset: 0; z-index: 60; background: #FFFFFF; display: flex; flex-direction: column">
+<div style="height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #E7E8EC">
+<span style="font-weight: 700; font-size: 21px; letter-spacing: -0.05em">vult</span>
+<button type="button" aria-label="Close menu" onClick="{{toggleDrawer}}" style="width: 44px; height: 44px; border: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16171A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="flex: 1; overflow-y: auto; padding: 8px 16px">
+<button type="button" aria-expanded="{{accPlatform}}" onClick="{{toggleAccPlatform}}" style="width: 100%; height: 52px; border: 0; border-bottom: 1px solid #E7E8EC; background: transparent; display: flex; align-items: center; justify-content: space-between; font-size: 16px; font-weight: 600; color: #16171A; padding: 0">Platform <span aria-hidden="true">{{accPlatformSign}}</span></button>
+<sc-if value="{{accPlatform}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; padding: 6px 0">
+<sc-for list="{{platformItems}}" as="it" hint-placeholder-count="5"><a href="{{it.href}}" style="padding: 10px 0; font-size: 15px; color: #4B4F5C">{{it.title}}</a></sc-for>
+</div>
+</sc-if>
+<button type="button" aria-expanded="{{accResources}}" onClick="{{toggleAccResources}}" style="width: 100%; height: 52px; border: 0; border-bottom: 1px solid #E7E8EC; background: transparent; display: flex; align-items: center; justify-content: space-between; font-size: 16px; font-weight: 600; color: #16171A; padding: 0">Resources <span aria-hidden="true">{{accResourcesSign}}</span></button>
+<sc-if value="{{accResources}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; padding: 6px 0">
+<sc-for list="{{resourceItems}}" as="it" hint-placeholder-count="5"><a href="#" style="padding: 10px 0; font-size: 15px; color: #4B4F5C">{{it.title}}</a></sc-for>
+</div>
+</sc-if>
+<a href="#customers" style="height: 52px; border-bottom: 1px solid #E7E8EC; display: flex; align-items: center; font-size: 16px; font-weight: 600">Customers</a>
+<a href="Pricing.dc.html" style="height: 52px; border-bottom: 1px solid #E7E8EC; display: flex; align-items: center; font-size: 16px; font-weight: 600">Pricing</a>
+<a href="#changelog" style="height: 52px; border-bottom: 1px solid #E7E8EC; display: flex; align-items: center; font-size: 16px; font-weight: 600">Changelog</a>
+</div>
+<div style="padding: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border-top: 1px solid #E7E8EC">
+<a href="Signin.dc.html" style="height: 44px; border: 1px solid #E7E8EC; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 550">Sign in</a>
+<a href="Signin.dc.html" style="height: 44px; background: #16171A; color: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 550">Start for free</a>
+</div>
+</div>
+</sc-if>
+
+<main>
+<!-- Hero: hatched frame + white inset panel -->
+<section style="position: relative; background-color: #E3E8FF; background-image: repeating-linear-gradient(90deg, rgba(59,91,253,.30) 0 1px, transparent 1px 7px); padding: 0 clamp(12px, 7vw, 120px)">
+<div style="position: relative; margin-top: clamp(96px, 11vw, 150px); background: #FFFFFF; text-align: center; padding: 0 20px">
+<div style="position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%); z-index: 2">
+<a href="Agents.dc.html" class="v-btn v-ghost-btn" style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px 0 14px; border: 1px solid #DCDFE6; border-radius: 999px; background: #FFFFFF; font-size: 13.5px; font-weight: 450; color: #16171A; box-shadow: 0 1px 2px rgba(16,17,26,.06); white-space: nowrap">
+How agents run a week of prospecting
+<svg class="v-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a>
+</div>
+<div class="v-enter" style="max-width: 980px; margin: 0 auto; padding-top: 44px; display: flex; flex-direction: column; align-items: center; gap: 22px">
+<h1 aria-label="The CRM that thinks ahead of your team." style="margin: 0; font-size: clamp(40px, 6.6vw, 76px); line-height: 1.04; letter-spacing: -0.045em; font-weight: 600; color: #16171A; animation: none"><span aria-hidden="true"><span class="v-word" style="animation-delay: .05s">The</span> <span class="v-word" style="animation-delay: .1s">CRM</span> <span class="v-word" style="animation-delay: .15s">that</span> <span class="v-word" style="animation-delay: .2s">thinks</span><br><span class="v-word" style="animation-delay: .25s">ahead</span> <span class="v-word" style="animation-delay: .3s">of</span> <span class="v-word" style="animation-delay: .35s">your</span> <span class="v-word" style="animation-delay: .4s">team.</span></span></h1>
+<p style="margin: 0; max-width: 470px; font-size: 19px; color: #6B6F7B; line-height: 1.4">Vult fills itself in from every email and meeting, then puts agents on the busywork — so reps spend the day selling.</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center">
+<a href="#demo" class="v-btn v-ghost-btn" style="height: 38px; padding: 0 14px; border-radius: 8px; background: #FFFFFF; border: 1px solid #DCDFE6; color: #16171A; font-size: 15px; font-weight: 550; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(16,17,26,.05)">Talk to sales</a>
+<a href="Signin.dc.html" class="v-btn v-dark-btn" style="height: 38px; padding: 0 14px; border-radius: 8px; background: #16171A; color: #FFFFFF; font-size: 15px; font-weight: 550; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.12)">Start for free</a>
+</div>
+<p style="margin: 0; font-size: 13px; color: #6B6F7B">Free for up to 3 seats · No credit card required</p>
+</div>
+
+<!-- Product window -->
+<div id="demo" class="v-tilt" style="position: relative; max-width: 1160px; margin: 72px auto 0; text-align: left">
+<div style="position: relative; border-radius: 16px 16px 0 0; border: 1px solid #E2E4E9; border-bottom: 0; background: #F3F4F6; padding: 0 7px; box-shadow: 0 -1px 2px rgba(16,17,26,.03), 0 -24px 64px -32px rgba(16,17,26,.22)">
+<div style="height: 34px; display: flex; align-items: center; gap: 12px; padding: 0 8px">
+<span style="display: flex; gap: 7px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #FF5F57"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #FEBC2E"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #28C840"></span></span>
+</div>
+<div style="display: flex; border-radius: 10px 10px 0 0; overflow: hidden; background: #101112; border: 1px solid #242526; border-bottom: 0; min-height: 500px; color: #E9EAEE; font-size: 13px">
+<aside class="v-sidebar-mock" aria-label="App navigation preview" style="width: 220px; flex: none; background: #0B0C0D; border-right: 1px solid #242526; padding: 10px; display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 6px; margin-bottom: 6px">
+<span class="v-logo-d" style="width: 22px; height: 22px; border-radius: 6px; background: #000; overflow: hidden; display: inline-flex; align-items: center; justify-content: center"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 26px; height: 26px; flex: none"></span>
+<span style="font-weight: 600; color: #FFFFFF">Ridgeway Labs</span>
+</div>
+<div style="height: 30px; border: 1px solid #242526; border-radius: 7px; display: flex; align-items: center; padding: 0 8px; color: #8A8D96; gap: 6px; margin-bottom: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>Search<span style="margin-left: auto; font-size: 11px; border: 1px solid #2E3033; border-radius: 4px; padding: 0 4px">⌘K</span></div>
+<sc-for list="{{mockNav}}" as="n" hint-placeholder-count="6">
+<span style="height: 30px; display: flex; align-items: center; gap: 8px; padding: 0 8px; border-radius: 7px; color: #A9ACB6"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid currentColor; opacity: .8"></span>{{n.label}}</span>
+</sc-for>
+<span style="font-size: 11px; color: #8A8D96; padding: 14px 8px 4px; font-weight: 600; letter-spacing: .04em">RECORDS</span>
+<sc-for list="{{mockRecords}}" as="n" hint-placeholder-count="3">
+<span style="height: 30px; display: flex; align-items: center; gap: 8px; padding: 0 8px; border-radius: 7px; background: {{n.bg}}; color: {{n.fg}}"><span style="width: 14px; height: 14px; border-radius: 4px; background: {{n.dot}}"></span>{{n.label}}</span>
+</sc-for>
+</aside>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<div style="height: 49px; border-bottom: 1px solid #242526; display: flex; align-items: center; gap: 10px; padding: 0 16px">
+<span style="width: 18px; height: 18px; border-radius: 5px; background: #F2994A"></span>
+<span style="font-weight: 600; color: #FFFFFF; font-size: 14px">Deals</span>
+<span style="color: #6B6E78">·</span><span style="color: #8A8D96">Q4 pipeline</span>
+<span style="margin-left: auto; height: 28px; padding: 0 10px; border-radius: 7px; background: #3B5BFD; color: #FFFFFF; font-weight: 550; display: inline-flex; align-items: center; gap: 6px; font-size: 12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>Ask Vult</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid #242526; flex-wrap: wrap">
+<label style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #2E3033; border-radius: 7px; background: #17181A; width: 240px; max-width: 100%">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8D96" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search deals</span>
+<input type="search" value="{{q}}" onInput="{{onSearch}}" placeholder="Search deals…" style="border: 0; outline: 0; background: transparent; color: #E9EAEE; font-family: inherit; font-size: 13px; width: 100%">
+</label>
+<span style="height: 30px; padding: 0 10px; border: 1px dashed #2E3033; border-radius: 7px; color: #8A8D96; display: inline-flex; align-items: center; gap: 6px">+ Filter</span>
+<span class="v-hide-sm" style="height: 30px; padding: 0 10px; border: 1px solid #2E3033; border-radius: 7px; color: #C9CBD2; display: inline-flex; align-items: center">Sort: Close date</span>
+<span style="margin-left: auto; color: #8A8D96; font-size: 12px">{{countLabel}}</span>
+</div>
+<div style="overflow-x: auto; flex: 1">
+<table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 13px">
+<thead><tr style="color: #8A8D96; text-align: left">
+<th scope="col" style="font-weight: 500; padding: 9px 16px; border-bottom: 1px solid #242526">Deal</th>
+<th scope="col" style="font-weight: 500; padding: 9px 12px; border-bottom: 1px solid #242526; border-left: 1px solid #242526">Company</th>
+<th scope="col" style="font-weight: 500; padding: 9px 12px; border-bottom: 1px solid #242526; border-left: 1px solid #242526">Stage</th>
+<th scope="col" style="font-weight: 500; padding: 9px 12px; border-bottom: 1px solid #242526; border-left: 1px solid #242526; text-align: right">Value</th>
+<th scope="col" style="font-weight: 500; padding: 9px 12px; border-bottom: 1px solid #242526; border-left: 1px solid #242526">Owner</th>
+<th scope="col" style="font-weight: 500; padding: 9px 12px; border-bottom: 1px solid #242526; border-left: 1px solid #242526">Close</th>
+</tr></thead>
+<tbody>
+<sc-for list="{{deals}}" as="d" hint-placeholder-count="8">
+<tr class="v-row">
+<td style="padding: 0 16px; height: 42px; border-bottom: 1px solid #1C1D1F; color: #FFFFFF; font-weight: 500; white-space: nowrap">{{d.name}}</td>
+<td style="padding: 0 12px; border-bottom: 1px solid #1C1D1F; border-left: 1px solid #1C1D1F; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; border-radius: 5px; background: {{d.coColor}}; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{d.coInitial}}</span>{{d.co}}</span></td>
+<td style="padding: 0 12px; border-bottom: 1px solid #1C1D1F; border-left: 1px solid #1C1D1F"><span style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 550; background: {{d.stageBg}}; color: {{d.stageFg}}"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{d.stageFg}}"></span>{{d.stage}}</span></td>
+<td style="padding: 0 12px; border-bottom: 1px solid #1C1D1F; border-left: 1px solid #1C1D1F; text-align: right; font-variant-numeric: tabular-nums; color: #E9EAEE">{{d.value}}</td>
+<td style="padding: 0 12px; border-bottom: 1px solid #1C1D1F; border-left: 1px solid #1C1D1F; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 50%; background: {{d.ownerColor}}; color: #FFFFFF; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{d.ownerInitials}}</span><span style="color: #C9CBD2">{{d.owner}}</span></span></td>
+<td style="padding: 0 12px; border-bottom: 1px solid #1C1D1F; border-left: 1px solid #1C1D1F; color: #8A8D96; white-space: nowrap">{{d.close}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+<sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 48px 16px; text-align: center; color: #8A8D96">No deals match “{{q}}”.</div>
+</sc-if>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Logo grid -->
+<section id="customers" aria-label="Teams using Vult" style="border-top: 1px solid #E7E8EC; border-bottom: 1px solid #E7E8EC; background: #F6F7F9">
+<div class="v-rail v-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: #E7E8EC; color: #2A2C31">
+<sc-for list="{{logos}}" as="lg" hint-placeholder-count="10">
+<a href="#" class="v-cell" aria-label="{{lg.label}}" style="background: #F6F7F9; height: 100px; display: flex; align-items: center; justify-content: center; gap: 9px; position: relative; color: #2A2C31">
+<span class="v-ico" style="width: 22px; height: 22px; border-radius: {{lg.radius}}; background: {{lg.fill}}; border: 2.5px solid #2A2C31; transform: {{lg.rot}}"></span>
+<span style="font-size: 20px; font-weight: {{lg.weight}}; letter-spacing: {{lg.ls}}; text-transform: {{lg.tt}}; font-style: {{lg.fs}}">{{lg.name}}</span>
+</a>
+</sc-for>
+</div>
+</section>
+
+<!-- Platform intro + stats -->
+<section style="background: #F6F7F9">
+<div class="v-rail" style="padding: clamp(64px, 9vw, 120px) clamp(20px, 5vw, 60px) clamp(48px, 6vw, 80px)">
+<span style="display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: #E3E9FF; color: #2C46C9; font-size: 13.5px; font-weight: 500">Platform</span>
+<h2 class="v-reveal" style="margin: 22px 0 0; max-width: 900px; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.12; letter-spacing: -0.035em; font-weight: 500"><span style="color: #16171A">The system of record that keeps itself current.</span> <span style="color: #6B6F7B">Every email logged. Every contact enriched. Every deal scored before your Monday standup.</span></h2>
+</div>
+<div class="v-rail v-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: #E7E8EC; border-top: 1px solid #E7E8EC">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+<div style="background: #F6F7F9; padding: 28px clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 40px; font-weight: 550; letter-spacing: -0.045em; line-height: 1">{{s.value}}</span>
+<span style="font-size: 14px; color: #4B4F5C">{{s.label}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- Bento (framed cells) -->
+<section style="background: #F6F7F9; border-top: 1px solid #E7E8EC; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail v-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: #E7E8EC">
+
+<article class="v-cell" style="grid-column: span 2; min-width: 0; background: #FFFFFF; display: flex; flex-direction: column">
+<div style="padding: 32px 32px 0"><h3 style="margin: 0; font-size: 19px; letter-spacing: -0.025em; font-weight: 500; line-height: 1.35"><span style="color: #16171A">Flexible data model.</span> <span style="color: #6B6F7B">Custom objects, typed fields and relationships for how your business actually works.</span></h3></div>
+<div style="margin: 28px 32px 0; flex: 1; background-color: #F3F4F6; background-image: radial-gradient(#D9DBE1 1px, transparent 1px); background-size: 14px 14px; border: 1px solid #E7E8EC; border-bottom: 0; border-radius: 12px 12px 0 0; padding: 26px; display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; min-height: 220px">
+<div style="background: #FFFFFF; border: 1px solid #E7E8EC; border-radius: 12px; width: 170px; box-shadow: 0 1px 2px rgba(16,17,26,.05)"><div style="padding: 9px 12px; border-bottom: 1px solid #E7E8EC; font-weight: 600; font-size: 13px; display: flex; gap: 8px; align-items: center"><span style="width: 14px; height: 14px; border-radius: 4px; background: #3B5BFD"></span>Company</div><div style="padding: 8px 12px; font-size: 12px; color: #4B4F5C; display: flex; flex-direction: column; gap: 5px"><span>Domain · text</span><span>ARR · currency</span><span>Segment · select</span></div></div>
+<span aria-hidden="true" style="width: 36px; border-top: 1.5px dashed #A9ACB6"></span>
+<div style="background: #FFFFFF; border: 1px solid #E7E8EC; border-radius: 12px; width: 170px; box-shadow: 0 1px 2px rgba(16,17,26,.05)"><div style="padding: 9px 12px; border-bottom: 1px solid #E7E8EC; font-weight: 600; font-size: 13px; display: flex; gap: 8px; align-items: center"><span style="width: 14px; height: 14px; border-radius: 4px; background: #F2994A"></span>Deal</div><div style="padding: 8px 12px; font-size: 12px; color: #4B4F5C; display: flex; flex-direction: column; gap: 5px"><span>Value · currency</span><span>Stage · status</span><span>Company · relation</span></div></div>
+<span aria-hidden="true" style="width: 36px; border-top: 1.5px dashed #A9ACB6"></span>
+<div style="background: #FFFFFF; border: 1.5px dashed #A9ACB6; border-radius: 12px; width: 170px; padding: 14px; font-size: 12px; color: #6B6F7B; text-align: center">+ New object<br><span style="color: #16171A; font-weight: 600">Partner</span></div>
+</div>
+</article>
+
+<article class="v-cell" style="min-width: 0; background: #FFFFFF; padding: 32px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 19px; letter-spacing: -0.025em; font-weight: 500; line-height: 1.35"><span style="color: #16171A">Automatic enrichment.</span> <span style="color: #6B6F7B">Add a domain. Vult fills in the rest.</span></h3>
+<div style="border: 1px solid #E7E8EC; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,17,26,.04)">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 8px; background: #16171A; color: #FFFFFF; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">H</span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Halbrook</b><span style="color: #6B6F7B; font-size: 12px">halbrook.example</span></span><span style="margin-left: auto; font-size: 11px; color: #2C46C9; background: #E3E9FF; padding: 2px 7px; border-radius: 6px; font-weight: 600">Enriched</span></div>
+<div style="display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; color: #4B4F5C"><span style="color: #6B6F7B">Industry</span><span>Logistics software</span><span style="color: #6B6F7B">Employees</span><span>201–500</span><span style="color: #6B6F7B">HQ</span><span>Rotterdam, NL</span><span style="color: #6B6F7B">Funding</span><span>Series B</span></div>
+</div>
+</article>
+
+<article class="v-cell" style="min-width: 0; background: #FFFFFF; padding: 32px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 19px; letter-spacing: -0.025em; font-weight: 500; line-height: 1.35"><span style="color: #16171A">Live reporting.</span> <span style="color: #6B6F7B">Pipeline and forecast, built from records as they change.</span></h3>
+<div style="height: 130px; display: flex; align-items: flex-end; gap: 8px; padding: 0 4px; border-bottom: 1px solid #E7E8EC" aria-hidden="true">
+<sc-for list="{{miniBars}}" as="b" hint-placeholder-count="8"><span class="v-bar" style="flex: 1; border-radius: 5px 5px 0 0; height: {{b.h}}; background: {{b.c}}; animation-delay: {{b.delay}}"></span></sc-for>
+</div>
+</article>
+
+<article class="v-cell" style="min-width: 0; background: #FFFFFF; padding: 32px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 19px; letter-spacing: -0.025em; font-weight: 500; line-height: 1.35"><span style="color: #16171A">Email &amp; calendar sync.</span> <span style="color: #6B6F7B">Every thread and meeting, on the right record.</span></h3>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+<div style="display: flex; gap: 10px; align-items: center; border: 1px solid #E7E8EC; border-radius: 10px; padding: 10px 12px"><span style="width: 3px; align-self: stretch; border-radius: 2px; background: #3B5BFD"></span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Kelvra · Pricing review</b><span style="color: #6B6F7B; font-size: 12px">10:30 – 11:00 · 3 attendees</span></span></div>
+<div style="display: flex; gap: 10px; align-items: center; border: 1px solid #E7E8EC; border-radius: 10px; padding: 10px 12px"><span style="width: 3px; align-self: stretch; border-radius: 2px; background: #F2994A"></span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Re: Security questionnaire</b><span style="color: #6B6F7B; font-size: 12px">Ortiq · 4 messages · 2h ago</span></span></div>
+</div>
+</article>
+
+<article class="v-cell" style="min-width: 0; background: #FFFFFF; padding: 32px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 19px; letter-spacing: -0.025em; font-weight: 500; line-height: 1.35"><span style="color: #16171A">Granular permissions.</span> <span style="color: #6B6F7B">Who sees, edits and exports — down to the field.</span></h3>
+<div style="display: flex; flex-direction: column; font-size: 13px; border: 1px solid #E7E8EC; border-radius: 12px">
+<div style="display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #E7E8EC"><span>Admins</span><span style="color: #4B4F5C">Full access</span></div>
+<div style="display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #E7E8EC"><span>Sales</span><span style="color: #4B4F5C">Read &amp; write</span></div>
+<div style="display: flex; justify-content: space-between; padding: 10px 12px"><span>Contractors</span><span style="color: #4B4F5C">Read only · no export</span></div>
+</div>
+</article>
+</div>
+</section>
+
+<!-- Agents (dark, railed, tabbed) -->
+<section style="background: #0E0F11; color: #FFFFFF; position: relative; overflow: hidden">
+<div aria-hidden="true" class="v-breathe" style="position: absolute; right: -10%; top: -20%; width: 760px; height: 760px; border-radius: 50%; background: radial-gradient(circle, rgba(59,91,253,.24), rgba(59,91,253,0) 65%)"></div>
+<div class="v-rail-d" style="position: relative; padding: clamp(64px, 9vw, 120px) clamp(20px, 5vw, 60px) 56px">
+<span style="display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: rgba(59,91,253,.22); color: #B4C2FF; font-size: 13.5px; font-weight: 500">Vult Agents</span>
+<h2 class="v-reveal" style="margin: 22px 0 0; max-width: 860px; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.12; letter-spacing: -0.035em; font-weight: 500"><span style="color: #FFFFFF">Hand off the busywork. Keep the judgment.</span> <span style="color: #8A8D96">Agents research, qualify and follow up — every step logged, every change yours to approve.</span></h2>
+</div>
+<div class="v-rail-d" style="position: relative; border-top: 1px solid #232428; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))">
+<div role="tablist" aria-label="Agent examples" style="padding: 40px clamp(20px, 5vw, 60px); display: flex; flex-direction: column; border-right: 1px solid #232428">
+<sc-for list="{{agentTabs}}" as="tb" hint-placeholder-count="3">
+<button type="button" role="tab" aria-selected="{{tb.active}}" onClick="{{tb.pick}}" class="v-tab" style="text-align: left; border: 0; border-bottom: 1px solid #232428; background: transparent; padding: 18px 0; color: {{tb.color}}; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 17px; font-weight: 500">{{tb.title}}</span>
+<sc-if value="{{tb.active}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: #8A8D96; max-width: 360px">{{tb.desc}}</span></sc-if>
+</button>
+</sc-for>
+</div>
+<div style="padding: 40px clamp(20px, 4vw, 48px)">
+<sc-for list="{{agentCards}}" as="agent" hint-placeholder-count="1">
+<sc-if value="{{agent.active}}" hint-placeholder-val="{{ true }}">
+<div class="v-swap" style="background: #16171A; border: 1px solid #26272B; border-radius: 18px; padding: 20px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.7)">
+<div style="display: flex; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid #242526">
+<span style="width: 30px; height: 30px; border-radius: 8px; background: #3B5BFD; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<span style="display: flex; flex-direction: column"><b style="font-weight: 600; font-size: 14px">{{agent.name}}</b><span style="font-size: 12px; color: #8A8D96">{{agent.meta}}</span></span>
+<span class="v-pulse" style="margin-left: auto; font-size: 11px; color: #7FE0A8; display: inline-flex; align-items: center; gap: 6px"><span style="width: 7px; height: 7px; border-radius: 50%; background: #3DDC84"></span>Live</span>
+</div>
+<ol style="list-style: none; margin: 0; padding: 14px 0 0; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{agent.steps}}" as="st" hint-placeholder-count="5">
+<li class="v-step" style="display: flex; gap: 12px; padding: 10px; border-radius: 10px; animation-delay: {{st.delay}}">
+<span class="v-check" style="width: 20px; height: 20px; flex: none; border-radius: 50%; border: 1.5px solid #3A3C40; display: inline-flex; align-items: center; justify-content: center; animation-delay: {{st.delay}}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 550">{{st.title}}</span><span style="font-size: 12.5px; color: #8A8D96">{{st.detail}}</span></span>
+</li>
+</sc-for>
+</ol>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+<div class="v-rail-d" style="height: 72px; border-top: 1px solid #232428"></div>
+</section>
+
+<!-- Automations -->
+<section style="background: #F6F7F9; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))">
+<div style="padding: clamp(56px, 8vw, 104px) clamp(20px, 5vw, 60px); display: flex; flex-direction: column; gap: 20px; border-right: 1px solid #E7E8EC">
+<span style="align-self: flex-start; display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: #E3E9FF; color: #2C46C9; font-size: 13.5px; font-weight: 500">Automations</span>
+<h2 class="v-reveal" style="margin: 0; font-size: clamp(26px, 2.8vw, 34px); line-height: 1.18; letter-spacing: -0.03em; font-weight: 500"><span style="color: #16171A">Workflows that run while you sell.</span> <span style="color: #6B6F7B">Trigger on any change, branch on conditions, call an agent, tell the team.</span></h2>
+<ul style="margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; color: #4B4F5C; font-size: 15px">
+<li style="display: flex; gap: 10px; align-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BFD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>40+ triggers and actions</li>
+<li style="display: flex; gap: 10px; align-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BFD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Step-by-step run history</li>
+<li style="display: flex; gap: 10px; align-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BFD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Versions with one-click rollback</li>
+</ul>
+</div>
+<div class="v-stagger" style="background-color: #F1F2F4; background-image: radial-gradient(#D9DBE1 1px, transparent 1px); background-size: 16px 16px; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center">
+<sc-for list="{{flowNodes}}" as="nd" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; align-items: center">
+<sc-if value="{{nd.notFirst}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" class="v-flow-line" style="width: 1.5px; height: 28px; background: #A9ACB6"></span></sc-if>
+<div class="v-lift" style="width: 300px; max-width: 100%; background: #FFFFFF; border: 1px solid #E7E8EC; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 2px rgba(16,17,26,.05), 0 8px 20px -12px rgba(16,17,26,.15)">
+<span style="width: 30px; height: 30px; border-radius: 8px; background: {{nd.bg}}; color: {{nd.fg}}; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: none">{{nd.glyph}}</span>
+<span style="display: flex; flex-direction: column"><span style="font-size: 11px; color: #6B6F7B; font-weight: 600; text-transform: uppercase; letter-spacing: .05em">{{nd.kind}}</span><span style="font-size: 14px; font-weight: 600">{{nd.title}}</span></span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- Reporting -->
+<section style="background: #F6F7F9; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))">
+<div style="padding: clamp(56px, 8vw, 104px) clamp(20px, 5vw, 60px); display: flex; flex-direction: column; gap: 20px; border-right: 1px solid #E7E8EC">
+<span style="align-self: flex-start; display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: #E3E9FF; color: #2C46C9; font-size: 13.5px; font-weight: 500">Reporting</span>
+<h2 class="v-reveal" style="margin: 0; font-size: clamp(26px, 2.8vw, 34px); line-height: 1.18; letter-spacing: -0.03em; font-weight: 500"><span style="color: #16171A">Answers, not exports.</span> <span style="color: #6B6F7B">Ask in plain language or build a chart in a few clicks. Dashboards move when deals do.</span></h2>
+</div>
+<div style="background: #F1F2F4; padding: clamp(24px, 4vw, 48px); display: flex; align-items: center">
+<div class="v-reveal" style="width: 100%; border: 1px solid #E7E8EC; border-radius: 16px; padding: 24px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,17,26,.04), 0 24px 48px -24px rgba(16,17,26,.16)">
+<div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px">
+<span style="display: flex; flex-direction: column"><span style="font-size: 13px; color: #6B6F7B">Closed won · 2026</span><span style="font-size: 30px; font-weight: 600; letter-spacing: -0.04em">$2.48M</span></span>
+<span style="font-size: 12px; font-weight: 600; color: #17703F; background: #E3F5EA; padding: 3px 8px; border-radius: 6px">+18.4% vs 2025</span>
+</div>
+<div role="img" aria-label="Monthly closed-won revenue, January to October, trending upward" style="margin-top: 20px; height: 190px; display: flex; align-items: flex-end; gap: 10px; border-bottom: 1px solid #E7E8EC">
+<sc-for list="{{chartBars}}" as="b" hint-placeholder-count="10">
+<span style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%"><span class="v-bar" style="width: 100%; border-radius: 6px 6px 0 0; height: {{b.h}}; background: {{b.c}}; animation-delay: {{b.delay}}"></span></span>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 8px" aria-hidden="true">
+<sc-for list="{{chartBars}}" as="b" hint-placeholder-count="10"><span style="flex: 1; text-align: center; font-size: 11px; color: #6B6F7B">{{b.m}}</span></sc-for>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Integrations -->
+<section style="background: #F6F7F9">
+<div class="v-rail" style="padding: clamp(64px, 9vw, 112px) clamp(20px, 5vw, 60px) 48px">
+<span style="display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: #E3E9FF; color: #2C46C9; font-size: 13.5px; font-weight: 500">Ecosystem</span>
+<h2 class="v-reveal" style="margin: 22px 0 0; max-width: 820px; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.12; letter-spacing: -0.035em; font-weight: 500"><span style="color: #16171A">Connected from day one.</span> <span style="color: #6B6F7B">Two-way sync with your inbox, calendar and stack, plus webhooks and a typed REST API.</span></h2>
+</div>
+<div class="v-rail v-stagger" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: #E7E8EC; border-top: 1px solid #E7E8EC; border-bottom: 1px solid #E7E8EC">
+<sc-for list="{{integrations}}" as="ig" hint-placeholder-count="12">
+<div class="v-cell" style="background: #F6F7F9; padding: 20px; display: flex; align-items: center; gap: 12px">
+<span class="v-ico" style="width: 36px; height: 36px; border-radius: 10px; background: {{ig.c}}; color: #FFFFFF; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex: none">{{ig.g}}</span>
+<span style="display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 14px">{{ig.name}}</span><span style="font-size: 12px; color: #6B6F7B">{{ig.kind}}</span></span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- Testimonials -->
+<section aria-label="Testimonials" style="background: #FFFFFF; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail" style="padding: clamp(64px, 9vw, 112px) clamp(20px, 5vw, 60px); text-align: center">
+<sc-for list="{{tList}}" as="t" hint-placeholder-count="1">
+<sc-if value="{{t.active}}" hint-placeholder-val="{{ true }}">
+<figure class="v-swap" style="margin: 0 auto; max-width: 860px; min-height: 230px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+<blockquote style="margin: 0; font-size: clamp(22px, 2.8vw, 32px); line-height: 1.3; letter-spacing: -0.03em; font-weight: 500">“{{t.quote}}”</blockquote>
+<figcaption style="display: flex; align-items: center; gap: 12px; text-align: left">
+<span style="width: 44px; height: 44px; border-radius: 50%; background: {{t.color}}; color: #FFFFFF; font-weight: 650; display: inline-flex; align-items: center; justify-content: center">{{t.initials}}</span>
+<span style="display: flex; flex-direction: column"><b style="font-weight: 600">{{t.name}}</b><span style="font-size: 13px; color: #6B6F7B">{{t.role}}</span></span>
+</figcaption>
+</figure>
+</sc-if>
+</sc-for>
+<div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 32px">
+<button type="button" aria-label="Previous testimonial" onClick="{{prevT}}" class="v-btn v-ghost-btn" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #E7E8EC; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16171A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span style="display: flex; gap: 6px" aria-hidden="true"><sc-for list="{{dots}}" as="dt" hint-placeholder-count="3"><span style="width: {{dt.w}}; height: 6px; border-radius: 3px; background: {{dt.c}}; transition: width .2s"></span></sc-for></span>
+<button type="button" aria-label="Next testimonial" onClick="{{nextT}}" class="v-btn v-ghost-btn" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #E7E8EC; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16171A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<p style="margin: 18px 0 0; font-size: 12px; color: #6B6F7B">Illustrative quotes from fictional customers.</p>
+</div>
+</section>
+
+<!-- Security / scale -->
+<section style="background: #FFFFFF; position: relative; overflow: hidden">
+<div class="v-rail" style="position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))">
+<svg aria-hidden="true" width="900" height="700" viewBox="0 0 900 700" style="position: absolute; right: -1px; top: 0; pointer-events: none; max-width: 75%"><path class="v-draw" d="M900 0 C 760 260, 520 520, 0 700" fill="none" stroke="#C9CCD3" stroke-width="1.5"></path></svg>
+<div style="position: relative; padding: clamp(56px, 8vw, 112px) clamp(20px, 5vw, 60px); display: flex; flex-direction: column; gap: 20px">
+<span style="align-self: flex-start; display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: #E3E9FF; color: #2C46C9; font-size: 13.5px; font-weight: 500">Enterprise</span>
+<h2 style="margin: 0; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.12; letter-spacing: -0.035em; font-weight: 500"><span style="color: #16171A">Secure by default.</span><br><span style="color: #6B6F7B">Ready for every team<br>and every agent.</span></h2>
+<a href="#" class="v-btn v-ghost-btn" style="align-self: flex-start; height: 36px; padding: 0 12px; border: 1px solid #DCDFE6; border-radius: 8px; font-weight: 550; display: inline-flex; align-items: center; gap: 6px; font-size: 14px">Visit the trust center <svg class="v-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<div class="v-stagger" style="position: relative; padding: clamp(24px, 6vw, 112px) clamp(20px, 5vw, 60px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-content: center">
+<sc-for list="{{security}}" as="sc" hint-placeholder-count="4">
+<div class="v-lift" style="background: rgba(255,255,255,.9); border: 1px solid #E7E8EC; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16171A" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"></path></svg>
+<span style="font-weight: 600; font-size: 14px">{{sc.title}}</span><span style="font-size: 12.5px; color: #4B4F5C">{{sc.desc}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div class="v-rail" style="height: 64px"></div>
+</section>
+
+<!-- Final CTA (dark) -->
+<section style="background: #0E0F11; color: #FFFFFF; position: relative; overflow: hidden; border-top: 1px solid #232428">
+<div aria-hidden="true" class="v-breathe" style="position: absolute; left: 50%; bottom: -300px; transform: translateX(-50%); width: 1000px; height: 560px; background: radial-gradient(ellipse at center, rgba(59,91,253,.55), rgba(110,90,255,.18) 42%, rgba(14,15,17,0) 70%)"></div>
+<div class="v-rail-d" style="position: relative; padding: clamp(80px, 11vw, 150px) 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px">
+<h2 style="margin: 0; font-size: clamp(36px, 5vw, 60px); line-height: 1.04; letter-spacing: -0.045em; font-weight: 500">Your pipeline,<br>finally in sync.</h2>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center">
+<a href="#demo" class="v-btn" style="height: 38px; padding: 0 14px; border-radius: 8px; border: 1px solid #34363C; background: #0E0F11; color: #FFFFFF; font-weight: 550; display: inline-flex; align-items: center">Talk to sales</a>
+<a href="Signin.dc.html" class="v-btn" style="height: 38px; padding: 0 14px; border-radius: 8px; background: #FFFFFF; color: #16171A; font-weight: 550; display: inline-flex; align-items: center; gap: 6px">Start for free <svg class="v-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Footer (dark) -->
+<footer style="background: #0E0F11; color: #C9CBD2; border-top: 1px solid #232428">
+<div class="v-rail-d" style="padding: 64px clamp(20px, 5vw, 60px) 32px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 36px 32px">
+<div style="grid-column: span 2; min-width: 0; display: flex; flex-direction: column; gap: 12px; max-width: 280px">
+<span style="display: inline-flex; align-items: center; gap: 7px"><span class="v-logo-d" style="width: 28px; height: 28px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; background: #000"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 42px; height: 42px; flex: none"></span><span style="font-weight: 700; font-size: 22px; letter-spacing: -0.05em; color: #FFFFFF">vult</span></span>
+<p style="margin: 0; color: #8A8D96; font-size: 14px">The AI-native CRM for teams that move fast.</p>
+</div>
+<sc-for list="{{footerCols}}" as="col" hint-placeholder-count="5">
+<nav aria-label="{{col.title}}" style="display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<span style="color: #8A8D96">{{col.title}}</span>
+<sc-for list="{{col.links}}" as="l" hint-placeholder-count="4"><a href="#" style="color: #D9DBE1">{{l}}</a></sc-for>
+</nav>
+</sc-for>
+</div>
+<div style="margin-top: 56px; padding-top: 24px; border-top: 1px solid #232428; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; font-size: 13px; color: #8A8D96">
+<span>© 2026 Vult, Inc.</span>
+<span style="display: flex; gap: 4px">
+<a href="#" aria-label="Vult on X" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: #A9ACB6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"></path></svg></a>
+<a href="#" aria-label="Vult on LinkedIn" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: #A9ACB6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"></path></svg></a>
+<a href="#" aria-label="Vult on YouTube" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: #A9ACB6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"></rect><path d="M10 9l5 3-5 3z"></path></svg></a>
+</span>
+<a href="#" style="display: inline-flex; align-items: center; gap: 8px; color: #C9CBD2"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2BB673; box-shadow: 0 0 0 3px rgba(43,182,115,.2)"></span>All systems operational</a>
+</div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6600}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { showBar: true, platformOpen: false, resourcesOpen: false, drawerOpen: false, accPlatform: true, accResources: false, q: '', tIdx: 0, agentIdx: 0 };
+  }
+  renderVals() {
+    const s = this.state;
+    const STAGES = {
+      Lead: ['rgba(138,141,150,.16)', '#B7BAC3'],
+      Qualified: ['rgba(59,91,253,.20)', '#9DAEFF'],
+      Proposal: ['rgba(155,108,255,.18)', '#C2A6FF'],
+      Negotiation: ['rgba(242,153,74,.18)', '#F6B67A'],
+      Won: ['rgba(61,220,132,.16)', '#6FE3A5'],
+      Lost: ['rgba(240,82,82,.16)', '#F59090']
+    };
+    const raw = [
+      ['Platform rollout', 'Kelvra', '#3B5BFD', 'Negotiation', '$84,000', 'Maya Ruiz', '#9B6CFF', 'Nov 04'],
+      ['Annual renewal', 'Ortiq', '#16A34A', 'Won', '$42,500', 'Theo Lindqvist', '#D9480F', 'Oct 28'],
+      ['EMEA expansion', 'Halbrook', '#3A3C40', 'Proposal', '$126,000', 'Ines Okafor', '#3B5BFD', 'Nov 18'],
+      ['Pilot · 25 seats', 'Maplewing', '#D9480F', 'Qualified', '$18,750', 'Maya Ruiz', '#9B6CFF', 'Dec 02'],
+      ['Data warehouse sync', 'Solvane', '#7048E8', 'Negotiation', '$61,200', 'Jun Park', '#16A34A', 'Nov 11'],
+      ['Agents add-on', 'Nodeline', '#0B7285', 'Lead', '$9,600', 'Ines Okafor', '#3B5BFD', 'Dec 15'],
+      ['Multi-region', 'Brightvale', '#C2255C', 'Proposal', '$73,400', 'Theo Lindqvist', '#D9480F', 'Nov 26'],
+      ['Seat true-up', 'Cobalt & Finch', '#5C7CFA', 'Lost', '$12,000', 'Jun Park', '#16A34A', 'Oct 20']
+    ];
+    const all = raw.map((r) => ({
+      name: r[0], co: r[1], coColor: r[2], coInitial: r[1].charAt(0).toUpperCase(), stage: r[3], stageBg: STAGES[r[3]][0], stageFg: STAGES[r[3]][1],
+      value: r[4], owner: r[5], ownerColor: r[6], ownerInitials: r[5].split(' ').map((p) => p[0]).join(''), close: r[7]
+    }));
+    const q = s.q.trim().toLowerCase();
+    const deals = q ? all.filter((d) => (d.name + ' ' + d.co + ' ' + d.stage + ' ' + d.owner).toLowerCase().includes(q)) : all;
+    const testimonials = [
+      { quote: 'We replaced three tools and a weekly spreadsheet ritual. Our reps now open Vult before they open their inbox.', name: 'Priya Venkataraman', role: 'VP Sales, Kelvra (fictional)', initials: 'PV', color: '#3B5BFD' },
+      { quote: 'The research agent does in two minutes what used to take an SDR half a morning — and it cites every source.', name: 'Marcus Oyelaran', role: 'Head of Growth, Ortiq (fictional)', initials: 'MO', color: '#16171A' },
+      { quote: 'Custom objects let us model investors, funds and portfolio companies without a single workaround.', name: 'Elena Brandt', role: 'Partner, Halbrook Capital (fictional)', initials: 'EB', color: '#7048E8' }
+    ];
+    const agents = [
+      { title: 'Research accounts', desc: 'Reads the record, the inbox and the open web, then writes a brief your rep can act on.', name: 'Account research agent', meta: 'Running on Solvane · started 12s ago', steps: [
+        ['Read the Solvane company record', '14 fields · 3 open deals · last touch 6 days ago'],
+        ['Researched recent news', 'New Head of RevOps and an EU office opening'],
+        ['Scored account fit', 'ICP match 92 — moved to Tier 1'],
+        ['Drafted a follow-up email', 'Personalised to the new hire · waiting for your review'],
+        ['Created a task for Jun Park', 'Call before Thursday · linked to “Data warehouse sync”']] },
+      { title: 'Qualify inbound', desc: 'Scores every form fill against your ICP and routes the good ones in seconds.', name: 'Inbound qualifier', meta: 'Triggered by a demo request · 3s ago', steps: [
+        ['Matched the lead to Brightvale', 'Existing company · 2 known contacts'],
+        ['Enriched the contact', 'Director of Operations · 9 years in role'],
+        ['Checked buying signals', 'Pricing page visited 4 times this week'],
+        ['Assigned to Theo Lindqvist', 'Round-robin · EMEA mid-market'],
+        ['Booked a slot suggestion', 'Sent two times for Wednesday']] },
+      { title: 'Keep deals moving', desc: 'Spots stalled deals, summarises what changed and proposes the next step.', name: 'Pipeline guardian', meta: 'Weekly run · 25 open deals checked', steps: [
+        ['Scanned open pipeline', '25 deals · $1.2M weighted'],
+        ['Flagged 3 stalled deals', 'No reply in 10+ days'],
+        ['Summarised Halbrook thread', 'Legal review pending on the DPA'],
+        ['Proposed next steps', 'Loop in their counsel · share security pack'],
+        ['Posted digest to #sales', 'With links to every record']] }
+    ];
+    const a = agents[s.agentIdx];
+    const pal = ['#DDE3FF', '#C9D3FF', '#B3C1FF', '#9AADFF', '#8199FF', '#6B86FF', '#5672FE', '#3B5BFD'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+    const vals = [38, 44, 41, 52, 58, 55, 66, 72, 80, 92];
+    const logoSpec = [
+      ['kelvra', '0', '#2A2C31', 'rotate(45deg)', 700, '-0.04em', 'none', 'normal'],
+      ['ORTIQ', '50%', 'transparent', 'none', 600, '.08em', 'none', 'normal'],
+      ['Solvane', '6px', '#2A2C31', 'none', 500, '-0.02em', 'none', 'normal'],
+      ['Maplewing', '50% 0 50% 50%', 'transparent', 'none', 700, '-0.03em', 'none', 'italic'],
+      ['halbrook', '50%', '#2A2C31', 'none', 600, '-0.03em', 'none', 'normal'],
+      ['nodeline', '2px', 'transparent', 'rotate(45deg)', 500, '0', 'none', 'normal'],
+      ['Brightvale', '50% 50% 0 50%', '#2A2C31', 'none', 650, '-0.035em', 'none', 'normal'],
+      ['COBALT&FINCH', '0', 'transparent', 'none', 700, '.02em', 'none', 'normal'],
+      ['Tessaro', '50%', 'transparent', 'none', 400, '-0.02em', 'none', 'normal'],
+      ['wendell', '6px 0', '#2A2C31', 'none', 700, '-0.05em', 'none', 'normal']
+    ];
+    return {
+      showBar: s.showBar,
+      dismissBar: () => this.setState({ showBar: false }),
+      platformOpen: s.platformOpen,
+      resourcesOpen: s.resourcesOpen,
+      togglePlatform: () => this.setState({ platformOpen: !s.platformOpen, resourcesOpen: false }),
+      toggleResources: () => this.setState({ resourcesOpen: !s.resourcesOpen, platformOpen: false }),
+      drawerOpen: s.drawerOpen,
+      toggleDrawer: () => this.setState({ drawerOpen: !s.drawerOpen }),
+      accPlatform: s.accPlatform, accPlatformSign: s.accPlatform ? '−' : '+',
+      accResources: s.accResources, accResourcesSign: s.accResources ? '−' : '+',
+      toggleAccPlatform: () => this.setState({ accPlatform: !s.accPlatform }),
+      toggleAccResources: () => this.setState({ accResources: !s.accResources }),
+      platformItems: [
+        { glyph: 'DM', title: 'Data model', desc: 'Custom objects, fields and relationships', href: '#' },
+        { glyph: 'AG', title: 'Agents', desc: 'AI teammates for research and follow-up', href: 'Agents.dc.html' },
+        { glyph: 'AU', title: 'Automations', desc: 'Visual workflows on any record change', href: '#' },
+        { glyph: 'RE', title: 'Reporting', desc: 'Live dashboards and plain-language queries', href: '#' },
+        { glyph: 'EN', title: 'Enrichment', desc: 'Company and contact data, always fresh', href: '#' }
+      ],
+      resourceItems: [
+        { glyph: 'Do', title: 'Documentation', desc: 'Guides and API reference' },
+        { glyph: 'Te', title: 'Templates', desc: 'Ready-made objects and workflows' },
+        { glyph: 'Co', title: 'Community', desc: 'Ask questions, share setups' },
+        { glyph: 'He', title: 'Help center', desc: 'Answers to common questions' },
+        { glyph: 'Ch', title: 'Changelog', desc: 'What shipped this week' }
+      ],
+      mockNav: ['Home', 'Inbox', 'Tasks', 'Notes', 'Reports', 'Workflows'].map((l) => ({ label: l })),
+      mockRecords: [
+        { label: 'Companies', dot: '#3B5BFD', bg: 'transparent', fg: '#A9ACB6' },
+        { label: 'People', dot: '#16A34A', bg: 'transparent', fg: '#A9ACB6' },
+        { label: 'Deals', dot: '#F2994A', bg: '#1C1D20', fg: '#FFFFFF' }
+      ],
+      q: s.q,
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      deals,
+      noResults: deals.length === 0,
+      countLabel: deals.length + ' of ' + all.length + ' deals',
+      logos: logoSpec.map((l) => ({ name: l[0], label: l[0] + ' (placeholder logo)', radius: l[1], fill: l[2], rot: l[3], weight: l[4], ls: l[5], tt: l[6], fs: l[7] })),
+      stats: [
+        { value: '3.2×', label: 'faster pipeline reviews' },
+        { value: '11 hrs', label: 'saved per rep, per week' },
+        { value: '99.99%', label: 'uptime over the last year' },
+        { value: '< 5 min', label: 'from import to first report' }
+      ],
+      miniBars: [40, 62, 48, 75, 58, 84, 70, 96].map((h, i) => ({ h: h + '%', c: pal[i], delay: (i * 0.06) + 's' })),
+      agentTabs: agents.map((ag, i) => ({ title: ag.title, desc: ag.desc, active: i === s.agentIdx, color: i === s.agentIdx ? '#FFFFFF' : '#6B6E78', pick: () => this.setState({ agentIdx: i }) })),
+      agent: { name: a.name, meta: a.meta, steps: a.steps.map((st, i) => ({ title: st[0], detail: st[1], delay: (i * 0.9) + 's' })) },
+      flowNodes: [
+        { kind: 'Trigger', title: 'Deal stage changes to Won', glyph: 'T', bg: '#E3E9FF', fg: '#2C46C9', notFirst: false },
+        { kind: 'Condition', title: 'Value is over $50,000', glyph: 'IF', bg: '#FFF1E2', fg: '#A64B07', notFirst: true },
+        { kind: 'Agent', title: 'Draft a kickoff plan', glyph: 'AI', bg: '#16171A', fg: '#FFFFFF', notFirst: true },
+        { kind: 'Action', title: 'Notify #wins, create onboarding task', glyph: 'A', bg: '#E3F5EA', fg: '#17703F', notFirst: true }
+      ],
+      chartBars: vals.map((v, i) => ({ h: v + '%', m: months[i], c: i === vals.length - 1 ? '#3B5BFD' : '#C9D3FF', delay: (i * 0.05) + 's' })),
+      integrations: [
+        ['Mail', 'Email sync', '#3B5BFD'], ['Calendar', 'Meetings', '#16A34A'], ['Chat', 'Team alerts', '#7048E8'], ['Video', 'Call notes', '#0B7285'],
+        ['Billing', 'Invoices & MRR', '#D9480F'], ['Warehouse', 'Data sync', '#16171A'], ['Forms', 'Inbound leads', '#C2255C'], ['Support', 'Tickets', '#4C6EF5'],
+        ['Telephony', 'Dialer', '#2F9E44'], ['Docs', 'Proposals', '#B35C00'], ['Webhooks', 'Custom events', '#495057'], ['REST API', 'Build anything', '#3B5BFD']
+      ].map((r) => ({ name: r[0], kind: r[1], c: r[2], g: r[0].charAt(0) })),
+      t: testimonials[s.tIdx],
+      tList: testimonials.map((x, i) => Object.assign({}, x, { active: i === s.tIdx })),
+      agentCards: agents.map((ag, i) => ({ name: ag.name, meta: ag.meta, active: i === s.agentIdx, steps: ag.steps.map((st, j) => ({ title: st[0], detail: st[1], delay: (j * 0.9) + 's' })) })),
+      dots: testimonials.map((_, i) => ({ w: i === s.tIdx ? '22px' : '6px', c: i === s.tIdx ? '#16171A' : '#D6D8DE' })),
+      prevT: () => this.setState({ tIdx: (s.tIdx + testimonials.length - 1) % testimonials.length }),
+      nextT: () => this.setState({ tIdx: (s.tIdx + 1) % testimonials.length }),
+      security: [
+        { title: 'SOC 2 Type II', desc: 'Audited annually' },
+        { title: 'GDPR ready', desc: 'EU data residency' },
+        { title: 'SSO & SCIM', desc: 'SAML provisioning' },
+        { title: 'Audit logs', desc: 'Every change, streamed' }
+      ],
+      footerCols: [
+        { title: 'Product', links: ['Overview', 'Pricing', 'Changelog', 'Roadmap'] },
+        { title: 'Platform', links: ['Data model', 'Agents', 'Automations', 'Reporting', 'Enrichment'] },
+        { title: 'Company', links: ['About', 'Careers', 'Customers', 'Contact'] },
+        { title: 'Resources', links: ['Docs', 'Templates', 'Community', 'Status'] },
+        { title: 'Legal', links: ['Privacy', 'Terms', 'Security', 'DPA'] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

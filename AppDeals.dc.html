@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Deals · Vult</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&amp;display=swap">
+<style>
+body{margin:0;background:#101112}
+a{color:#E9EAEE;text-decoration:none}a:hover{color:#FFFFFF}
+.v-app *{box-sizing:border-box}
+.v-app button,.v-app select,.v-app input,.v-app textarea{font-family:inherit}
+.v-app button{cursor:pointer}
+.v-app a:focus-visible,.v-app button:focus-visible,.v-app select:focus-visible,.v-app input:focus-visible,.v-app textarea:focus-visible{outline:2px solid #6F87FF;outline-offset:1px;border-radius:6px}
+.v-logo-d img{filter:invert(1);mix-blend-mode:screen}
+.v-nav-item{transition:background .15s,color .15s}
+.v-nav-item:hover{background:#17181A;color:#FFFFFF !important}
+.v-hov{transition:background .15s}
+.v-hov:hover{background:#1A1B1E !important}
+.v-row{transition:background .15s}
+.v-row:hover{background:#151618}
+.v-cellbtn{transition:background .15s}
+.v-cellbtn:hover{background:#1C1D20 !important}
+.v-card{transition:border-color .15s,transform .15s,box-shadow .15s}
+.v-card:hover{border-color:#3A3C40 !important}
+.v-burger{display:none !important}
+@media (max-width:900px){.v-side{display:none !important}.v-side.v-open{display:flex !important;position:fixed;inset:0 auto 0 0;z-index:80;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}.v-burger{display:inline-flex !important}.v-hide-sm{display:none !important}}
+@keyframes vPop{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes vSlide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.v-pop{animation:vPop .16s ease-out both}
+.v-slide{animation:vSlide .18s ease-out both}
+.v-app{--spring:linear(0,.009,.035 2.1%,.141,.281 6.7%,.723 12.9%,.938 16.7%,1.017,1.077,1.121 24.3%,1.13,1.12 30.3%,1.017 39.4%,.991 44.6%,1.001 63.4%,1);--out:cubic-bezier(.16,1,.3,1)}
+.v-app button:active{transform:scale(.96)}
+@keyframes vIn{from{opacity:0;transform:translateY(12px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vSlideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@keyframes vPanel{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:none}}
+@keyframes vModal{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes vFadeBg{from{opacity:0}to{opacity:1}}
+@keyframes vGrowY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes vGrowX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes vTick{from{transform:scale(0) rotate(-25deg)}to{transform:none}}
+@keyframes vRing{0%{box-shadow:0 0 0 0 currentColor}100%{box-shadow:0 0 0 7px transparent}}
+@keyframes vFlow{0%{top:-3px;opacity:0}15%,85%{opacity:1}100%{top:25px;opacity:0}}
+.v-in>*{animation:vIn .6s var(--out) both}
+.v-in>*:nth-child(2){animation-delay:.04s}.v-in>*:nth-child(3){animation-delay:.08s}.v-in>*:nth-child(4){animation-delay:.12s}.v-in>*:nth-child(5){animation-delay:.16s}.v-in>*:nth-child(6){animation-delay:.2s}.v-in>*:nth-child(7){animation-delay:.24s}.v-in>*:nth-child(8){animation-delay:.28s}.v-in>*:nth-child(9){animation-delay:.32s}.v-in>*:nth-child(10){animation-delay:.36s}.v-in>*:nth-child(11){animation-delay:.4s}.v-in>*:nth-child(n+12){animation-delay:.44s}
+.v-nav-in>*{animation:vSlideIn .45s var(--out) both}
+.v-nav-in>*:nth-child(2){animation-delay:.03s}.v-nav-in>*:nth-child(3){animation-delay:.06s}.v-nav-in>*:nth-child(4){animation-delay:.09s}.v-nav-in>*:nth-child(5){animation-delay:.12s}.v-nav-in>*:nth-child(6){animation-delay:.15s}.v-nav-in>*:nth-child(7){animation-delay:.18s}.v-nav-in>*:nth-child(8){animation-delay:.21s}.v-nav-in>*:nth-child(n+9){animation-delay:.24s}
+.v-pop,.v-modal{animation:vModal .45s var(--spring) both}
+.v-panel{animation:vPanel .55s var(--spring) both}
+.v-backdrop{animation:vFadeBg .2s ease-out both}
+.v-bar-y{transform-origin:bottom;animation:vGrowY 1.1s var(--out) .2s both}
+.v-bar-x{transform-origin:left;animation:vGrowX 1.1s var(--out) .3s both}
+.v-tick{animation:vTick .45s var(--spring) both}
+.v-ping{color:currentColor;animation:vRing 1.6s ease-out infinite}
+.v-card{transition:transform .5s var(--spring),border-color .15s,box-shadow .3s !important}
+.v-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px -14px rgba(0,0,0,.8)}
+.v-card:active{cursor:grabbing;transform:rotate(-1.5deg) scale(1.03)}
+.v-step-btn{transition:border-color .2s,box-shadow .35s,transform .5s var(--spring)}
+.v-step-btn:hover{transform:translateY(-2px)}
+.v-step-btn[aria-pressed="true"]{box-shadow:0 0 0 4px rgba(111,135,255,.14),0 14px 32px -14px rgba(59,91,253,.6)}
+.v-line{position:relative;transform-origin:top;animation:vGrowY .5s var(--out) .3s both}
+.v-line::after{content:"";position:absolute;left:-2.25px;top:0;width:6px;height:6px;border-radius:50%;background:#6F87FF;box-shadow:0 0 8px #6F87FF;animation:vFlow 2.2s linear infinite}
+@media (prefers-reduced-motion:reduce){.v-app *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="v-app" style="font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #E9EAEE; background: #101112; height: 100vh; min-height: 620px; display: flex; font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow: hidden">
+
+<!-- Sidebar -->
+<aside class="v-side {{sideOpenClass}}" aria-label="Workspace navigation" style="width: 274px; flex: none; background: #0B0C0D; border-right: 1px solid #242526; display: flex; flex-direction: column">
+<div style="height: 49px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border-bottom: 1px solid #1C1D1F">
+<span class="v-logo-d" style="width: 24px; height: 24px; border-radius: 6px; background: #000; border: 1px solid #2A2C31; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex: none; margin-left: 6px"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 30px; height: 30px; flex: none"></span>
+<span style="font-weight: 600; color: #FFFFFF">Ridgeway Labs</span>
+<button type="button" class="v-burger v-nav-item" onClick="{{toggleMobile}}" aria-label="Close navigation" style="margin-left: auto; width: 28px; height: 28px; border: 0; background: transparent; color: #A9ACB6; border-radius: 6px; align-items: center; justify-content: center">×</button>
+</div>
+<nav class="v-nav-in" style="flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 1px">
+<span style="height: 32px; border: 1px solid #242526; border-radius: 7px; background: #111214; display: flex; align-items: center; padding: 0 8px; color: #8A8D96; gap: 8px; margin-bottom: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><span style="flex: 1">Search</span><span style="font-size: 11px; border: 1px solid #2E3033; border-radius: 4px; padding: 0 5px">⌘K</span></span>
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="9">
+<a href="{{n.href}}" class="v-nav-item" style="height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 8px; border-radius: 7px; color: #A9ACB6"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>{{n.label}}</a>
+</sc-for>
+<span style="font-size: 11px; color: #8A8D96; padding: 16px 8px 4px; font-weight: 600; letter-spacing: .04em">RECORDS</span>
+<a href="#" class="v-nav-item" style="height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 8px; border-radius: 7px; color: #A9ACB6"><span style="width: 15px; height: 15px; border-radius: 4px; background: #3B5BFD"></span>Companies</a>
+<a href="#" class="v-nav-item" style="height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 8px; border-radius: 7px; color: #A9ACB6"><span style="width: 15px; height: 15px; border-radius: 4px; background: #16A34A"></span>People</a>
+<a href="AppDeals.dc.html" aria-current="page" class="v-nav-item" style="height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 8px; border-radius: 7px; color: #FFFFFF; background: #1C1D20"><span style="width: 15px; height: 15px; border-radius: 4px; background: #F2994A"></span>Deals<span style="margin-left: auto; font-size: 11px; color: #A9ACB6">{{totalCount}}</span></a>
+<span style="font-size: 11px; color: #8A8D96; padding: 16px 8px 4px; font-weight: 600; letter-spacing: .04em">LISTS</span>
+<a href="#" class="v-nav-item" style="height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 8px; border-radius: 7px; color: #A9ACB6"><span style="width: 15px; height: 15px; border-radius: 50%; background: #7048E8"></span>Q4 target accounts</a>
+<span style="font-size: 11px; color: #8A8D96; padding: 16px 8px 4px; font-weight: 600; letter-spacing: .04em">CHATS</span>
+<a href="#" class="v-nav-item" style="height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 8px; border-radius: 7px; color: #A9ACB6"><span style="width: 15px; height: 15px; border-radius: 4px; background: #2A2C31; color: #FFFFFF; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">#</span>Pipeline review</a>
+</nav>
+<div style="padding: 10px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #1C1D1F">
+<span style="border: 1px solid #242526; border-radius: 10px; padding: 10px 12px; background: #111214; display: flex; flex-direction: column; gap: 8px"><span style="display: flex; justify-content: space-between; font-weight: 550; color: #FFFFFF">Getting started <span style="color: #8A8D96; font-weight: 450">0/6</span></span><span style="height: 4px; border-radius: 2px; background: #242526"></span></span>
+<button type="button" class="v-hov" style="height: 32px; border: 1px solid #242526; border-radius: 7px; background: transparent; color: #E9EAEE; text-align: left; padding: 0 10px">+ Invite members</button>
+<span style="border-radius: 10px; padding: 10px 12px; background: rgba(59,91,253,.12); border: 1px solid rgba(59,91,253,.3); font-size: 12.5px; color: #FFFFFF">12 days left in your Pro trial · <a href="Pricing.dc.html" style="color: #9DAEFF">Upgrade</a></span>
+</div>
+</aside>
+
+<!-- Main -->
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative">
+<header style="height: 49px; flex: none; border-bottom: 1px solid #242526; display: flex; align-items: center; gap: 10px; padding: 0 14px 0 16px">
+<button type="button" class="v-burger v-nav-item" onClick="{{toggleMobile}}" aria-label="Open navigation" style="width: 32px; height: 32px; border: 1px solid #242526; background: transparent; border-radius: 7px; color: #E9EAEE; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<span style="width: 18px; height: 18px; border-radius: 5px; background: #F2994A"></span>
+<h1 style="margin: 0; font-size: 14px; font-weight: 600; color: #FFFFFF">Deals</h1>
+<span style="margin-left: auto"></span>
+<button type="button" class="v-hov v-hide-sm" style="height: 30px; padding: 0 10px; border: 1px solid #242526; border-radius: 7px; background: transparent; color: #C9CBD2">Help</button>
+<button type="button" style="height: 30px; padding: 0 10px; border: 0; border-radius: 7px; background: #3B5BFD; color: #FFFFFF; font-weight: 550; display: inline-flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>Ask Vult</button>
+</header>
+
+<!-- Toolbar -->
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid #242526; flex-wrap: wrap">
+<div role="tablist" aria-label="View" style="display: inline-flex; padding: 2px; border: 1px solid #242526; border-radius: 8px; background: #0D0E0F">
+<button type="button" role="tab" aria-selected="{{isTable}}" onClick="{{showTable}}" style="height: 26px; padding: 0 10px; border: 0; border-radius: 6px; background: {{tableBg}}; color: {{tableFg}}; display: inline-flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18v14H3zM3 10h18M9 5v14"></path></svg>Table</button>
+<button type="button" role="tab" aria-selected="{{isBoard}}" onClick="{{showBoard}}" style="height: 26px; padding: 0 10px; border: 0; border-radius: 6px; background: {{boardBg}}; color: {{boardFg}}; display: inline-flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z"></path></svg>Board</button>
+</div>
+<label style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #2E3033; border-radius: 7px; background: #141517; width: 220px; max-width: 100%">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8D96" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter deals</span>
+<input type="search" value="{{q}}" onInput="{{onSearch}}" placeholder="Filter deals…" style="border: 0; outline: 0; background: transparent; color: #E9EAEE; font-size: 13px; width: 100%">
+</label>
+<label style="display: inline-flex; align-items: center; gap: 6px; height: 30px; border: 1px solid #2E3033; border-radius: 7px; padding: 0 4px 0 10px; color: #8A8D96">Stage
+<select value="{{stageFilter}}" onChange="{{onStageFilter}}" style="height: 26px; border: 0; background: #101112; color: #E9EAEE; outline: 0">
+<option value="All">All</option><option value="Lead">Lead</option><option value="Qualified">Qualified</option><option value="Proposal">Proposal</option><option value="Negotiation">Negotiation</option><option value="Won">Won</option><option value="Lost">Lost</option>
+</select>
+</label>
+<button type="button" class="v-hov v-hide-sm" style="height: 30px; padding: 0 10px; border: 1px solid #2E3033; border-radius: 7px; background: transparent; color: #C9CBD2; display: inline-flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>View settings</button>
+<span style="margin-left: auto; color: #8A8D96" class="v-hide-sm">{{summary}}</span>
+<button type="button" onClick="{{openNew}}" style="height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: #FFFFFF; color: #16171A; font-weight: 550; display: inline-flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New record</button>
+</div>
+
+<sc-if value="{{hasSelection}}" hint-placeholder-val="{{ false }}">
+<div class="v-pop" role="region" aria-label="Bulk actions" style="display: flex; align-items: center; gap: 10px; padding: 8px 16px; background: #16182A; border-bottom: 1px solid #2A3060; color: #C9D3FF">
+<span style="font-weight: 550">{{selCount}} selected</span>
+<button type="button" onClick="{{markWon}}" style="height: 28px; padding: 0 10px; border: 1px solid #2A3060; border-radius: 6px; background: transparent; color: #E9EAEE">Mark as Won</button>
+<button type="button" onClick="{{deleteSel}}" style="height: 28px; padding: 0 10px; border: 1px solid #5A2A2A; border-radius: 6px; background: transparent; color: #F59090">Delete</button>
+<button type="button" onClick="{{clearSel}}" style="margin-left: auto; height: 28px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: #A9ACB6">Clear</button>
+</div>
+</sc-if>
+
+<!-- Table view -->
+<sc-if value="{{isTable}}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1; overflow: auto">
+<table style="width: 100%; min-width: 860px; border-collapse: separate; border-spacing: 0">
+<thead><tr>
+<th scope="col" style="position: sticky; top: 0; z-index: 2; background: #101112; width: 44px; padding: 0 0 0 16px; border-bottom: 1px solid #242526; text-align: left"><input type="checkbox" aria-label="Select all deals" checked="{{allSelected}}" onChange="{{toggleAll}}" style="accent-color: #3B5BFD; width: 15px; height: 15px"></th>
+<sc-for list="{{columns}}" as="c" hint-placeholder-count="6">
+<th scope="col" aria-sort="{{c.ariaSort}}" style="position: sticky; top: 0; z-index: 2; background: #101112; border-bottom: 1px solid #242526; border-left: 1px solid #1C1D1F; padding: 0; text-align: {{c.align}}; font-weight: 500">
+<button type="button" onClick="{{c.sort}}" class="v-cellbtn" style="width: 100%; height: 36px; border: 0; background: transparent; color: #8A8D96; display: flex; align-items: center; gap: 6px; padding: 0 12px; justify-content: {{c.justify}}; font-weight: 500; font-size: 12.5px">{{c.label}}<span aria-hidden="true" style="color: #C9CBD2">{{c.arrow}}</span></button>
+</th>
+</sc-for>
+</tr></thead>
+<tbody class="v-in">
+<sc-for list="{{rows}}" as="d" hint-placeholder-count="12">
+<tr class="v-row" style="background: {{d.rowBg}}">
+<td style="padding: 0 0 0 16px; height: 40px; border-bottom: 1px solid #1A1B1D"><input type="checkbox" aria-label="{{d.selLabel}}" checked="{{d.selected}}" onChange="{{d.toggleSel}}" style="accent-color: #3B5BFD; width: 15px; height: 15px"></td>
+<td style="border-bottom: 1px solid #1A1B1D; border-left: 1px solid #1A1B1D; padding: 0 12px; white-space: nowrap"><button type="button" onClick="{{d.open}}" style="border: 0; background: transparent; color: #FFFFFF; font-weight: 550; padding: 0; font-size: 13px; text-decoration: underline; text-decoration-color: #3A3C40; text-underline-offset: 3px">{{d.name}}</button></td>
+<td style="border-bottom: 1px solid #1A1B1D; border-left: 1px solid #1A1B1D; padding: 0 12px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; border-radius: 5px; background: {{d.coColor}}; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{d.coInitial}}</span>{{d.company}}</span></td>
+<td style="border-bottom: 1px solid #1A1B1D; border-left: 1px solid #1A1B1D; padding: 0 8px">
+<label style="position: relative; display: inline-flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Stage for {{d.name}}</span>
+<select value="{{d.stage}}" onChange="{{d.setStage}}" style="appearance: none; -webkit-appearance: none; height: 24px; padding: 0 10px; border-radius: 6px; border: 0; font-size: 12px; font-weight: 550; background: {{d.stageBg}}; color: {{d.stageFg}}; cursor: pointer">
+<option value="Lead">Lead</option><option value="Qualified">Qualified</option><option value="Proposal">Proposal</option><option value="Negotiation">Negotiation</option><option value="Won">Won</option><option value="Lost">Lost</option>
+</select></label>
+</td>
+<td style="border-bottom: 1px solid #1A1B1D; border-left: 1px solid #1A1B1D; padding: 0; text-align: right">
+<sc-if value="{{d.editing}}" hint-placeholder-val="{{ false }}"><input type="number" aria-label="Value for {{d.name}}" value="{{d.value}}" onKeyDown="{{d.editKey}}" onBlur="{{d.commit}}" autofocus="{{ true }}" style="width: 100%; height: 38px; border: 0; outline: 2px solid #3B5BFD; outline-offset: -2px; background: #0D0E10; color: #FFFFFF; text-align: right; padding: 0 12px; font-size: 13px"></sc-if>
+<sc-if value="{{d.notEditing}}" hint-placeholder-val="{{ true }}"><button type="button" class="v-cellbtn" onClick="{{d.startEdit}}" aria-label="Edit value for {{d.name}}, currently {{d.valueFmt}}" style="width: 100%; height: 38px; border: 0; background: transparent; color: #E9EAEE; text-align: right; padding: 0 12px; font-variant-numeric: tabular-nums; font-size: 13px">{{d.valueFmt}}</button></sc-if>
+</td>
+<td style="border-bottom: 1px solid #1A1B1D; border-left: 1px solid #1A1B1D; padding: 0 12px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 50%; background: {{d.ownerColor}}; color: #FFFFFF; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{d.ownerInitials}}</span><span style="color: #C9CBD2">{{d.owner}}</span></span></td>
+<td style="border-bottom: 1px solid #1A1B1D; border-left: 1px solid #1A1B1D; padding: 0 12px; color: #A9ACB6; white-space: nowrap">{{d.close}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+<sc-if value="{{empty}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 56px 16px; text-align: center; color: #8A8D96">No deals match these filters.</p></sc-if>
+</div>
+</sc-if>
+
+<!-- Board view -->
+<sc-if value="{{isBoard}}" hint-placeholder-val="{{ false }}">
+<div class="v-in" style="flex: 1; overflow: auto; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start">
+<sc-for list="{{board}}" as="col" hint-placeholder-count="6">
+<section aria-label="{{col.stage}}" onDragOver="{{col.over}}" onDragLeave="{{col.leave}}" onDrop="{{col.drop}}" style="width: 272px; flex: none; border-radius: 12px; background: {{col.bg}}; border: 1px solid {{col.border}}; display: flex; flex-direction: column; max-height: 100%; transition: background .15s, border-color .15s">
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: {{col.dot}}"></span>
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; color: #FFFFFF">{{col.stage}}</h2>
+<span style="font-size: 11.5px; color: #A9ACB6; background: #1E1F22; padding: 0 6px; border-radius: 5px">{{col.count}}</span>
+<span style="margin-left: auto; font-size: 12px; color: #8A8D96">{{col.total}}</span>
+</div>
+<div class="v-in" style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px 10px; overflow-y: auto; min-height: 60px">
+<sc-for list="{{col.cards}}" as="cd" hint-placeholder-count="2">
+<article draggable="true" onDragStart="{{cd.dragStart}}" onDragEnd="{{cd.dragEnd}}" class="v-card" style="background: #17181A; border: 1px solid #26272B; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; cursor: grab; opacity: {{cd.opacity}}">
+<button type="button" onClick="{{cd.open}}" style="border: 0; background: transparent; padding: 0; text-align: left; color: #FFFFFF; font-weight: 600; font-size: 13px">{{cd.name}}</button>
+<span style="display: flex; align-items: center; gap: 6px; color: #A9ACB6"><span style="width: 16px; height: 16px; border-radius: 4px; background: {{cd.coColor}}; color: #FFFFFF; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{cd.coInitial}}</span>{{cd.company}}</span>
+<span style="display: flex; align-items: center; justify-content: space-between"><span style="font-variant-numeric: tabular-nums; color: #E9EAEE">{{cd.valueFmt}}</span><span style="display: inline-flex; align-items: center; gap: 6px; color: #8A8D96; font-size: 12px">{{cd.close}}<span style="width: 18px; height: 18px; border-radius: 50%; background: {{cd.ownerColor}}; color: #FFFFFF; font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{cd.ownerInitials}}</span></span></span>
+</article>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</div>
+</sc-if>
+
+<!-- Record panel -->
+<sc-if value="{{panelOpen}}" hint-placeholder-val="{{ false }}">
+<aside class="v-panel" role="dialog" aria-label="{{panel.name}} details" style="position: absolute; top: 49px; right: 0; bottom: 0; width: min(440px, 100%); background: #131416; border-left: 1px solid #2A2B2E; box-shadow: -24px 0 60px -20px rgba(0,0,0,.7); display: flex; flex-direction: column; z-index: 20">
+<div style="padding: 16px 18px; border-bottom: 1px solid #242526; display: flex; align-items: flex-start; gap: 12px">
+<span style="width: 36px; height: 36px; border-radius: 9px; background: {{panel.coColor}}; color: #FFFFFF; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex: none">{{panel.coInitial}}</span>
+<div style="flex: 1; min-width: 0"><h2 style="margin: 0; font-size: 16px; font-weight: 600; color: #FFFFFF">{{panel.name}}</h2><p style="margin: 2px 0 0; color: #8A8D96">{{panel.company}} · {{panel.valueFmt}}</p></div>
+<button type="button" onClick="{{closePanel}}" aria-label="Close details" class="v-hov" style="width: 30px; height: 30px; border: 0; border-radius: 7px; background: transparent; color: #A9ACB6; font-size: 18px">×</button>
+</div>
+<div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; padding: 14px 18px; border-bottom: 1px solid #242526">
+<span style="color: #8A8D96">Stage</span><span><span style="padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 550; background: {{panel.stageBg}}; color: {{panel.stageFg}}">{{panel.stage}}</span></span>
+<span style="color: #8A8D96">Owner</span><span>{{panel.owner}}</span>
+<span style="color: #8A8D96">Close date</span><span>{{panel.close}}</span>
+</div>
+<div role="tablist" aria-label="Record sections" style="display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid #242526">
+<sc-for list="{{panelTabs}}" as="pt" hint-placeholder-count="3">
+<button type="button" role="tab" aria-selected="{{pt.active}}" onClick="{{pt.pick}}" style="height: 40px; padding: 0 10px; border: 0; background: transparent; color: {{pt.fg}}; border-bottom: 2px solid {{pt.line}}; font-weight: 550">{{pt.label}}</button>
+</sc-for>
+</div>
+<div style="flex: 1; overflow-y: auto; padding: 16px 18px">
+<sc-if value="{{tabActivity}}" hint-placeholder-val="{{ true }}">
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; border-left: 1px solid #2A2B2E; margin-left: 6px">
+<sc-for list="{{activity}}" as="a" hint-placeholder-count="4">
+<li style="position: relative; padding-left: 18px"><span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: {{a.c}}; box-shadow: 0 0 0 3px #131416"></span><span style="color: #E9EAEE">{{a.t}}</span><br><span style="color: #8A8D96; font-size: 12px">{{a.when}}</span></li>
+</sc-for>
+</ol>
+</sc-if>
+<sc-if value="{{tabNotes}}" hint-placeholder-val="{{ false }}">
+<label for="note" style="font-weight: 550">Add a note</label>
+<textarea id="note" rows="4" value="{{noteDraft}}" onInput="{{onNote}}" placeholder="What happened on the call?" style="margin-top: 6px; width: 100%; border: 1px solid #2E3033; border-radius: 8px; background: #0F1011; color: #E9EAEE; padding: 10px; resize: vertical"></textarea>
+<button type="button" onClick="{{saveNote}}" style="margin-top: 8px; height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: #3B5BFD; color: #FFFFFF; font-weight: 550">Save note</button>
+<sc-for list="{{panelNotes}}" as="n" hint-placeholder-count="1"><div style="margin-top: 14px; border: 1px solid #242526; border-radius: 10px; padding: 10px 12px; color: #C9CBD2">{{n}}</div></sc-for>
+</sc-if>
+<sc-if value="{{tabTasks}}" hint-placeholder-val="{{ false }}">
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<li style="display: flex; gap: 10px; align-items: center; border: 1px solid #242526; border-radius: 10px; padding: 10px 12px"><input type="checkbox" aria-label="Send revised order form" style="accent-color: #3B5BFD"><span style="flex: 1">Send revised order form</span><span style="color: #8A8D96; font-size: 12px">Today</span></li>
+<li style="display: flex; gap: 10px; align-items: center; border: 1px solid #242526; border-radius: 10px; padding: 10px 12px"><input type="checkbox" aria-label="Book security review" style="accent-color: #3B5BFD"><span style="flex: 1">Book security review</span><span style="color: #8A8D96; font-size: 12px">Oct 24</span></li>
+</ul>
+</sc-if>
+</div>
+</aside>
+</sc-if>
+</div>
+
+<!-- New record modal -->
+<sc-if value="{{newOpen}}" hint-placeholder-val="{{ false }}">
+<div class="v-backdrop" style="position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; padding: 16px">
+<form role="dialog" aria-modal="true" aria-labelledby="new-h" onSubmit="{{createDeal}}" novalidate class="v-modal" style="width: 100%; max-width: 460px; background: #17181A; border: 1px solid #2E3033; border-radius: 16px; box-shadow: 0 40px 80px -20px rgba(0,0,0,.8)">
+<div style="display: flex; align-items: center; padding: 16px 18px; border-bottom: 1px solid #242526"><h2 id="new-h" style="margin: 0; font-size: 15px; font-weight: 600; color: #FFFFFF">New deal</h2><button type="button" onClick="{{closeNew}}" aria-label="Close" style="margin-left: auto; width: 30px; height: 30px; border: 0; border-radius: 7px; background: transparent; color: #A9ACB6; font-size: 18px">×</button></div>
+<div style="padding: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-weight: 550">Deal name<input type="text" value="{{draft.name}}" onInput="{{setDraftName}}" aria-invalid="{{nameInvalid}}" placeholder="e.g. Annual renewal" style="height: 38px; border: 1px solid {{nameBorder}}; border-radius: 8px; background: #0F1011; color: #FFFFFF; padding: 0 10px; font-weight: 400"></label>
+<sc-if value="{{nameInvalid}}" hint-placeholder-val="{{ false }}"><span role="alert" style="grid-column: span 2; margin-top: -8px; color: #F59090; font-size: 12.5px">Give the deal a name.</span></sc-if>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 550">Company<input type="text" value="{{draft.company}}" onInput="{{setDraftCo}}" placeholder="Company" style="height: 38px; border: 1px solid #2E3033; border-radius: 8px; background: #0F1011; color: #FFFFFF; padding: 0 10px; font-weight: 400"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 550">Value (USD)<input type="number" value="{{draft.value}}" onInput="{{setDraftVal}}" placeholder="0" style="height: 38px; border: 1px solid #2E3033; border-radius: 8px; background: #0F1011; color: #FFFFFF; padding: 0 10px; font-weight: 400"></label>
+<label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-weight: 550">Stage<select value="{{draft.stage}}" onChange="{{setDraftStage}}" style="height: 38px; border: 1px solid #2E3033; border-radius: 8px; background: #0F1011; color: #FFFFFF; padding: 0 8px; font-weight: 400"><option value="Lead">Lead</option><option value="Qualified">Qualified</option><option value="Proposal">Proposal</option><option value="Negotiation">Negotiation</option></select></label>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid #242526">
+<button type="button" onClick="{{closeNew}}" style="height: 34px; padding: 0 14px; border: 1px solid #2E3033; border-radius: 8px; background: transparent; color: #E9EAEE; font-weight: 550">Cancel</button>
+<button type="submit" style="height: 34px; padding: 0 14px; border: 0; border-radius: 8px; background: #FFFFFF; color: #16171A; font-weight: 550">Create deal</button>
+</div>
+</form>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const seed = [
+      ['Platform rollout', 'Kelvra', 'Negotiation', 84000, 'Maya Ruiz', 'Nov 04'], ['Annual renewal', 'Ortiq', 'Won', 42500, 'Theo Lindqvist', 'Oct 28'],
+      ['EMEA expansion', 'Halbrook', 'Proposal', 126000, 'Ines Okafor', 'Nov 18'], ['Pilot · 25 seats', 'Maplewing', 'Qualified', 18750, 'Maya Ruiz', 'Dec 02'],
+      ['Data warehouse sync', 'Solvane', 'Negotiation', 61200, 'Jun Park', 'Nov 11'], ['Agents add-on', 'Nodeline', 'Lead', 9600, 'Ines Okafor', 'Dec 15'],
+      ['Multi-region', 'Brightvale', 'Proposal', 73400, 'Theo Lindqvist', 'Nov 26'], ['Seat true-up', 'Cobalt & Finch', 'Lost', 12000, 'Jun Park', 'Oct 20'],
+      ['Sales team expansion', 'Tessaro', 'Qualified', 33000, 'Maya Ruiz', 'Dec 09'], ['Enrichment bundle', 'Wendell', 'Lead', 7200, 'Jun Park', 'Jan 12'],
+      ['Partner portal', 'Arden Freight', 'Proposal', 48900, 'Ines Okafor', 'Nov 30'], ['Workflow migration', 'Lumora Health', 'Won', 56000, 'Theo Lindqvist', 'Oct 14']
+    ];
+    let deals = seed.map((r, i) => ({ id: i + 1, name: r[0], company: r[1], stage: r[2], value: r[3], owner: r[4], close: r[5] }));
+    try { const saved = window.localStorage.getItem('vult.deals'); if (saved) deals = JSON.parse(saved); } catch (e) {}
+    this.state = { deals, view: 'table', q: '', stageFilter: 'All', sortKey: 'close', sortDir: 1, selected: {}, editing: null, panelId: null, tab: 'activity', notes: {}, noteDraft: '', newOpen: false, draft: { name: '', company: '', value: '', stage: 'Lead' }, nameInvalid: false, dragId: null, overStage: null, mobileOpen: false };
+  }
+  save(deals) {
+    this.setState({ deals });
+    try { window.localStorage.setItem('vult.deals', JSON.stringify(deals)); } catch (e) {}
+  }
+  renderVals() {
+    const s = this.state;
+    const ST = { Lead: ['rgba(138,141,150,.16)', '#B7BAC3'], Qualified: ['rgba(59,91,253,.2)', '#9DAEFF'], Proposal: ['rgba(155,108,255,.18)', '#C2A6FF'], Negotiation: ['rgba(242,153,74,.18)', '#F6B67A'], Won: ['rgba(61,220,132,.16)', '#6FE3A5'], Lost: ['rgba(240,82,82,.16)', '#F59090'] };
+    const CO = ['#3B5BFD', '#16A34A', '#3A3C40', '#D9480F', '#7048E8', '#0B7285', '#C2255C', '#4C6EF5', '#2F9E44', '#B35C00'];
+    const OW = { 'Maya Ruiz': '#9B6CFF', 'Theo Lindqvist': '#D9480F', 'Ines Okafor': '#3B5BFD', 'Jun Park': '#16A34A', 'Dani Rossi': '#0B7285' };
+    const MON = { Jan: 13, Oct: 10, Nov: 11, Dec: 12 };
+    const fmt = (v) => '$' + Number(v || 0).toLocaleString('en-US');
+    const deco = (d) => ({
+      ...d, valueFmt: fmt(d.value), stageBg: ST[d.stage][0], stageFg: ST[d.stage][1],
+      coColor: CO[(d.company.charCodeAt(0) || 0) % CO.length], coInitial: (d.company || '?').charAt(0).toUpperCase(),
+      ownerColor: OW[d.owner] || '#495057', ownerInitials: d.owner.split(' ').map((p) => p[0]).join('')
+    });
+    const setDeal = (id, patch) => this.save(s.deals.map((d) => d.id === id ? { ...d, ...patch } : d));
+    const q = s.q.trim().toLowerCase();
+    let list = s.deals.filter((d) => (s.stageFilter === 'All' || d.stage === s.stageFilter) && (!q || (d.name + ' ' + d.company + ' ' + d.owner).toLowerCase().includes(q)));
+    const key = (d) => s.sortKey === 'close' ? (MON[d.close.slice(0, 3)] || 0) * 100 + parseInt(d.close.slice(4), 10) : s.sortKey === 'value' ? d.value : String(d[s.sortKey]).toLowerCase();
+    list = list.slice().sort((a, b) => (key(a) > key(b) ? 1 : key(a) < key(b) ? -1 : 0) * s.sortDir);
+    const selIds = Object.keys(s.selected).filter((k) => s.selected[k]).map(Number);
+    const cols = [['name', 'Deal', 'left'], ['company', 'Company', 'left'], ['stage', 'Stage', 'left'], ['value', 'Value', 'right'], ['owner', 'Owner', 'left'], ['close', 'Close date', 'left']];
+    const stages = ['Lead', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost'];
+    const panelDeal = s.deals.find((d) => d.id === s.panelId);
+    const commit = (id) => (e) => { const v = parseFloat(e.target.value); if (!isNaN(v)) setDeal(id, { value: v }); this.setState({ editing: null }); };
+    const total = list.reduce((a, d) => a + Number(d.value || 0), 0);
+    const tabs = [['activity', 'Activity'], ['notes', 'Notes'], ['tasks', 'Tasks']];
+    return {
+      sideOpenClass: s.mobileOpen ? 'v-open' : '',
+      toggleMobile: () => this.setState({ mobileOpen: !s.mobileOpen }),
+      nav: [['Home', 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z', 'AppHome.dc.html'], ['Inbox', 'M3 13h5l1 3h6l1-3h5M5 5h14l2 8v6H3v-6z', '#'], ['Tasks', 'M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11', '#'], ['Notes', 'M6 3h9l5 5v13H6zM14 3v6h6M9 13h8M9 17h6', '#'], ['Emails', 'M3 6h18v12H3zM3 7l9 7 9-7', '#'], ['Calls', 'M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2', '#'], ['Reports', 'M4 20V10M10 20V4M16 20v-7M2 20h20', 'AppReports.dc.html'], ['Sequences', 'M4 6h16M4 12h10M4 18h6', '#'], ['Workflows', 'M4 4h6v6H4zM14 14h6v6h-6zM7 10v4a3 3 0 0 0 3 3h4', 'AppWorkflow.dc.html']].map((n) => ({ label: n[0], icon: n[1], href: n[2] })),
+      totalCount: s.deals.length,
+      isTable: s.view === 'table', isBoard: s.view === 'board',
+      tableBg: s.view === 'table' ? '#24262B' : 'transparent', tableFg: s.view === 'table' ? '#FFFFFF' : '#8A8D96',
+      boardBg: s.view === 'board' ? '#24262B' : 'transparent', boardFg: s.view === 'board' ? '#FFFFFF' : '#8A8D96',
+      showTable: () => this.setState({ view: 'table' }), showBoard: () => this.setState({ view: 'board' }),
+      q: s.q, onSearch: (e) => this.setState({ q: e.target.value }),
+      stageFilter: s.stageFilter, onStageFilter: (e) => this.setState({ stageFilter: e.target.value }),
+      summary: list.length + ' deals · ' + fmt(total),
+      columns: cols.map((c) => ({ label: c[1], align: c[2], justify: c[2] === 'right' ? 'flex-end' : 'flex-start', arrow: s.sortKey === c[0] ? (s.sortDir > 0 ? '↑' : '↓') : '', ariaSort: s.sortKey === c[0] ? (s.sortDir > 0 ? 'ascending' : 'descending') : 'none', sort: () => this.setState({ sortKey: c[0], sortDir: s.sortKey === c[0] ? -s.sortDir : 1 }) })),
+      allSelected: list.length > 0 && list.every((d) => s.selected[d.id]),
+      toggleAll: () => { const all = list.every((d) => s.selected[d.id]); const sel = {}; if (!all) list.forEach((d) => { sel[d.id] = true; }); this.setState({ selected: sel }); },
+      hasSelection: selIds.length > 0, selCount: selIds.length,
+      markWon: () => { this.save(s.deals.map((d) => s.selected[d.id] ? { ...d, stage: 'Won' } : d)); this.setState({ selected: {} }); },
+      deleteSel: () => { this.save(s.deals.filter((d) => !s.selected[d.id])); this.setState({ selected: {} }); },
+      clearSel: () => this.setState({ selected: {} }),
+      rows: list.map((d) => ({
+        ...deco(d), selected: !!s.selected[d.id], selLabel: 'Select ' + d.name, rowBg: s.selected[d.id] ? '#141729' : 'transparent',
+        toggleSel: () => this.setState({ selected: { ...s.selected, [d.id]: !s.selected[d.id] } }),
+        open: () => this.setState({ panelId: d.id, tab: 'activity' }),
+        setStage: (e) => setDeal(d.id, { stage: e.target.value }),
+        editing: s.editing === d.id, notEditing: s.editing !== d.id,
+        startEdit: () => this.setState({ editing: d.id }),
+        commit: commit(d.id),
+        editKey: (e) => { if (e.key === 'Enter') commit(d.id)(e); if (e.key === 'Escape') this.setState({ editing: null }); }
+      })),
+      empty: list.length === 0,
+      board: stages.map((st) => {
+        const cards = list.filter((d) => d.stage === st);
+        const over = s.overStage === st;
+        return {
+          stage: st, dot: ST[st][1], count: cards.length, total: fmt(cards.reduce((a, d) => a + Number(d.value || 0), 0)),
+          bg: over ? '#151830' : '#0D0E0F', border: over ? '#3B5BFD' : '#1E1F22',
+          over: (e) => { e.preventDefault(); if (s.overStage !== st) this.setState({ overStage: st }); },
+          leave: () => {},
+          drop: (e) => { e.preventDefault(); if (s.dragId != null) setDeal(s.dragId, { stage: st }); this.setState({ dragId: null, overStage: null }); },
+          cards: cards.map((d) => ({ ...deco(d), opacity: s.dragId === d.id ? '.4' : '1',
+            dragStart: (e) => { try { e.dataTransfer.setData('text/plain', String(d.id)); e.dataTransfer.effectAllowed = 'move'; } catch (x) {} this.setState({ dragId: d.id }); },
+            dragEnd: () => this.setState({ dragId: null, overStage: null }),
+            open: () => this.setState({ panelId: d.id, tab: 'activity' }) }))
+        };
+      }),
+      panelOpen: !!panelDeal,
+      panel: panelDeal ? deco(panelDeal) : { name: '', company: '', valueFmt: '', stage: 'Lead', owner: '', close: '', coColor: '#333', coInitial: '', stageBg: '', stageFg: '' },
+      closePanel: () => this.setState({ panelId: null }),
+      panelTabs: tabs.map((t) => ({ label: t[1], active: s.tab === t[0], fg: s.tab === t[0] ? '#FFFFFF' : '#8A8D96', line: s.tab === t[0] ? '#3B5BFD' : 'transparent', pick: () => this.setState({ tab: t[0] }) })),
+      tabActivity: s.tab === 'activity', tabNotes: s.tab === 'notes', tabTasks: s.tab === 'tasks',
+      activity: [
+        { t: 'Stage changed to ' + (panelDeal ? panelDeal.stage : ''), when: 'Today, 09:12 · by you', c: '#3B5BFD' },
+        { t: 'Email: “Revised order form attached”', when: 'Yesterday · 3 replies', c: '#F2994A' },
+        { t: 'Meeting: Pricing review', when: 'Oct 16 · 30 min · brief by agent', c: '#7048E8' },
+        { t: 'Record enriched — 6 fields updated', when: 'Oct 02 · Vult enrichment', c: '#2F9E44' }
+      ],
+      noteDraft: s.noteDraft, onNote: (e) => this.setState({ noteDraft: e.target.value }),
+      saveNote: () => { if (!s.noteDraft.trim() || !panelDeal) return; const cur = s.notes[panelDeal.id] || []; this.setState({ notes: { ...s.notes, [panelDeal.id]: [s.noteDraft.trim(), ...cur] }, noteDraft: '' }); },
+      panelNotes: panelDeal ? (s.notes[panelDeal.id] || []) : [],
+      newOpen: s.newOpen,
+      openNew: () => this.setState({ newOpen: true, nameInvalid: false, draft: { name: '', company: '', value: '', stage: 'Lead' } }),
+      closeNew: () => this.setState({ newOpen: false }),
+      draft: s.draft,
+      nameInvalid: s.nameInvalid, nameBorder: s.nameInvalid ? '#C92A2A' : '#2E3033',
+      setDraftName: (e) => this.setState({ draft: { ...s.draft, name: e.target.value }, nameInvalid: false }),
+      setDraftCo: (e) => this.setState({ draft: { ...s.draft, company: e.target.value } }),
+      setDraftVal: (e) => this.setState({ draft: { ...s.draft, value: e.target.value } }),
+      setDraftStage: (e) => this.setState({ draft: { ...s.draft, stage: e.target.value } }),
+      createDeal: (e) => {
+        e.preventDefault();
+        if (!s.draft.name.trim()) { this.setState({ nameInvalid: true }); return; }
+        const id = Math.max(0, ...s.deals.map((d) => d.id)) + 1;
+        this.save([{ id, name: s.draft.name.trim(), company: s.draft.company.trim() || 'Unassigned', stage: s.draft.stage, value: parseFloat(s.draft.value) || 0, owner: 'Dani Rossi', close: 'Dec 31' }, ...s.deals]);
+        this.setState({ newOpen: false });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

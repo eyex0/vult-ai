@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pricing · Vult</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F7F9}
+a{color:#16171A;text-decoration:none}a:hover{color:#3B5BFD}
+.v-root *{box-sizing:border-box}
+.v-root button{font-family:inherit;cursor:pointer}
+.v-root a:focus-visible,.v-root button:focus-visible{outline:2px solid #3B5BFD;outline-offset:2px;border-radius:8px}
+.v-rail{max-width:1200px;margin:0 auto;border-left:1px solid #E7E8EC;border-right:1px solid #E7E8EC}
+.v-rail-d{max-width:1200px;margin:0 auto;border-left:1px solid #232428;border-right:1px solid #232428}
+.v-logo-l img{mix-blend-mode:multiply}
+.v-logo-d img{filter:invert(1);mix-blend-mode:screen}
+.v-btn{transition:background .15s,border-color .15s,color .15s}
+.v-btn .v-arrow{transition:transform .15s}
+.v-btn:hover .v-arrow{transform:translateX(3px)}
+.v-dark-btn:hover{background:#2A2C31 !important;color:#FFFFFF !important}
+.v-ghost-btn:hover{background:#F6F7F9 !important;color:#16171A !important}
+.v-navlink{transition:background .15s}
+.v-navlink:hover{background:#EEF0F3;color:#16171A}
+.v-faq:hover{color:#3B5BFD}
+.v-hide-sm{}
+@media (max-width:960px){.v-nav{display:none !important}}
+.v-root{--spring:linear(0,.009,.035 2.1%,.141,.281 6.7%,.723 12.9%,.938 16.7%,1.017,1.077,1.121 24.3%,1.13,1.12 30.3%,1.017 39.4%,.991 44.6%,1.001 63.4%,1);--out:cubic-bezier(.16,1,.3,1)}
+.v-btn{transition:background .15s,border-color .15s,color .15s,box-shadow .2s,transform .5s var(--spring) !important}
+.v-btn:hover{transform:translateY(-1px)}
+.v-btn:active,.v-root button:active{transform:scale(.96);transition-duration:.08s !important}
+.v-btn .v-arrow{transition:transform .45s var(--spring) !important}
+.v-lift{transition:transform .55s var(--spring),box-shadow .3s,border-color .2s}
+.v-lift:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(16,17,26,.28)}
+.v-seg button{transition:background .35s var(--spring),color .2s,box-shadow .35s}
+@keyframes vFadeUp{from{opacity:0;transform:translateY(28px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vSwap{from{opacity:0;transform:translateY(12px) scale(.98);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vScaleIn{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:none}}
+@keyframes vBreathe{0%,100%{scale:1;opacity:1}50%{scale:1.14;opacity:.7}}
+@keyframes vPop{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+.v-pop{animation:vPop .38s var(--spring) both}
+.v-swap{animation:vSwap .6s var(--spring) both}
+.v-scale-in{animation:vScaleIn .9s var(--spring) .2s both}
+.v-breathe{animation:vBreathe 9s ease-in-out infinite}
+.v-reveal{animation:vFadeUp .9s var(--out) both}
+.v-enter>*{animation:vFadeUp 1s var(--out) both}
+.v-enter>*:nth-child(2){animation-delay:.08s}.v-enter>*:nth-child(3){animation-delay:.16s}.v-enter>*:nth-child(4){animation-delay:.24s}.v-enter>*:nth-child(5){animation-delay:.32s}.v-enter>*:nth-child(6){animation-delay:.4s}
+.v-stagger>*{animation:vFadeUp .9s var(--out) both}
+.v-stagger>*:nth-child(2){animation-delay:.07s}.v-stagger>*:nth-child(3){animation-delay:.14s}.v-stagger>*:nth-child(4){animation-delay:.21s}.v-stagger>*:nth-child(5){animation-delay:.28s}.v-stagger>*:nth-child(n+6){animation-delay:.35s}
+@supports (animation-timeline: view()){
+.v-reveal,.v-stagger>*{animation:vFadeUp linear both;animation-timeline:view();animation-range:entry 0% cover 26%}
+.v-stagger>*:nth-child(3n+2){animation-range:entry 6% cover 30%}
+.v-stagger>*:nth-child(3n){animation-range:entry 12% cover 34%}
+}
+@media (prefers-reduced-motion:reduce){.v-root *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="v-root" style="font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #16171A; background: #F6F7F9; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden">
+
+<header style="position: sticky; top: 0; z-index: 50; height: 64px; background: rgba(255,255,255,0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid #E7E8EC">
+<div style="max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 20px; display: flex; align-items: center; gap: 28px">
+<a href="Main.dc.html" aria-label="Vult home" style="display: inline-flex; align-items: center; gap: 7px; flex: none">
+<span class="v-logo-l" style="width: 26px; height: 26px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 39px; height: 39px; flex: none"></span>
+<span style="font-weight: 700; font-size: 21px; letter-spacing: -0.05em">vult</span>
+</a>
+<nav class="v-nav" aria-label="Main" style="flex: 1; display: flex; align-items: center; gap: 2px">
+<a href="Main.dc.html" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; display: inline-flex; align-items: center; gap: 4px">Platform <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C808C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></a>
+<a href="Main.dc.html" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; display: inline-flex; align-items: center; gap: 4px">Resources <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C808C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></a>
+<a href="Main.dc.html#customers" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; display: inline-flex; align-items: center">Customers</a>
+<a href="Pricing.dc.html" aria-current="page" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; display: inline-flex; align-items: center; font-weight: 600">Pricing</a>
+<a href="#" class="v-navlink" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; display: inline-flex; align-items: center">Changelog</a>
+</nav>
+<div style="display: flex; align-items: center; gap: 8px; margin-left: auto">
+<a href="Signin.dc.html" class="v-navlink v-nav" style="height: 36px; padding: 0 12px; border-radius: 8px; font-size: 14.5px; display: inline-flex; align-items: center">Sign in</a>
+<a href="Signin.dc.html" class="v-btn v-dark-btn" style="height: 36px; padding: 0 14px; border-radius: 8px; background: #16171A; color: #FFFFFF; font-size: 14px; font-weight: 550; display: inline-flex; align-items: center">Start for free</a>
+</div>
+</div>
+</header>
+
+<main>
+<!-- Hero -->
+<section style="background: #FFFFFF; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail v-enter" style="padding: clamp(64px, 9vw, 112px) 20px 56px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px">
+<span style="display: inline-flex; height: 24px; padding: 0 7px; align-items: center; border-radius: 6px; background: #E3E9FF; color: #2C46C9; font-size: 13.5px; font-weight: 500">Pricing</span>
+<h1 style="margin: 0; font-size: clamp(38px, 5.6vw, 64px); line-height: 1.04; letter-spacing: -0.045em; font-weight: 600">Start free. Scale when it works.</h1>
+<p style="margin: 0; max-width: 520px; font-size: 18px; color: #6B6F7B; line-height: 1.45">Simple per-seat pricing. Agents and enrichment credits included on every paid plan.</p>
+<div role="group" aria-label="Billing period" class="v-seg" style="margin-top: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: #F1F2F4; border: 1px solid #E7E8EC; border-radius: 10px">
+<button type="button" aria-pressed="{{isMonthly}}" onClick="{{setMonthly}}" style="height: 34px; padding: 0 16px; border-radius: 7px; border: 0; font-size: 14px; font-weight: 550; background: {{monthlyBg}}; color: {{monthlyFg}}; box-shadow: {{monthlyShadow}}">Monthly</button>
+<button type="button" aria-pressed="{{isYearly}}" onClick="{{setYearly}}" style="height: 34px; padding: 0 12px 0 16px; border-radius: 7px; border: 0; font-size: 14px; font-weight: 550; background: {{yearlyBg}}; color: {{yearlyFg}}; box-shadow: {{yearlyShadow}}; display: inline-flex; align-items: center; gap: 8px">Yearly <span style="font-size: 11.5px; font-weight: 600; color: #17703F; background: #E3F5EA; padding: 2px 7px; border-radius: 999px">Save 20%</span></button>
+</div>
+</div>
+</section>
+
+<!-- Plans -->
+<section style="border-bottom: 1px solid #E7E8EC">
+<div class="v-rail v-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: #E7E8EC">
+<sc-for list="{{plans}}" as="p" hint-placeholder-count="4">
+<article style="background: {{p.bg}}; color: {{p.fg}}; padding: 32px 28px; display: flex; flex-direction: column; gap: 20px; position: relative">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.02em">{{p.name}}</h2>
+<sc-if value="{{p.popular}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #FFFFFF; background: #3B5BFD; padding: 3px 9px; border-radius: 999px">Most popular</span></sc-if>
+</div>
+<p style="margin: 0; font-size: 14px; color: {{p.sub}}; min-height: 44px">{{p.blurb}}</p>
+<div style="display: flex; align-items: baseline; gap: 6px; min-height: 52px">
+<sc-if value="{{p.isY}}" hint-placeholder-val="{{ true }}"><span class="v-swap" style="font-size: 44px; font-weight: 600; letter-spacing: -0.045em; line-height: 1; display: inline-block">{{p.priceY}}</span></sc-if><sc-if value="{{p.isM}}" hint-placeholder-val="{{ false }}"><span class="v-swap" style="font-size: 44px; font-weight: 600; letter-spacing: -0.045em; line-height: 1; display: inline-block">{{p.priceM}}</span></sc-if>
+<span style="font-size: 13px; color: {{p.sub}}">{{p.unit}}</span>
+</div>
+<a href="{{p.href}}" class="v-btn" style="height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 550; font-size: 14px; background: {{p.btnBg}}; color: {{p.btnFg}}; border: 1px solid {{p.btnBorder}}">{{p.cta}}</a>
+<ul style="list-style: none; margin: 0; padding: 18px 0 0; border-top: 1px solid {{p.line}}; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<li style="color: {{p.sub}}; font-size: 13px">{{p.includes}}</li>
+<sc-for list="{{p.features}}" as="f" hint-placeholder-count="5">
+<li style="display: flex; gap: 10px; align-items: flex-start"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{p.check}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12l5 5L20 7"></path></svg>{{f}}</li>
+</sc-for>
+</ul>
+</article>
+</sc-for>
+</div>
+</section>
+
+<!-- Comparison -->
+<section style="background: #FFFFFF; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail" style="padding: clamp(56px, 8vw, 96px) clamp(16px, 4vw, 40px) 24px">
+<h2 style="margin: 0 0 32px; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -0.035em; font-weight: 500; line-height: 1.12"><span style="color: #16171A">Compare every plan.</span> <span style="color: #6B6F7B">The full list, side by side.</span></h2>
+<div class="v-reveal" style="overflow-x: auto; border: 1px solid #E7E8EC; border-radius: 14px; max-height: 720px; overflow-y: auto">
+<table style="width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; font-size: 14px">
+<thead>
+<tr>
+<th scope="col" style="position: sticky; top: 0; z-index: 2; background: #FFFFFF; text-align: left; padding: 16px 20px; border-bottom: 1px solid #E7E8EC; font-weight: 500; color: #6B6F7B; width: 32%">Features</th>
+<sc-for list="{{planNames}}" as="pn" hint-placeholder-count="4">
+<th scope="col" style="position: sticky; top: 0; z-index: 2; background: {{pn.bg}}; padding: 16px 12px; border-bottom: 1px solid #E7E8EC; text-align: center"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">{{pn.name}}</span><span style="font-weight: 400; font-size: 12.5px; color: #6B6F7B">{{pn.price}}</span></span></th>
+</sc-for>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+<tr><th scope="colgroup" colspan="5" style="text-align: left; padding: 22px 20px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #6B6F7B; font-weight: 600; background: #FAFAFB; border-bottom: 1px solid #E7E8EC">{{g.name}}</th></tr>
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="4">
+<tr>
+<th scope="row" style="text-align: left; font-weight: 450; padding: 12px 20px; border-bottom: 1px solid #F0F1F3">{{r.label}}</th>
+<sc-for list="{{r.cells}}" as="c" hint-placeholder-count="4">
+<td style="text-align: center; padding: 12px; border-bottom: 1px solid #F0F1F3; background: {{c.bg}}; color: #4B4F5C">
+<sc-if value="{{c.yes}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BFD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Included"><path d="M5 12l5 5L20 7"></path></svg></sc-if>
+<sc-if value="{{c.no}}" hint-placeholder-val="{{ false }}"><span aria-label="Not included" style="color: #B9BCC6">—</span></sc-if>
+<sc-if value="{{c.isText}}" hint-placeholder-val="{{ false }}"><span>{{c.text}}</span></sc-if>
+</td>
+</sc-for>
+</tr>
+</sc-for>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section style="background: #F6F7F9; border-bottom: 1px solid #E7E8EC">
+<div class="v-rail" style="padding: clamp(56px, 8vw, 96px) clamp(20px, 5vw, 60px); display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px">
+<h2 style="margin: 0; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -0.035em; font-weight: 500; line-height: 1.12"><span style="color: #16171A">Questions,</span><br><span style="color: #6B6F7B">answered.</span></h2>
+<div style="display: flex; flex-direction: column; border-top: 1px solid #E7E8EC">
+<sc-for list="{{faqs}}" as="f" hint-placeholder-count="5">
+<div style="border-bottom: 1px solid #E7E8EC">
+<h3 style="margin: 0"><button type="button" class="v-faq" aria-expanded="{{f.open}}" onClick="{{f.toggle}}" style="width: 100%; min-height: 60px; border: 0; background: transparent; display: flex; justify-content: space-between; align-items: center; gap: 16px; text-align: left; font-size: 16px; font-weight: 500; color: #16171A; padding: 12px 0">{{f.q}}<span aria-hidden="true" style="font-size: 20px; color: #6B6F7B; flex: none">{{f.sign}}</span></button></h3>
+<sc-if value="{{f.open}}" hint-placeholder-val="{{ false }}"><p class="v-pop" style="margin: 0 0 18px; color: #4B4F5C; max-width: 560px">{{f.a}}</p></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- CTA -->
+<section style="background: #0E0F11; color: #FFFFFF; position: relative; overflow: hidden">
+<div aria-hidden="true" class="v-breathe" style="position: absolute; left: 50%; bottom: -300px; transform: translateX(-50%); width: 1000px; height: 560px; background: radial-gradient(ellipse at center, rgba(59,91,253,.5), rgba(110,90,255,.16) 42%, rgba(14,15,17,0) 70%)"></div>
+<div class="v-rail-d" style="position: relative; padding: clamp(72px, 10vw, 128px) 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px">
+<h2 class="v-reveal" style="margin: 0; font-size: clamp(32px, 4.4vw, 52px); line-height: 1.06; letter-spacing: -0.045em; font-weight: 500">Try Pro free for 14 days.</h2>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center">
+<a href="#" class="v-btn" style="height: 38px; padding: 0 14px; border-radius: 8px; border: 1px solid #34363C; color: #FFFFFF; font-weight: 550; display: inline-flex; align-items: center">Talk to sales</a>
+<a href="Signin.dc.html" class="v-btn" style="height: 38px; padding: 0 14px; border-radius: 8px; background: #FFFFFF; color: #16171A; font-weight: 550; display: inline-flex; align-items: center; gap: 6px">Start for free <svg class="v-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+</section>
+</main>
+
+<footer style="background: #0E0F11; color: #8A8D96; border-top: 1px solid #232428">
+<div class="v-rail-d" style="padding: 28px clamp(20px, 5vw, 60px); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; font-size: 13px">
+<span style="display: inline-flex; align-items: center; gap: 7px"><span class="v-logo-d" style="width: 24px; height: 24px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; background: #000"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 36px; height: 36px; flex: none"></span><span style="font-weight: 700; font-size: 19px; letter-spacing: -0.05em; color: #FFFFFF">vult</span></span>
+<span>© 2026 Vult, Inc.</span>
+<a href="#" style="display: inline-flex; align-items: center; gap: 8px; color: #C9CBD2"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2BB673"></span>All systems operational</a>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { yearly: true, openFaq: 0 };
+  }
+  renderVals() {
+    const s = this.state;
+    const y = s.yearly;
+    const price = (m) => '$' + (y ? Math.round(m * 0.8) : m);
+    const on = { bg: '#FFFFFF', fg: '#16171A', sh: '0 1px 2px rgba(16,17,26,.1), 0 0 0 1px #E7E8EC' };
+    const off = { bg: 'transparent', fg: '#6B6F7B', sh: 'none' };
+    const plans = [
+      { name: 'Free', blurb: 'For individuals and tiny teams getting organised.', price: '$0', unit: 'up to 3 seats', cta: 'Start for free', href: 'Signin.dc.html', includes: 'Includes:', features: ['Unlimited contacts', '3 custom objects', 'Email & calendar sync', 'Basic reporting'] },
+      { name: 'Plus', blurb: 'For growing teams that need structure and sync.', price: price(29), m: 29, unit: y ? 'per seat / month, billed yearly' : 'per seat / month', cta: 'Start trial', href: 'Signin.dc.html', includes: 'Everything in Free, plus:', features: ['Unlimited objects', 'Sequences', '1,000 enrichment credits', 'Private lists'] },
+      { name: 'Pro', blurb: 'For revenue teams running on agents and automations.', price: price(69), m: 69, unit: y ? 'per seat / month, billed yearly' : 'per seat / month', cta: 'Start 14-day trial', href: 'Signin.dc.html', includes: 'Everything in Plus, plus:', features: ['Vult Agents', 'Advanced workflows', 'Custom dashboards', '10,000 enrichment credits', 'Priority support'], popular: true },
+      { name: 'Enterprise', blurb: 'For organisations with security and scale needs.', price: 'Custom', unit: '', cta: 'Talk to sales', href: '#', includes: 'Everything in Pro, plus:', features: ['SSO & SCIM', 'Audit logs', 'Data residency', 'Dedicated success manager'] }
+    ].map((p) => {
+      const dark = !!p.popular;
+      return Object.assign({ popular: false }, p, {
+        isY: y, isM: !y, priceY: p.m ? '$' + Math.round(p.m * 0.8) : p.price, priceM: p.m ? '$' + p.m : p.price,
+        bg: dark ? '#0E0F11' : '#FFFFFF', fg: dark ? '#FFFFFF' : '#16171A', sub: dark ? '#A9ACB6' : '#6B6F7B', line: dark ? '#26272B' : '#E7E8EC',
+        btnBg: dark ? '#FFFFFF' : (p.name === 'Free' ? '#16171A' : '#FFFFFF'), btnFg: dark ? '#16171A' : (p.name === 'Free' ? '#FFFFFF' : '#16171A'),
+        btnBorder: dark ? '#FFFFFF' : (p.name === 'Free' ? '#16171A' : '#DCDFE6'), check: dark ? '#8EA2FF' : '#3B5BFD'
+      });
+    });
+    const Y = true, N = false;
+    const groupData = [
+      ['Records & data', [['Contacts and companies', ['Unlimited', 'Unlimited', 'Unlimited', 'Unlimited']], ['Custom objects', ['3', 'Unlimited', 'Unlimited', 'Unlimited']], ['Records per workspace', ['50k', '250k', '1M', 'Custom']], ['Enrichment credits / month', ['100', '1,000', '10,000', 'Custom']]]],
+      ['Productivity', [['Email & calendar sync', [Y, Y, Y, Y]], ['Sequences', [N, Y, Y, Y]], ['Kanban & table views', [Y, Y, Y, Y]], ['Private lists', [N, Y, Y, Y]]]],
+      ['AI & automation', [['Ask Vult', ['Limited', Y, Y, Y]], ['Vult Agents', [N, N, Y, Y]], ['Workflows', [N, '5 active', 'Unlimited', 'Unlimited']], ['Workflow run history', [N, '7 days', '90 days', '1 year']]]],
+      ['Reporting', [['Standard reports', [Y, Y, Y, Y]], ['Custom dashboards', [N, '3', 'Unlimited', 'Unlimited']], ['Forecasting', [N, N, Y, Y]]]],
+      ['Security & admin', [['Roles & permissions', ['Basic', 'Basic', 'Advanced', 'Advanced']], ['SSO & SCIM', [N, N, N, Y]], ['Audit logs', [N, N, N, Y]], ['Data residency', [N, N, N, Y]]]]
+    ];
+    const groups = groupData.map((g) => ({ name: g[0], rows: g[1].map((r) => ({ label: r[0], cells: r[1].map((v, i) => ({ yes: v === true, no: v === false, isText: typeof v === 'string', text: typeof v === 'string' ? v : '', bg: i === 2 ? '#F7F8FF' : 'transparent' })) })) }));
+    const faqData = [
+      ['Can I switch plans later?', 'Yes. Upgrade or downgrade at any time — changes are prorated to the day.'],
+      ['What counts as a seat?', 'Anyone who can sign in and edit records. Read-only guests are free on Pro and Enterprise.'],
+      ['How do enrichment credits work?', 'One credit enriches one company or person. Unused credits roll over for one month.'],
+      ['Do agents cost extra?', 'Agents are included on Pro and Enterprise with a generous monthly run allowance. Heavy usage is billed at cost.'],
+      ['Is there a discount for startups or non-profits?', 'Yes — eligible teams get 50% off Plus or Pro for the first year. Contact sales to apply.']
+    ];
+    return {
+      isMonthly: !y, isYearly: y,
+      monthlyBg: y ? off.bg : on.bg, monthlyFg: y ? off.fg : on.fg, monthlyShadow: y ? off.sh : on.sh,
+      yearlyBg: y ? on.bg : off.bg, yearlyFg: y ? on.fg : off.fg, yearlyShadow: y ? on.sh : off.sh,
+      setMonthly: () => this.setState({ yearly: false }),
+      setYearly: () => this.setState({ yearly: true }),
+      plans,
+      planNames: plans.map((p, i) => ({ name: p.name, price: p.price === 'Custom' ? 'Custom' : p.price + (p.price === '$0' ? '' : ' / seat'), bg: i === 2 ? '#F7F8FF' : '#FFFFFF' })),
+      groups,
+      faqs: faqData.map((f, i) => ({ q: f[0], a: f[1], open: s.openFaq === i, sign: s.openFaq === i ? '−' : '+', toggle: () => this.setState({ openFaq: s.openFaq === i ? -1 : i }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

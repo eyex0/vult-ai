@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in · Vult</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F7F9}
+a{color:#3B5BFD;text-decoration:none}a:hover{color:#2C46C9;text-decoration:underline}
+.v-root *{box-sizing:border-box}
+.v-root button{font-family:inherit;cursor:pointer}
+.v-root a:focus-visible,.v-root button:focus-visible{outline:2px solid #3B5BFD;outline-offset:2px;border-radius:8px}
+.v-input:focus{border-color:#3B5BFD !important;box-shadow:0 0 0 3px rgba(59,91,253,.18) !important;outline:0}
+.v-logo-l img{mix-blend-mode:multiply}
+.v-sso{transition:background .15s,border-color .15s}
+.v-sso:hover{background:#F6F7F9 !important;border-color:#D6D8DE !important}
+.v-submit{transition:background .15s}
+.v-submit:hover{background:#2A2C31 !important}
+.v-root{--spring:linear(0,.009,.035 2.1%,.141,.281 6.7%,.723 12.9%,.938 16.7%,1.017,1.077,1.121 24.3%,1.13,1.12 30.3%,1.017 39.4%,.991 44.6%,1.001 63.4%,1);--out:cubic-bezier(.16,1,.3,1)}
+.v-btn{transition:background .15s,border-color .15s,color .15s,box-shadow .2s,transform .5s var(--spring) !important}
+.v-btn:hover{transform:translateY(-1px)}
+.v-btn:active,.v-root button:active{transform:scale(.96);transition-duration:.08s !important}
+.v-btn .v-arrow{transition:transform .45s var(--spring) !important}
+.v-lift{transition:transform .55s var(--spring),box-shadow .3s,border-color .2s}
+.v-lift:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(16,17,26,.28)}
+.v-seg button{transition:background .35s var(--spring),color .2s,box-shadow .35s}
+@keyframes vFadeUp{from{opacity:0;transform:translateY(28px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vSwap{from{opacity:0;transform:translateY(12px) scale(.98);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vScaleIn{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:none}}
+@keyframes vBreathe{0%,100%{scale:1;opacity:1}50%{scale:1.14;opacity:.7}}
+@keyframes vPop{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+.v-pop{animation:vPop .38s var(--spring) both}
+.v-swap{animation:vSwap .6s var(--spring) both}
+.v-scale-in{animation:vScaleIn .9s var(--spring) .2s both}
+.v-breathe{animation:vBreathe 9s ease-in-out infinite}
+.v-reveal{animation:vFadeUp .9s var(--out) both}
+.v-enter>*{animation:vFadeUp 1s var(--out) both}
+.v-enter>*:nth-child(2){animation-delay:.08s}.v-enter>*:nth-child(3){animation-delay:.16s}.v-enter>*:nth-child(4){animation-delay:.24s}.v-enter>*:nth-child(5){animation-delay:.32s}.v-enter>*:nth-child(6){animation-delay:.4s}
+.v-stagger>*{animation:vFadeUp .9s var(--out) both}
+.v-stagger>*:nth-child(2){animation-delay:.07s}.v-stagger>*:nth-child(3){animation-delay:.14s}.v-stagger>*:nth-child(4){animation-delay:.21s}.v-stagger>*:nth-child(5){animation-delay:.28s}.v-stagger>*:nth-child(n+6){animation-delay:.35s}
+@supports (animation-timeline: view()){
+.v-reveal,.v-stagger>*{animation:vFadeUp linear both;animation-timeline:view();animation-range:entry 0% cover 26%}
+.v-stagger>*:nth-child(3n+2){animation-range:entry 6% cover 30%}
+.v-stagger>*:nth-child(3n){animation-range:entry 12% cover 34%}
+}
+@media (prefers-reduced-motion:reduce){.v-root *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="v-root" style="font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #16171A; background-color: #F6F7F9; background-image: repeating-linear-gradient(90deg, rgba(59,91,253,.10) 0 1px, transparent 1px 7px); min-height: 900px; font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; align-items: center; padding: 24px 16px">
+<a href="Main.dc.html" aria-label="Vult home" style="display: inline-flex; align-items: center; gap: 7px; color: #16171A; margin-top: 32px">
+<span class="v-logo-l" style="width: 30px; height: 30px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center"><img src="/_blob/3fdb3fc4dac38e884c52e67a57146da8" alt="" style="width: 45px; height: 45px; flex: none"></span>
+<span style="font-weight: 700; font-size: 24px; letter-spacing: -0.05em">vult</span>
+</a>
+<main class="v-scale-in" style="width: 100%; max-width: 420px; margin-top: 40px; background: #FFFFFF; border: 1px solid #E7E8EC; border-radius: 18px; padding: 36px 32px 28px; box-shadow: 0 1px 2px rgba(16,17,26,.04), 0 24px 64px -24px rgba(16,17,26,.18)">
+<h1 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.035em; text-align: center">{{heading}}</h1>
+<p style="margin: 6px 0 28px; color: #6B6F7B; text-align: center; font-size: 14.5px">{{subheading}}</p>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<a href="AppHome.dc.html" class="v-sso" style="height: 44px; border: 1px solid #E7E8EC; border-radius: 8px; background: #FFFFFF; color: #16171A; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 550; font-size: 14.5px; text-decoration: none">
+<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4"></path><path d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853"></path><path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z" fill="#FBBC05"></path><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6 12 6z" fill="#EA4335"></path></svg>
+Continue with Google
+</a>
+<a href="AppHome.dc.html" class="v-sso" style="height: 44px; border: 1px solid #E7E8EC; border-radius: 8px; background: #FFFFFF; color: #16171A; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 550; font-size: 14.5px; text-decoration: none">
+<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 2h9.5v9.5H2z" fill="#F25022"></path><path d="M12.5 2H22v9.5h-9.5z" fill="#7FBA00"></path><path d="M2 12.5h9.5V22H2z" fill="#00A4EF"></path><path d="M12.5 12.5H22V22h-9.5z" fill="#FFB900"></path></svg>
+Continue with Microsoft
+</a>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; margin: 22px 0; color: #6B6F7B; font-size: 12.5px" aria-hidden="true"><span style="flex: 1; height: 1px; background: #E7E8EC"></span>or<span style="flex: 1; height: 1px; background: #E7E8EC"></span></div>
+<sc-if value="{{sent}}" hint-placeholder-val="{{ false }}">
+<div role="status" class="v-swap" style="display: flex; flex-direction: column; gap: 12px; align-items: stretch; text-align: center">
+<p style="margin: 0; font-size: 14px; color: #4B4F5C">Signed in as <b style="color: #16171A; font-weight: 600">{{email}}</b></p>
+<a href="AppHome.dc.html" style="height: 44px; border-radius: 8px; background: #16171A; color: #FFFFFF; font-weight: 550; display: flex; align-items: center; justify-content: center; text-decoration: none">Open your workspace →</a>
+</div>
+</sc-if>
+<sc-if value="{{notSent}}" hint-placeholder-val="{{ true }}">
+<form onSubmit="{{submit}}" novalidate style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="email" style="font-size: 13.5px; font-weight: 550">Work email</label>
+<input id="email" class="v-input" type="email" autocomplete="email" value="{{email}}" onInput="{{onEmail}}" placeholder="you@company.com" aria-invalid="{{invalid}}" aria-describedby="email-err" style="height: 44px; border: 1px solid {{inputBorder}}; border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 15px; color: #16171A; background: #FFFFFF; transition: border-color .15s, box-shadow .15s">
+<sc-if value="{{invalid}}" hint-placeholder-val="{{ false }}"><span id="email-err" role="alert" class="v-swap" style="font-size: 13px; color: #C92A2A">Enter a valid email address.</span></sc-if>
+</div>
+<button type="submit" class="v-submit" style="height: 44px; border: 0; border-radius: 8px; background: #16171A; color: #FFFFFF; font-weight: 550; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.12)">{{cta}}</button>
+</form>
+</sc-if>
+<p style="margin: 22px 0 0; text-align: center; font-size: 14px; color: #4B4F5C">{{switchPrompt}} <button type="button" onClick="{{toggleMode}}" style="border: 0; background: none; color: #3B5BFD; font-weight: 550; font-size: 14px; padding: 0">{{switchLabel}}</button></p>
+</main>
+<p style="margin: 24px 0 0; font-size: 12.5px; color: #6B6F7B; text-align: center; max-width: 360px">By continuing you agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { signup: false, email: '', invalid: false };
+  }
+  renderVals() {
+    const s = this.state;
+    return {
+      heading: s.signup ? 'Create your workspace' : 'Welcome back',
+      subheading: s.signup ? 'Free for up to 3 seats. No credit card.' : 'Sign in to your Vult workspace.',
+      cta: s.signup ? 'Create account' : 'Continue with email',
+      switchPrompt: s.signup ? 'Already have an account?' : 'New to Vult?',
+      switchLabel: s.signup ? 'Sign in' : 'Create an account',
+      toggleMode: () => this.setState({ signup: !s.signup, invalid: false }),
+      email: s.email,
+      sent: !!s.sent,
+      notSent: !s.sent,
+      invalid: s.invalid,
+      inputBorder: s.invalid ? '#C92A2A' : '#DCDFE6',
+      onEmail: (e) => this.setState({ email: e.target.value, invalid: false }),
+      submit: (e) => {
+        e.preventDefault();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email)) { this.setState({ invalid: true }); return; }
+        this.setState({ sent: true });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
