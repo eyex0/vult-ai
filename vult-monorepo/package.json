@@ -1,0 +1,24 @@
+{
+  "name": "vult-monorepo",
+  "private": true,
+  "version": "2.0.0",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @vult/database db:generate",
+    "db:push": "pnpm --filter @vult/database db:push",
+    "db:seed": "pnpm --filter @vult/database db:seed",
+    "web:dev": "pnpm --filter @vult/web dev",
+    "api:dev": "pnpm --filter @vult/api-server dev",
+    "worker:dev": "pnpm --filter @vult/ingestion-worker dev",
+    "ai:dev": "cd apps/ai-orchestrator && python3 -m uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "turbo": "^2.1.3",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+coverage
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log
+**/dist
+**/.turbo
+**/.venv
+**/__pycache__
+**/.pytest_cache
