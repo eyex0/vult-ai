@@ -4,6 +4,8 @@ import path from "node:path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  // VITE_BASE=./ builds a copy that works from any folder (used with VITE_ROUTER=hash for static previews).
+  base: process.env.VITE_BASE ?? "/",
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") } },
   build: {

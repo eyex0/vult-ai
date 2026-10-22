@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function LogoMark({ tone = "dark", size = 26, className }: { tone?: "dark" | "light"; size?: number; className?: string }) {
   return (
     <img
-      src={tone === "dark" ? "/brand/vult-logo-black.png" : "/brand/vult-logo-white.png"}
+      src={`${import.meta.env.BASE_URL}brand/vult-logo-${tone === "dark" ? "black" : "white"}.png`}
       alt=""
       width={size}
       height={size}

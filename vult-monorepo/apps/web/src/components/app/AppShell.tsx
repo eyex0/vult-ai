@@ -410,7 +410,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     <ThemeScope theme="dark">
       <PageMetaProvider>
         <div className="theme-dark flex h-dvh overflow-hidden bg-app font-sans text-[13.5px] text-app-text">
-          <a href="#app-main" className="sr-only-focusable fixed left-3 top-3 z-[100] rounded-md bg-white px-3 py-2 text-sm text-ink">
+          <a href="#app-main" onClick={(e) => {
+            e.preventDefault();
+            const m = document.getElementById("app-main");
+            m?.setAttribute("tabindex", "-1");
+            m?.focus();
+          }} className="sr-only-focusable fixed left-3 top-3 z-[100] rounded-md bg-white px-3 py-2 text-sm text-ink">
             Skip to content
           </a>
           <div className="hidden h-full min-[900px]:block">
