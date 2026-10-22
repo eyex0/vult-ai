@@ -3,7 +3,7 @@ import express, { type ErrorRequestHandler, type NextFunction, type Request, typ
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { z } from 'zod';
-import { prisma, withTenantContext } from '@vult/database';
+import { prisma, withTenantContext, type Prisma } from '@vult/database';
 import {
   requireWriteAccess,
   tenantIsolationMiddleware,
@@ -62,23 +62,17 @@ app.post('/api/v1/records', requireWriteAccess, asyncRoute(async (req, res) => {
     const unknownAttributes = Object.keys(parsed.data.attributes).filter((key) => !allowed.has(key));
     if (unknownAttributes.length) return { error: 'Unknown attributes', unknownAttributes } as const;
 
-    const values = [];
+    const values: Prisma.AttributeValueUncheckedCreateWithoutRecordInput[] = [];
     for (const attribute of objectType.attributes) {
       const value = parsed.data.attributes[attribute.slug];
       if (value === undefined || value === null) {
         if (attribute.isRequired) return { error: 'Required attribute missing', attribute: attribute.slug } as const;
         continue;
       }
-      const entry = {
+      // objectTypeId is derived from the parent record in this nested create.
+      const entry: Prisma.AttributeValueUncheckedCreateWithoutRecordInput = {
         tenantId: req.tenant.tenantId,
-        objectTypeId: objectType.id,
-        attributeId: attribute.id,
-        textValue: null as string | null,
-        numberValue: null as number | null,
-        decimalValue: null as string | null,
-        booleanValue: null as boolean | null,
-        dateValue: null as Date | null,
-        jsonValue: undefined as object | undefined
+        attributeId: attribute.id
       };
 
       switch (attribute.dataType) {
