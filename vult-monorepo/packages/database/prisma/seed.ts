@@ -72,7 +72,7 @@ async function main() {
     };
 
     await seedObject(companies.id, [
-      { name: 'Barilla S.p.A.', vat_number: '01654010345', industry: 'Food manufacturing' },
+      { name: 'Pastificio Aurora S.p.A.', vat_number: '12345678901', industry: 'Food manufacturing' },
       { name: 'Acme Logistica S.r.l.', vat_number: '09123450961', industry: 'Logistics' },
       { name: 'Nexa Systems S.p.A.', vat_number: '10456780962', industry: 'Software' }
     ]);
