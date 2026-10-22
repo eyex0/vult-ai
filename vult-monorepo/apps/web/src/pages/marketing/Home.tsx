@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { animate, AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Bot, Calendar, CreditCard, Database, FileSignature, FileText, Headphones, Mail, MessagesSquare, Phone, Plug, Video,
   Webhook, Workflow,
@@ -7,12 +7,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "wouter";
 import {
   AskList, AskReport, Board, CallWindow, ChatWindow, EmailSuggestion, FlowGraph, HeroApp, LineChart, Orbit, PersonRecord, RiskList, RoutedLeads,
-  Signals, StackedBars, TaskStack, TerminalWindow, CompaniesTable, QuotaList,
+  Signals, StackedBars, TaskStack, TerminalWindow, CompaniesTable, QuotaList, HERO_SCENES, type HeroScene,
 } from "@/components/marketing/mocks";
 import { GlowCTA, Reveal, RevealGroup, RevealItem, TwoTone } from "@/components/marketing/Section";
 import { Avatar } from "@/components/ui/Avatar";
 import { Eyebrow } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { EASE } from "@/lib/motion";
 import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
@@ -20,10 +21,46 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 /* ---------------------------------------------------------------- Hero */
 
+/** A floating window that comes forward when its scene is active. */
+function SideWindow({ active, className, children, from, delay }: { active: boolean; className: string; children: ReactNode; from: { x?: number; y?: number }; delay: number }) {
+  const reduce = useReducedMotion();
+  // The first appearance waits for the main window; later focus changes follow the scene immediately.
+  const [entered, setEntered] = useState(!!reduce);
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), (delay + 0.9) * 1000);
+    return () => clearTimeout(t);
+  }, [delay]);
+  const wait = entered ? 0 : delay;
+  return (
+    <motion.div
+      className={cn("absolute", className)}
+      style={{ zIndex: active ? 3 : 1 }}
+      initial={reduce ? false : { opacity: 0, ...from }}
+      animate={{ opacity: active ? 1 : 0.6, x: 0, y: 0, scale: active ? 1 : 0.97, filter: active ? "blur(0px)" : "blur(0.5px)" }}
+      transition={{
+        opacity: { duration: 0.5, ease: EASE.outCubic, delay: wait },
+        scale: { duration: 0.5, ease: EASE.outCubic, delay: wait },
+        filter: { duration: 0.5, delay: wait },
+        default: { duration: 0.9, ease: EASE.outCubic, delay },
+      }}
+    >
+      <div className={reduce ? undefined : "float-y"} style={{ animationDelay: `${delay * 2}s` }}>
+        {children}
+      </div>
+    </motion.div>
+  );
+}
+
 function Hero() {
   const reduce = useReducedMotion();
+  const [scene, setScene] = useState<HeroScene>("accounts");
+  useEffect(() => {
+    if (reduce) return;
+    const t = setInterval(() => setScene((s) => HERO_SCENES[(HERO_SCENES.indexOf(s) + 1) % HERO_SCENES.length]!), 5200);
+    return () => clearInterval(t);
+  }, [reduce]);
   const appear = (delay: number) =>
-    reduce ? {} : { initial: { opacity: 0, filter: "blur(2px)", y: 8 }, animate: { opacity: 1, filter: "blur(0px)", y: 0 }, transition: { duration: 0.7, ease, delay } };
+    reduce ? {} : { initial: { opacity: 0, filter: "blur(1.5px)", y: 8 }, animate: { opacity: 1, filter: "blur(0px)", y: 0 }, transition: { duration: 0.42, ease: EASE.outCubic, delay } };
   return (
     <section className="relative overflow-hidden bg-white">
       {/* Hatched blue backdrop that fades in behind the product windows. */}
@@ -57,37 +94,22 @@ function Hero() {
 
       <div className="relative mx-auto h-[clamp(420px,46vw,620px)] max-w-[1392px] px-6">
         <motion.div
-          className="absolute inset-x-[clamp(16px,13%,200px)] top-0"
-          initial={reduce ? false : { opacity: 0, scale: 0.98, y: 24 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1, ease, delay: 0.35 }}
+          className="absolute inset-x-[clamp(16px,13%,200px)] top-0 z-[2]"
+          initial={reduce ? false : { opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: EASE.outCubic, delay: 0.32 }}
         >
-          <HeroApp />
+          <HeroApp scene={scene} />
         </motion.div>
-        <motion.div
-          className="absolute left-6 top-[-24px] hidden xl:block"
-          initial={reduce ? false : { opacity: 0, x: -24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, ease, delay: 0.7 }}
-        >
+        <SideWindow active={scene === "accounts"} className="left-6 top-[-24px] hidden xl:block" from={{ x: -24 }} delay={0.6}>
           <ChatWindow />
-        </motion.div>
-        <motion.div
-          className="absolute right-6 top-[40px] hidden xl:block"
-          initial={reduce ? false : { opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, ease, delay: 0.85 }}
-        >
+        </SideWindow>
+        <SideWindow active={scene === "forecast"} className="right-6 top-[40px] hidden xl:block" from={{ x: 24 }} delay={0.72}>
           <CallWindow />
-        </motion.div>
-        <motion.div
-          className="absolute bottom-6 left-[clamp(24px,4%,64px)] hidden lg:block"
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease, delay: 1 }}
-        >
+        </SideWindow>
+        <SideWindow active={scene === "agent"} className="bottom-6 left-[clamp(24px,4%,64px)] hidden lg:block" from={{ y: 24 }} delay={0.84}>
           <TerminalWindow />
-        </motion.div>
+        </SideWindow>
       </div>
     </section>
   );
@@ -368,7 +390,7 @@ function Memory() {
           <h2 className="display mt-2 text-[clamp(52px,8vw,96px)] font-semibold leading-none tracking-[-0.024em]">Shared Memory</h2>
           <div aria-hidden className="relative mt-10 h-[clamp(160px,22vw,300px)] w-full overflow-hidden">
             <motion.div
-              className="absolute left-1/2 top-0 aspect-square w-[min(1200px,140%)] -translate-x-1/2 rounded-full p-[1.5px] [background:conic-gradient(from_200deg,transparent_0deg,#f59e0b_40deg,#ef4444_70deg,#8b5cf6_110deg,#266df0_150deg,#06b6d4_175deg,transparent_200deg)]"
+              className="arc-spin absolute left-1/2 top-0 aspect-square w-[min(1200px,140%)] -translate-x-1/2 rounded-full p-[1.5px]"
               initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -451,7 +473,7 @@ function Connectivity() {
       <div className="relative overflow-hidden pb-[clamp(90px,10vw,150px)] pt-8 [mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)]">
         <motion.div className="flex w-max gap-8" animate={reduce ? undefined : { x: ["0%", "-50%"] }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}>
           {[...TILES, ...TILES].map((Icon, i) => (
-            <span key={i} className="flex size-24 shrink-0 items-center justify-center rounded-[22px] border border-white/5 bg-[linear-gradient(180deg,#1f2023,#161618)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]">
+            <span key={i} style={{ animation: reduce ? undefined : `logo-in 0.6s cubic-bezier(0.33,1,0.68,1) ${0.05 * (i % TILES.length)}s both` }} className="flex size-24 shrink-0 items-center justify-center rounded-[22px] border border-white/5 bg-[linear-gradient(180deg,#1f2023,#161618)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]">
               <Icon aria-hidden className="size-8 text-[#c9cbd2]" strokeWidth={1.5} />
             </span>
           ))}
@@ -543,6 +565,30 @@ const STATS = [
   ["12M", "emails synced / day"],
 ];
 
+/** Counts a figure like "1.8B" or "52k" up from zero when it scrolls into view. */
+function CountUp({ value }: { value: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const seen = useInView(ref, { once: true, margin: "-60px" });
+  const reduce = useReducedMotion();
+  const m = /^([\d.]+)(.*)$/.exec(value);
+  const target = m ? Number(m[1]) : 0;
+  const decimals = m && m[1]!.includes(".") ? m[1]!.split(".")[1]!.length : 0;
+  const [shown, setShown] = useState(reduce ? target : 0);
+  useEffect(() => {
+    if (!seen || reduce) return;
+    const c = animate(0, target, { duration: 1.6, ease: EASE.outCubic, onUpdate: (v) => setShown(v) });
+    return () => c.stop();
+  }, [seen, reduce, target]);
+  return (
+    <span ref={ref} aria-label={value}>
+      <span aria-hidden>
+        {shown.toFixed(decimals)}
+        {m?.[2]}
+      </span>
+    </span>
+  );
+}
+
 function Scale() {
   const W = 1000;
   const H = 520;
@@ -564,7 +610,9 @@ function Scale() {
               <path d={`${d} L ${W} ${H} L 0 ${H} Z`} />
             </clipPath>
           </defs>
-          <rect width={W} height={H} fill="url(#scale-lines)" clipPath="url(#under-curve)" />
+          <motion.g initial={{ clipPath: "inset(0 100% 0 0)" }} whileInView={{ clipPath: "inset(0 0% 0 0)" }} viewport={{ once: true }} transition={{ duration: 2, ease: EASE.reveal }}>
+            <rect width={W} height={H} fill="url(#scale-lines)" clipPath="url(#under-curve)" />
+          </motion.g>
           <motion.path d={d} fill="none" stroke="#266df0" strokeWidth="2" vectorEffect="non-scaling-stroke" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 2, ease }} />
         </svg>
         <Reveal className="relative flex flex-col gap-10 px-[clamp(20px,4vw,58px)] py-[clamp(72px,9vw,130px)]">
@@ -580,7 +628,9 @@ function Scale() {
             {STATS.map(([v, l]) => (
               <div key={l} className="border-l-2 border-accent pl-5">
                 <dt className="sr-only">{l}</dt>
-                <dd className="display text-[30px] font-medium leading-none tracking-[-0.01em]">{v}</dd>
+                <dd className="display tabular text-[30px] font-medium leading-none tracking-[-0.01em]">
+                  <CountUp value={v} />
+                </dd>
                 <dd className="mt-1.5 text-[14px] text-ink-2">{l}</dd>
               </div>
             ))}

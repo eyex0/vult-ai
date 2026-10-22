@@ -4,9 +4,18 @@ export const spring: Transition = { type: "spring", stiffness: 380, damping: 30,
 export const softSpring: Transition = { type: "spring", stiffness: 220, damping: 26 };
 export const easeOut: Transition = { duration: 0.6, ease: [0.16, 1, 0.3, 1] };
 
+/* Easing curves used across the marketing site (match the reference design language). */
+export const EASE = {
+  outCubic: [0.33, 1, 0.68, 1] as const,
+  inOutCubic: [0.65, 0, 0.35, 1] as const,
+  reveal: [0, 0, 0.58, 1] as const,
+  emphasized: [0.2, 0, 0, 1] as const,
+};
+
+/** Scroll/entrance reveal: a short, subtle rise out of a light blur. */
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
-  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 8, filter: "blur(1.5px)" },
+  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.42, ease: EASE.outCubic } },
 };
 
 export const stagger = (step = 0.06, delay = 0): Variants => ({
