@@ -13,7 +13,7 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-primary text-primary-fg hover:bg-primary-hover shadow-[0_1px_2px_rgb(0_0_0/0.2),inset_0_1px_0_rgb(255_255_255/0.12)]",
+    "border border-[#505663] bg-primary text-primary-fg hover:bg-primary-hover shadow-[0_1px_2px_rgb(0_0_0/0.2),inset_0_1px_0_rgb(255_255_255/0.12)] [.theme-dark_&]:border-transparent",
   secondary: "border border-border-strong bg-surface text-fg hover:bg-surface-hover shadow-[0_1px_2px_rgb(16_17_26/0.05)]",
   ghost: "text-fg-2 hover:bg-surface-hover hover:text-fg",
   accent: "bg-accent text-white hover:bg-accent-ink shadow-[0_1px_2px_rgb(0_0_0/0.2),inset_0_1px_0_rgb(255_255_255/0.15)]",
@@ -24,8 +24,8 @@ const variants: Record<Variant, string> = {
 
 const sizes: Record<Size, string> = {
   sm: "h-8 rounded-[7px] px-3 text-[13px]",
-  md: "h-9 rounded-btn px-3.5 text-sm",
-  lg: "h-11 rounded-btn px-[18px] text-[15px]",
+  md: "h-9 rounded-[10px] px-3 text-sm font-medium",
+  lg: "h-10 rounded-[10px] px-4 text-[15px] font-medium",
   icon: "size-9 rounded-btn",
   "icon-sm": "size-8 rounded-[7px]",
 };

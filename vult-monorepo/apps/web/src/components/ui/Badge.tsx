@@ -47,8 +47,8 @@ export function Eyebrow({ children, dark, className }: { children: React.ReactNo
   return (
     <span
       className={cn(
-        "inline-flex h-6 items-center rounded-md px-[7px] text-[13.5px] font-medium",
-        dark ? "bg-[rgb(59_91_253/0.22)] text-[#b4c2ff]" : "bg-accent-soft text-accent-ink",
+        "inline-flex h-6 items-center rounded-[6px] px-1.5 text-[14px] font-medium tracking-[-0.01em]",
+        dark ? "bg-[rgb(38_109_240/0.22)] text-[#b9cdff]" : "bg-accent-soft text-accent-ink",
         className,
       )}
     >

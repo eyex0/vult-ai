@@ -1,683 +1,744 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  Bot, Calendar, ChevronLeft, ChevronRight, CreditCard, Database, FileSignature, FileText, Headphones,
-  Lock, Mail, MessagesSquare, Phone, ShieldCheck, Video, Webhook, Workflow,
+  ArrowRight, ArrowUpRight, Bot, Calendar, CreditCard, Database, FileSignature, FileText, Headphones, Mail, MessagesSquare, Phone, Plug, Video,
+  Webhook, Workflow,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "wouter";
-import { GlowCTA, Reveal, RevealGroup, RevealItem, SectionIntro, TwoTone } from "@/components/marketing/Section";
-import { ProductWindow } from "@/components/marketing/ProductWindow";
+import {
+  AskList, AskReport, Board, CallWindow, ChatWindow, EmailSuggestion, FlowGraph, HeroApp, LineChart, Orbit, PersonRecord, RiskList, RoutedLeads,
+  Signals, StackedBars, TaskStack, TerminalWindow, CompaniesTable, QuotaList,
+} from "@/components/marketing/mocks";
+import { GlowCTA, Reveal, RevealGroup, RevealItem, TwoTone } from "@/components/marketing/Section";
 import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Badge";
-import { spring } from "@/lib/motion";
+import { Button } from "@/components/ui/Button";
 import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
-const LOGOS: { name: string; shape: string; style: string }[] = [
-  { name: "kelvra", shape: "rotate-45 bg-current", style: "font-bold tracking-[-0.04em]" },
-  { name: "ORTIQ", shape: "rounded-full border-[2.5px] border-current", style: "font-semibold tracking-[0.08em]" },
-  { name: "Solvane", shape: "rounded-md bg-current", style: "font-medium tracking-[-0.02em]" },
-  { name: "Maplewing", shape: "rounded-[50%_0_50%_50%] border-[2.5px] border-current", style: "font-bold italic tracking-[-0.03em]" },
-  { name: "halbrook", shape: "rounded-full bg-current", style: "font-semibold tracking-[-0.03em]" },
-  { name: "nodeline", shape: "rotate-45 rounded-sm border-[2.5px] border-current", style: "font-medium" },
-  { name: "Brightvale", shape: "rounded-[50%_50%_0_50%] bg-current", style: "font-semibold tracking-[-0.035em]" },
-  { name: "COBALT&FINCH", shape: "border-[2.5px] border-current", style: "font-bold tracking-[0.02em]" },
-  { name: "Tessaro", shape: "rounded-full border-[2.5px] border-current", style: "font-normal tracking-[-0.02em]" },
-  { name: "wendell", shape: "rounded-[6px_0] bg-current", style: "font-bold tracking-[-0.05em]" },
-];
+const ease = [0.16, 1, 0.3, 1] as const;
 
-const STATS = [
-  ["3.2×", "faster pipeline reviews"],
-  ["11 hrs", "saved per rep, per week"],
-  ["99.99%", "uptime over the last year"],
-  ["< 5 min", "from import to first report"],
-];
-
-const AGENTS = [
-  {
-    title: "Research accounts",
-    desc: "Reads the record, the inbox and the open web, then writes a brief your rep can act on.",
-    name: "Account research agent",
-    meta: "Running on Solvane · started 12s ago",
-    steps: [
-      ["Read the Solvane company record", "14 fields · 3 open deals · last touch 6 days ago"],
-      ["Researched recent news", "New Head of RevOps and an EU office opening"],
-      ["Scored account fit", "ICP match 92 — moved to Tier 1"],
-      ["Drafted a follow-up email", "Personalised to the new hire · waiting for your review"],
-      ["Created a task for Jun Park", "Call before Thursday · linked to “Data warehouse sync”"],
-    ],
-  },
-  {
-    title: "Qualify inbound",
-    desc: "Scores every form fill against your ideal customer profile and routes the good ones in seconds.",
-    name: "Inbound qualifier",
-    meta: "Triggered by a demo request · 3s ago",
-    steps: [
-      ["Matched the lead to Brightvale", "Existing company · 2 known contacts"],
-      ["Enriched the contact", "Director of Operations · 9 years in role"],
-      ["Checked buying signals", "Pricing page visited 4 times this week"],
-      ["Assigned to Theo Lindqvist", "Round-robin · EMEA mid-market"],
-      ["Suggested meeting times", "Sent two slots for Wednesday"],
-    ],
-  },
-  {
-    title: "Keep deals moving",
-    desc: "Spots stalled deals, summarises what changed and proposes the next step.",
-    name: "Pipeline guardian",
-    meta: "Weekly run · 25 open deals checked",
-    steps: [
-      ["Scanned open pipeline", "25 deals · $1.2M weighted"],
-      ["Flagged 3 stalled deals", "No reply in 10+ days"],
-      ["Summarised the Halbrook thread", "Legal review pending on the DPA"],
-      ["Proposed next steps", "Loop in their counsel · share security pack"],
-      ["Posted a digest to #sales", "With links to every record"],
-    ],
-  },
-];
-
-const FLOW = [
-  { kind: "Trigger", title: "Deal stage changes to Won", glyph: "T", cls: "bg-accent-soft text-accent-ink" },
-  { kind: "Condition", title: "Value is over $50,000", glyph: "IF", cls: "bg-warning-soft text-warning" },
-  { kind: "Agent", title: "Draft a kickoff plan", glyph: "AI", cls: "bg-ink text-white" },
-  { kind: "Action", title: "Notify #wins, create onboarding task", glyph: "A", cls: "bg-success-soft text-success" },
-];
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
-const VALUES = [38, 44, 41, 52, 58, 55, 66, 72, 80, 92];
-
-const INTEGRATIONS = [
-  [Mail, "Email", "Two-way sync", "#3b5bfd"],
-  [Calendar, "Calendar", "Meetings", "#16a34a"],
-  [MessagesSquare, "Team chat", "Alerts", "#7048e8"],
-  [Video, "Video calls", "Call notes", "#0b7285"],
-  [CreditCard, "Billing", "Invoices & MRR", "#d9480f"],
-  [Database, "Warehouse", "Data sync", "#16171a"],
-  [FileText, "Forms", "Inbound leads", "#c2255c"],
-  [Headphones, "Support desk", "Tickets", "#4c6ef5"],
-  [Phone, "Telephony", "Dialer", "#2f9e44"],
-  [FileSignature, "E-signature", "Contracts", "#b35c00"],
-  [Webhook, "Webhooks", "Custom events", "#495057"],
-  [Workflow, "REST API", "Build anything", "#3b5bfd"],
-] as const;
-
-const TESTIMONIALS = [
-  { quote: "We replaced three tools and a weekly spreadsheet ritual. Our reps now open Vult before they open their inbox.", name: "Priya Venkataraman", role: "VP Sales, Kelvra" },
-  { quote: "The research agent does in two minutes what used to take an SDR half a morning — and it cites every source.", name: "Marcus Oyelaran", role: "Head of Growth, Ortiq" },
-  { quote: "Custom objects let us model investors, funds and portfolio companies without a single workaround.", name: "Elena Brandt", role: "Partner, Halbrook Capital" },
-];
-
-const SECURITY = [
-  ["SOC 2 Type II", "Audited annually"],
-  ["GDPR ready", "EU data residency"],
-  ["SSO & SCIM", "SAML provisioning"],
-  ["Audit logs", "Every change, streamed"],
-];
+/* ---------------------------------------------------------------- Hero */
 
 function Hero() {
-  const words = ["The", "CRM", "that", "thinks", "\n", "ahead", "of", "your", "team."];
+  const reduce = useReducedMotion();
+  const appear = (delay: number) =>
+    reduce ? {} : { initial: { opacity: 0, filter: "blur(2px)", y: 8 }, animate: { opacity: 1, filter: "blur(0px)", y: 0 }, transition: { duration: 0.7, ease, delay } };
   return (
-    <section className="hatch relative px-[clamp(12px,7vw,120px)] pt-[clamp(96px,11vw,150px)]">
-      <div className="relative bg-white px-5 text-center">
-        <div className="absolute left-1/2 top-0 z-[2] -translate-x-1/2 -translate-y-1/2">
+    <section className="relative overflow-hidden bg-white">
+      {/* Hatched blue backdrop that fades in behind the product windows. */}
+      <div aria-hidden className="vlines absolute inset-x-0 bottom-0 top-[42%] [mask-image:linear-gradient(to_bottom,transparent,#000_45%)]" />
+      <div aria-hidden className="absolute inset-x-0 bottom-0 top-[42%] bg-[linear-gradient(to_bottom,transparent,rgb(198_212_255/0.55)_55%,rgb(160_182_255/0.75))]" />
+      <div className="relative mx-auto flex max-w-[980px] flex-col items-center gap-9 px-5 pb-16 pt-[clamp(72px,10vw,124px)] text-center">
+        <motion.div {...appear(0)}>
           <Link
             href="/platform/agents"
-            className="group inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full border border-[#dcdfe6] bg-white pl-1 pr-3 text-[13.5px] text-ink shadow-soft transition-colors hover:bg-soft"
+            className="group inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-white px-3 text-[14px] text-ink shadow-[0_1px_2px_rgb(16_17_26/0.05)] transition-colors hover:bg-soft"
           >
-            <span className="rounded-full bg-accent-soft px-2 py-0.5 text-xs font-semibold text-accent-ink">New</span>
             How agents run a week of prospecting
-            <ChevronRight aria-hidden className="size-3 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight aria-hidden className="size-3 text-subtle transition-transform group-hover:translate-x-0.5" />
           </Link>
-        </div>
-        <div className="mx-auto flex max-w-[980px] flex-col items-center gap-[22px] pt-11">
-          <h1 aria-label="The CRM that thinks ahead of your team." className="text-[clamp(40px,6.6vw,76px)] font-semibold leading-[1.04] tracking-[-0.045em]">
-            {words.map((w, i) =>
-              w === "\n" ? (
-                <br key={i} />
-              ) : (
-                <motion.span
-                  key={i}
-                  aria-hidden
-                  className="inline-block"
-                  initial={{ opacity: 0, y: "0.5em", filter: "blur(10px)", rotate: 2 }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: 0 }}
-                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 + i * 0.05 }}
-                >
-                  {w}
-                  {i < words.length - 1 && words[i + 1] !== "\n" ? " " : ""}
-                </motion.span>
-              ),
-            )}
-          </h1>
-          <motion.div
-            className="flex flex-col items-center gap-[22px]"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
-          >
-            <p className="max-w-[470px] text-[19px] leading-[1.4] text-subtle">
-              Vult fills itself in from every email and meeting, then puts agents on the busywork — so reps spend the day selling.
-            </p>
-            <div className="flex flex-wrap justify-center gap-2.5">
-              <Button href="/contact" variant="secondary" size="lg">
-                Talk to sales
-              </Button>
-              <Button href="/signup" size="lg" arrow>
-                Start for free
-              </Button>
-            </div>
-            <p className="text-[13px] text-subtle">Free for up to 3 seats · No credit card required</p>
-          </motion.div>
-        </div>
+        </motion.div>
+        <motion.h1 {...appear(0.08)} className="display text-balance text-[clamp(44px,6.4vw,76px)] font-semibold leading-[0.95] tracking-[-0.02em]">
+          Revenue that runs itself.
+        </motion.h1>
+        <motion.p {...appear(0.16)} className="max-w-[460px] text-[18px] leading-[1.4] text-subtle">
+          Vult is the AI-native CRM that fills itself in, finds the next deal and follows up — around the clock.
+        </motion.p>
+        <motion.div {...appear(0.24)} className="flex flex-wrap justify-center gap-2.5">
+          <Button href="/contact" variant="secondary" size="md">
+            Talk to sales
+          </Button>
+          <Button href="/signup" size="md">
+            Start for free
+          </Button>
+        </motion.div>
+      </div>
+
+      <div className="relative mx-auto h-[clamp(420px,46vw,620px)] max-w-[1392px] px-6">
         <motion.div
-          id="demo"
-          className="relative mx-auto mt-[72px] max-w-[1160px] text-left [perspective:1600px]"
-          initial={{ opacity: 0.3, rotateX: 24, scale: 0.9, y: 40 }}
-          animate={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-          style={{ transformOrigin: "50% 0" }}
+          className="absolute inset-x-[clamp(16px,13%,200px)] top-0"
+          initial={reduce ? false : { opacity: 0, scale: 0.98, y: 24 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, ease, delay: 0.35 }}
         >
-          <ProductWindow />
+          <HeroApp />
+        </motion.div>
+        <motion.div
+          className="absolute left-6 top-[-24px] hidden xl:block"
+          initial={reduce ? false : { opacity: 0, x: -24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.9, ease, delay: 0.7 }}
+        >
+          <ChatWindow />
+        </motion.div>
+        <motion.div
+          className="absolute right-6 top-[40px] hidden xl:block"
+          initial={reduce ? false : { opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.9, ease, delay: 0.85 }}
+        >
+          <CallWindow />
+        </motion.div>
+        <motion.div
+          className="absolute bottom-6 left-[clamp(24px,4%,64px)] hidden lg:block"
+          initial={reduce ? false : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease, delay: 1 }}
+        >
+          <TerminalWindow />
         </motion.div>
       </div>
     </section>
   );
 }
 
+/* ---------------------------------------------------------------- Logos */
+
+const LOGOS: { name: string; shape: string; style: string; story?: boolean }[] = [
+  { name: "kelvra", shape: "rotate-45 bg-current", style: "font-bold tracking-[-0.04em]", story: true },
+  { name: "ORTIQ", shape: "rounded-full border-[2.5px] border-current", style: "font-semibold tracking-[0.08em]" },
+  { name: "Solvane", shape: "rounded-md bg-current", style: "font-medium tracking-[-0.02em]", story: true },
+  { name: "Maplewing", shape: "rounded-[50%_0_50%_50%] border-[2.5px] border-current", style: "font-bold italic tracking-[-0.03em]" },
+  { name: "halbrook", shape: "rounded-full bg-current", style: "font-semibold tracking-[-0.03em]", story: true },
+  { name: "nodeline", shape: "rotate-45 rounded-sm border-[2.5px] border-current", style: "font-medium", story: true },
+  { name: "Brightvale", shape: "rounded-[50%_50%_0_50%] bg-current", style: "font-semibold tracking-[-0.035em]" },
+  { name: "COBALT&FINCH", shape: "border-[2.5px] border-current", style: "font-bold tracking-[0.02em]", story: true },
+  { name: "Tessaro", shape: "rounded-full border-[2.5px] border-current", style: "font-normal tracking-[-0.02em]" },
+  { name: "wendell", shape: "rounded-[6px_0] bg-current", style: "font-bold tracking-[-0.05em]" },
+];
+
 function LogoGrid() {
   return (
     <section aria-label="Teams using Vult" className="border-y border-line bg-soft">
       <RevealGroup step={0.04} className="rail grid grid-cols-2 gap-px bg-line sm:grid-cols-3 lg:grid-cols-5">
-        {LOGOS.map((l) => (
-          <RevealItem key={l.name} className="group flex h-[100px] items-center justify-center gap-2.5 bg-soft text-[#2a2c31] transition-colors hover:bg-white">
-            <span aria-hidden className={cn("size-[22px] transition-transform duration-500 ease-[var(--ease-spring)] group-hover:scale-110 group-hover:-rotate-12", l.shape)} />
-            <span className={cn("text-xl", l.style)}>{l.name}</span>
-          </RevealItem>
-        ))}
+        {LOGOS.map((l) => {
+          const inner = (
+            <>
+              <span aria-hidden className={cn("size-[20px] transition-transform duration-500 ease-[var(--ease-spring)] group-hover:scale-110", l.shape)} />
+              <span className={cn("text-[19px]", l.style)}>{l.name}</span>
+              {l.story && <ArrowUpRight aria-hidden className="absolute right-3 top-3 size-3.5 text-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />}
+            </>
+          );
+          const cls = "group relative flex h-24 items-center justify-center gap-2.5 bg-soft text-[#2a2c31] transition-colors hover:bg-white";
+          return (
+            <RevealItem key={l.name} className="contents">
+              {l.story ? (
+                <Link href="/customers" className={cls} aria-label={`${l.name} customer story`}>
+                  {inner}
+                </Link>
+              ) : (
+                <div className={cls}>{inner}</div>
+              )}
+            </RevealItem>
+          );
+        })}
       </RevealGroup>
-      <p className="sr-only">Placeholder logos of fictional companies.</p>
     </section>
   );
 }
 
-function PlatformIntro() {
+/* ---------------------------------------------------------------- Platform use cases */
+
+interface UseCase {
+  id: string;
+  label: string;
+  lead: string;
+  rest: string;
+  band: ReactNode;
+  cells: { title: string; copy: string; mock: ReactNode }[];
+}
+
+const USE_CASES: UseCase[] = [
+  {
+    id: "pipeline",
+    label: "Build pipeline",
+    lead: "Your team, amplified.",
+    rest: "Agents find the accounts that are ready to buy and start the conversation for you.",
+    band: (
+      <div className="relative">
+        <div className="max-w-[720px] overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+          <CompaniesTable rows={6} />
+        </div>
+        <div className="absolute -right-4 top-10 hidden xl:block">
+          <EmailSuggestion />
+        </div>
+      </div>
+    ),
+    cells: [
+      { title: "Free your reps to sell.", copy: "Agents handle the research and the busywork. Reps spend their day where deals are won.", mock: <AskList /> },
+      { title: "Know who to call, and why.", copy: "Every account is enriched and scored, so reps know exactly when to reach out.", mock: <Orbit /> },
+    ],
+  },
+  {
+    id: "convert",
+    label: "Convert leads",
+    lead: "Speed to lead, every time.",
+    rest: "New leads are researched, scored and routed to the right rep before they cool off.",
+    band: <FlowGraph />,
+    cells: [
+      { title: "Inbound, qualified in seconds.", copy: "Score every form fill against your ideal customer profile and route the good ones instantly.", mock: <RoutedLeads /> },
+      { title: "No more dropped hand-offs.", copy: "Every hand-off arrives with context, a task and a due date.", mock: <TaskStack /> },
+    ],
+  },
+  {
+    id: "motions",
+    label: "Run sales motions",
+    lead: "Run every motion, your way.",
+    rest: "A pipeline built for how you sell, while agents prep the meetings and keep deals moving.",
+    band: <Board />,
+    cells: [
+      { title: "See what changed in the deal.", copy: "New stakeholders, competitor mentions and stalls, surfaced before your next call.", mock: <StackedBars /> },
+      { title: "Skip the review scramble.", copy: "Walk into pipeline review with risks already mapped and next steps drafted.", mock: <RiskList /> },
+    ],
+  },
+  {
+    id: "forecast",
+    label: "Forecast revenue",
+    lead: "For the people who own the number.",
+    rest: "Ask any revenue question and get the answer — with the records behind it — in seconds.",
+    band: (
+      <div className="w-full max-w-[720px]">
+        <AskReport />
+      </div>
+    ),
+    cells: [
+      { title: "A forecast you can defend.", copy: "Stage-weighted, rep-by-rep and updated the moment a deal moves.", mock: <LineChart title="Forecast vs. target" series={[[30, 34, 38, 41, 46, 52, 57, 63], [32, 36, 40, 44, 48, 52, 56, 60]]} /> },
+      { title: "Every rep, one view.", copy: "Quota attainment and coverage side by side, without exporting a thing.", mock: <QuotaList /> },
+    ],
+  },
+  {
+    id: "retain",
+    label: "Retain and expand",
+    lead: "Keep more. Grow more.",
+    rest: "Agents watch your whole book, so you save what's slipping and grow what's rising.",
+    band: (
+      <div className="grid w-full max-w-[760px] gap-4 sm:grid-cols-2">
+        <LineChart />
+        <RiskList />
+      </div>
+    ),
+    cells: [
+      { title: "Spot the shift early.", copy: "Role changes, new funding and usage drops show up weeks before renewal.", mock: <Signals /> },
+      {
+        title: "The next move, drafted.",
+        copy: "Saves, upsells and renewals arrive as ready-to-send plays for you to approve.",
+        mock: <EmailSuggestion to="Jun Park" subject="Ready to add more seats?" body="Usage at Halbrook grew 42% this month and the team is near its seat limit. Offer an upgrade before the renewal call." />,
+      },
+    ],
+  },
+];
+
+function UseCaseNav({ active, onPick }: { active: string; onPick: (id: string) => void }) {
+  return (
+    <nav aria-label="Use cases" className="sticky top-[100px] hidden flex-col gap-1 py-[120px] lg:flex">
+      {USE_CASES.map((u) => (
+        <button
+          key={u.id}
+          type="button"
+          onClick={() => onPick(u.id)}
+          aria-current={active === u.id ? "true" : undefined}
+          className={cn("relative py-1.5 pl-[58px] text-left text-[18px] font-medium transition-colors", active === u.id ? "text-ink" : "text-[#b6bac3] hover:text-ink-2")}
+        >
+          {active === u.id && <motion.span layoutId="usecase-bar" className="absolute inset-y-1 left-0 w-0.5 rounded-full bg-accent" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
+          {u.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+function UseCaseBlock({ u }: { u: UseCase }) {
+  return (
+    <div id={`uc-${u.id}`} data-usecase={u.id} className="scroll-mt-[100px] border-b border-line last:border-b-0">
+      <div className="px-[clamp(20px,4vw,58px)] py-[clamp(56px,7vw,110px)]">
+        <p className="mb-4 text-[14px] font-medium text-accent lg:hidden">{u.label}</p>
+        <Reveal>
+          <TwoTone lead={u.lead} rest={u.rest} as="h3" className="max-w-[560px] text-[clamp(22px,2.2vw,26px)] leading-[1.25]" />
+        </Reveal>
+      </div>
+      <div className="flex justify-center overflow-hidden border-y border-line bg-soft-2 px-[clamp(16px,4vw,58px)] py-[clamp(32px,5vw,64px)]">
+        <Reveal className="w-full max-w-[860px]">{u.band}</Reveal>
+      </div>
+      <div className="grid md:grid-cols-2">
+        {u.cells.map((c, i) => (
+          <div key={c.title} className={cn("flex flex-col gap-8 px-[clamp(20px,3vw,32px)] py-12", i === 0 && "md:border-r", "border-line max-md:border-b")}>
+            <Reveal>
+              <h4 className="text-[18px] font-medium text-ink">{c.title}</h4>
+              <p className="mt-1 max-w-[340px] text-[16px] leading-[1.4] text-tone">{c.copy}</p>
+            </Reveal>
+            <Reveal delay={0.1} className="flex min-h-[220px] items-center justify-center">
+              {c.mock}
+            </Reveal>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Platform() {
+  const [active, setActive] = useState(USE_CASES[0]!.id);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const els = ref.current?.querySelectorAll<HTMLElement>("[data-usecase]");
+    if (!els?.length) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (hit) setActive((hit.target as HTMLElement).dataset.usecase!);
+      },
+      { rootMargin: "-48% 0px -48% 0px" },
+    );
+    els.forEach((e) => obs.observe(e));
+    return () => obs.disconnect();
+  }, []);
+
+  const pick = (id: string) => document.getElementById(`uc-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
   return (
     <section className="bg-soft">
-      <div className="rail px-[clamp(20px,5vw,60px)] pb-[clamp(48px,6vw,80px)] pt-[clamp(64px,9vw,120px)]">
-        <SectionIntro
-          eyebrow="Platform"
-          lead="The system of record that keeps itself current."
-          rest="Every email logged. Every contact enriched. Every deal scored before your Monday standup."
-        />
+      <div className="rail px-[clamp(20px,4vw,58px)] pb-16 pt-[clamp(80px,10vw,150px)]">
+        <Reveal className="flex flex-col gap-5">
+          <Eyebrow className="self-start">Platform</Eyebrow>
+          <h2 className="display max-w-[900px] text-[clamp(32px,3.2vw,40px)] font-medium leading-[1.1] tracking-[-0.01em]">
+            <span className="text-ink">The CRM that never clocks off.</span>
+            <br />
+            <span className="text-tone">Works the leads at 2am. Flags the renewal before it slips.</span>
+          </h2>
+        </Reveal>
       </div>
-      <RevealGroup className="rail grid grid-cols-1 gap-px border-t border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map(([v, l]) => (
-          <RevealItem key={l} className="flex flex-col gap-1.5 bg-soft px-[clamp(20px,3vw,32px)] py-7">
-            <span className="text-[40px] font-[550] leading-none tracking-[-0.045em]">{v}</span>
-            <span className="text-sm text-ink-2">{l}</span>
-          </RevealItem>
-        ))}
-      </RevealGroup>
+      <div ref={ref} className="rail grid border-t border-line lg:grid-cols-[348px_1fr]">
+        <div className="hidden border-r border-line lg:block">
+          <UseCaseNav active={active} onPick={pick} />
+        </div>
+        <div className="min-w-0 bg-white">
+          {USE_CASES.map((u) => (
+            <UseCaseBlock key={u.id} u={u} />
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
 
-function BentoCell({ lead, rest, children, className }: { lead: string; rest: string; children: React.ReactNode; className?: string }) {
-  return (
-    <RevealItem className={cn("group flex min-w-0 flex-col gap-6 bg-white p-8 transition-colors hover:bg-[#fbfbfc]", className)}>
-      <TwoTone as="h3" lead={lead} rest={rest} className="text-[19px] leading-[1.35] tracking-[-0.025em]" />
-      <div className="transition-transform duration-500 ease-[var(--ease-spring)] group-hover:-translate-y-1">{children}</div>
-    </RevealItem>
-  );
-}
+/* ---------------------------------------------------------------- Self-building */
 
-function Bento() {
+function SelfBuilding() {
   return (
-    <section className="border-y border-line bg-soft">
-      <RevealGroup className="rail grid grid-cols-1 gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
-        <BentoCell lead="Flexible data model." rest="Custom objects, typed fields and relationships for how your business actually works." className="md:col-span-2 lg:col-span-2">
-          <div className="dot-grid flex min-h-[220px] flex-wrap items-center justify-center gap-3.5 rounded-xl border border-line bg-soft-2 p-6">
-            {[
-              ["Company", "#3b5bfd", ["Domain · text", "ARR · currency", "Segment · select"]],
-              ["Deal", "#f2994a", ["Value · currency", "Stage · status", "Company · relation"]],
-            ].map(([t, c, fields], i) => (
-              <div key={t as string} className="contents">
-                {i > 0 && <span aria-hidden className="w-9 border-t-[1.5px] border-dashed border-[#a9acb6]" />}
-                <div className="w-[170px] rounded-xl border border-line bg-white shadow-soft">
-                  <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[13px] font-semibold">
-                    <span className="size-3.5 rounded" style={{ background: c as string }} /> {t as string}
-                  </div>
-                  <div className="flex flex-col gap-1 px-3 py-2 text-xs text-ink-2">
-                    {(fields as string[]).map((f) => (
-                      <span key={f}>{f}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-            <span aria-hidden className="w-9 border-t-[1.5px] border-dashed border-[#a9acb6]" />
-            <div className="w-[170px] rounded-xl border-[1.5px] border-dashed border-[#a9acb6] bg-white p-3.5 text-center text-xs text-subtle">
-              + New object
-              <br />
-              <span className="font-semibold text-ink">Partner</span>
-            </div>
-          </div>
-        </BentoCell>
-        <BentoCell lead="Automatic enrichment." rest="Add a domain. Vult fills in the rest.">
-          <div className="flex flex-col gap-2.5 rounded-xl border border-line bg-white p-3.5 text-[13px] shadow-soft">
-            <div className="flex items-center gap-2.5">
-              <Avatar name="Halbrook" square size={32} className="!bg-ink" />
-              <span className="flex flex-col">
-                <b className="font-semibold">Halbrook</b>
-                <span className="text-xs text-subtle">halbrook.example</span>
-              </span>
-              <span className="ml-auto rounded-md bg-accent-soft px-1.5 py-0.5 text-[11px] font-semibold text-accent-ink">Enriched</span>
-            </div>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-3.5 gap-y-1.5 text-ink-2">
-              {[
-                ["Industry", "Logistics software"],
-                ["Employees", "201–500"],
-                ["HQ", "Rotterdam, NL"],
-                ["Funding", "Series B"],
-              ].map(([k, v]) => (
-                <div key={k} className="contents">
-                  <dt className="text-subtle">{k}</dt>
-                  <dd>{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </BentoCell>
-        <BentoCell lead="Live reporting." rest="Pipeline and forecast, built from records as they change.">
-          <div aria-hidden className="flex h-[130px] items-end gap-2 border-b border-line px-1">
-            {[40, 62, 48, 75, 58, 84, 70, 96].map((h, i) => (
-              <motion.span
-                key={i}
-                className="flex-1 origin-bottom rounded-t-[5px]"
-                style={{ height: `${h}%`, background: ["#dde3ff", "#c9d3ff", "#b3c1ff", "#9aadff", "#8199ff", "#6b86ff", "#5672fe", "#3b5bfd"][i] }}
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
-              />
-            ))}
-          </div>
-        </BentoCell>
-        <BentoCell lead="Email & calendar sync." rest="Every thread and meeting, on the right record.">
-          <div className="flex flex-col gap-2 text-[13px]">
-            {[
-              ["Kelvra · Pricing review", "10:30 – 11:00 · 3 attendees", "#3b5bfd"],
-              ["Re: Security questionnaire", "Ortiq · 4 messages · 2h ago", "#f2994a"],
-            ].map(([t, m, c]) => (
-              <div key={t} className="flex items-center gap-2.5 rounded-[10px] border border-line px-3 py-2.5">
-                <span className="w-[3px] self-stretch rounded-sm" style={{ background: c }} />
-                <span className="flex flex-col">
-                  <b className="font-semibold">{t}</b>
-                  <span className="text-xs text-subtle">{m}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </BentoCell>
-        <BentoCell lead="Granular permissions." rest="Who sees, edits and exports — down to the field.">
-          <div className="flex flex-col rounded-xl border border-line text-[13px]">
-            {[
-              ["Admins", "Full access"],
-              ["Sales", "Read & write"],
-              ["Contractors", "Read only · no export"],
-            ].map(([a, b], i) => (
-              <div key={a} className={cn("flex justify-between px-3 py-2.5", i < 2 && "border-b border-line")}>
-                <span>{a}</span>
-                <span className="text-ink-2">{b}</span>
-              </div>
-            ))}
-          </div>
-        </BentoCell>
-      </RevealGroup>
+    <section className="border-t border-line bg-white">
+      <div className="rail flex flex-col items-center gap-6 px-6 pt-[clamp(80px,10vw,140px)] text-center">
+        <Eyebrow>Self-building</Eyebrow>
+        <TwoTone
+          lead="Live on day one."
+          rest="Connect your inbox and calendar. Vult learns your business and builds itself around it — before your first agent starts work."
+          className="max-w-[860px] text-[clamp(30px,3.6vw,44px)] leading-[1.1]"
+        />
+        <Button href="/signup" variant="secondary" size="md">
+          Start for free
+        </Button>
+      </div>
+      <div className="rail relative mt-14">
+        <div aria-hidden className="vlines absolute inset-x-0 top-0 h-28 opacity-60 [mask-image:linear-gradient(to_bottom,transparent,#000)]" />
+        <Reveal className="relative mx-auto max-w-[1100px] px-4 pb-20 pt-24">
+          <PersonRecord />
+        </Reveal>
+      </div>
     </section>
   );
 }
 
-function Agents() {
-  const [idx, setIdx] = useState(0);
-  const reduce = useReducedMotion();
-  const agent = AGENTS[idx]!;
+/* ---------------------------------------------------------------- Dark: memory + signals */
+
+const MEMORY_POINTS = [
+  ["It logs itself.", "Email, calls, product and billing, captured automatically."],
+  ["Your tools finally talk.", "Notes, chat and your whole stack, always in sync."],
+  ["It learns your business.", "Every play is sharper than the last."],
+  ["Ask, and it's there.", "Any record, any answer, in a second."],
+  ["No agent left guessing.", "Agents work from the same facts as your team."],
+];
+
+function Memory() {
   return (
     <section className="relative overflow-hidden bg-night text-white">
-      <motion.div
-        aria-hidden
-        className="absolute -right-[10%] -top-[20%] size-[760px] rounded-full bg-[radial-gradient(circle,rgb(59_91_253/0.24),transparent_65%)]"
-        animate={{ scale: [1, 1.14, 1], opacity: [1, 0.7, 1] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <div className="rail-dark relative px-[clamp(20px,5vw,60px)] pb-14 pt-[clamp(64px,9vw,120px)]">
-        <SectionIntro
-          dark
-          eyebrow="Vult Agents"
-          lead="Hand off the busywork. Keep the judgment."
-          rest="Agents research, qualify and follow up — every step logged, every change yours to approve."
-        />
-      </div>
-      <div className="rail-dark relative grid border-t border-night-line md:grid-cols-2">
-        <div role="tablist" aria-label="Agent examples" className="flex flex-col border-night-line px-[clamp(20px,5vw,60px)] py-10 md:border-r">
-          {AGENTS.map((a, i) => {
-            const active = i === idx;
-            return (
-              <button
-                key={a.title}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setIdx(i)}
-                className={cn(
-                  "relative flex flex-col gap-1.5 border-b border-night-line py-[18px] text-left transition-colors",
-                  active ? "text-white" : "text-[#8a8d96] hover:text-white",
-                )}
-              >
-                {active && <motion.span layoutId="agent-tab" transition={spring} className="absolute -left-[clamp(20px,5vw,60px)] inset-y-3 w-0.5 rounded-full bg-accent" />}
-                <span className="text-[17px] font-medium">{a.title}</span>
-                <AnimatePresence initial={false}>
-                  {active && (
-                    <motion.span
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="max-w-[360px] overflow-hidden text-sm text-[#8a8d96]"
-                    >
-                      {a.desc}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-            );
-          })}
-        </div>
-        <div className="p-[clamp(20px,4vw,48px)]">
-          <AnimatePresence mode="wait">
+      <div className="rail-dark relative">
+        <div className="relative flex flex-col items-center px-6 pb-0 pt-[clamp(90px,11vw,160px)] text-center">
+          <p className="text-[15px] text-[#8a8f9a]">The only CRM with</p>
+          <h2 className="display mt-2 text-[clamp(52px,8vw,96px)] font-semibold leading-none tracking-[-0.024em]">Shared Memory</h2>
+          <div aria-hidden className="relative mt-10 h-[clamp(160px,22vw,300px)] w-full overflow-hidden">
             <motion.div
-              key={agent.name}
-              role="tabpanel"
-              initial={{ opacity: 0, y: 14, filter: "blur(5px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-panel border border-[#26272b] bg-[#16171a] p-5 shadow-dark-pop"
+              className="absolute left-1/2 top-0 aspect-square w-[min(1200px,140%)] -translate-x-1/2 rounded-full p-[1.5px] [background:conic-gradient(from_200deg,transparent_0deg,#f59e0b_40deg,#ef4444_70deg,#8b5cf6_110deg,#266df0_150deg,#06b6d4_175deg,transparent_200deg)]"
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.6, ease }}
             >
-              <div className="flex items-center gap-2.5 border-b border-[#242526] pb-3.5">
-                <span className="flex size-[30px] items-center justify-center rounded-lg bg-accent">
-                  <Bot className="size-4" />
-                </span>
-                <span className="flex flex-col">
-                  <b className="text-sm font-semibold">{agent.name}</b>
-                  <span className="text-xs text-[#8a8d96]">{agent.meta}</span>
-                </span>
-                <span className="ml-auto inline-flex items-center gap-1.5 text-[11px] text-[#7fe0a8]">
-                  <span className="size-[7px] animate-pulse-soft rounded-full bg-[#3ddc84]" /> Live
-                </span>
-              </div>
-              <ol className="flex flex-col gap-1 pt-3.5">
-                {agent.steps.map(([t, d], i) => (
-                  <motion.li
-                    key={t}
-                    className="flex gap-3 rounded-[10px] p-2.5"
-                    initial={reduce ? false : { opacity: 0.45 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 + i * 0.5, duration: 0.3 }}
-                  >
-                    <motion.span
-                      className="flex size-5 shrink-0 items-center justify-center rounded-full border-[1.5px]"
-                      initial={reduce ? false : { backgroundColor: "#242526", borderColor: "#3a3c40" }}
-                      animate={{ backgroundColor: "#3b5bfd", borderColor: "#3b5bfd" }}
-                      transition={{ delay: 0.3 + i * 0.5, duration: 0.25 }}
-                    >
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <path d="M5 12l5 5L20 7" />
-                      </svg>
-                    </motion.span>
-                    <span className="flex flex-col gap-0.5">
-                      <span className="text-sm font-[550]">{t}</span>
-                      <span className="text-[12.5px] text-[#8a8d96]">{d}</span>
-                    </span>
-                  </motion.li>
-                ))}
-              </ol>
+              <div className="h-full w-full rounded-full bg-night shadow-[inset_0_40px_80px_-30px_rgb(38_109_240/0.35)]" />
             </motion.div>
-          </AnimatePresence>
+          </div>
         </div>
-      </div>
-      <div className="rail-dark h-[72px] border-t border-night-line" />
-    </section>
-  );
-}
-
-function SplitSection({ eyebrow, lead, rest, children, points, reverse }: { eyebrow: string; lead: string; rest: string; children: React.ReactNode; points?: string[]; reverse?: boolean }) {
-  return (
-    <section className="border-b border-line bg-soft">
-      <div className={cn("rail grid md:grid-cols-2", reverse && "md:[&>*:first-child]:order-2")}>
-        <div className={cn("flex flex-col gap-5 px-[clamp(20px,5vw,60px)] py-[clamp(56px,8vw,104px)]", reverse ? "md:border-l" : "md:border-r", "border-line")}>
-          <Reveal className="flex flex-col gap-5">
-            <Eyebrow className="self-start">{eyebrow}</Eyebrow>
-            <TwoTone lead={lead} rest={rest} className="text-[clamp(26px,2.8vw,34px)] leading-[1.18] tracking-[-0.03em]" />
-          </Reveal>
-          {points && (
-            <RevealGroup className="mt-1 flex flex-col gap-2.5 text-[15px] text-ink-2">
-              {points.map((p) => (
-                <RevealItem key={p} className="flex items-center gap-2.5">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b5bfd" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    <path d="M5 12l5 5L20 7" />
-                  </svg>
-                  {p}
-                </RevealItem>
-              ))}
-            </RevealGroup>
-          )}
-        </div>
-        {children}
-      </div>
-    </section>
-  );
-}
-
-function Automations() {
-  return (
-    <SplitSection
-      eyebrow="Automations"
-      lead="Workflows that run while you sell."
-      rest="Trigger on any change, branch on conditions, call an agent, tell the team."
-      points={["40+ triggers and actions", "Step-by-step run history", "Versions with one-click rollback"]}
-    >
-      <RevealGroup step={0.15} className="dot-grid flex flex-col items-center justify-center bg-soft-2 px-6 py-12">
-        {FLOW.map((n, i) => (
-          <RevealItem key={n.title} className="flex w-full flex-col items-center">
-            {i > 0 && (
-              <motion.span
-                aria-hidden
-                className="h-7 w-[1.5px] origin-top bg-[#a9acb6]"
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.2 + i * 0.15 }}
-              />
-            )}
-            <div className="flex w-[300px] max-w-full items-center gap-3 rounded-xl border border-line bg-white px-3.5 py-3 shadow-soft transition-transform duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:shadow-card">
-              <span className={cn("flex size-[30px] shrink-0 items-center justify-center rounded-lg text-xs font-bold", n.cls)}>{n.glyph}</span>
-              <span className="flex flex-col">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.05em] text-subtle">{n.kind}</span>
-                <span className="text-sm font-semibold">{n.title}</span>
-              </span>
+        <RevealGroup className="grid border-t border-night-line sm:grid-cols-2 lg:grid-cols-5">
+          {MEMORY_POINTS.map(([t, d], i) => (
+            <RevealItem key={t} className={cn("px-6 py-7", i < 4 && "lg:border-r", "border-night-line max-lg:border-b")}>
+              <p className="text-[14px] font-medium text-white">{t}</p>
+              <p className="mt-1 text-[13px] text-[#8a8f9a]">{d}</p>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+        <div className="grid border-t border-night-line md:grid-cols-[1fr_1fr]">
+          <Reveal className="flex flex-col justify-between gap-10 px-[clamp(20px,4vw,58px)] py-[clamp(56px,7vw,100px)] md:border-r md:border-night-line">
+            <div className="flex flex-col gap-5">
+              <Eyebrow dark className="self-start">
+                Signals
+              </Eyebrow>
+              <TwoTone dark lead="Every signal, none of the noise." rest="Ready to act on." className="max-w-[440px] text-[clamp(28px,3vw,40px)] leading-[1.1]" />
+              <Button href="/platform/enrichment" variant="outline-inverse" size="md" className="self-start">
+                See how it works <ArrowRight className="size-3.5" />
+              </Button>
             </div>
-          </RevealItem>
-        ))}
-      </RevealGroup>
-    </SplitSection>
-  );
-}
-
-function Reporting() {
-  return (
-    <SplitSection eyebrow="Reporting" lead="Answers, not exports." rest="Ask in plain language or build a chart in a few clicks. Dashboards move when deals do." reverse>
-      <div className="flex items-center bg-soft-2 p-[clamp(24px,4vw,48px)]">
-        <Reveal className="w-full rounded-card border border-line bg-white p-6 shadow-card">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <span className="flex flex-col">
-              <span className="text-[13px] text-subtle">Closed won · 2026</span>
-              <span className="text-[30px] font-semibold tracking-[-0.04em]">$2.48M</span>
-            </span>
-            <span className="rounded-md bg-success-soft px-2 py-0.5 text-xs font-semibold text-success">+18.4% vs 2025</span>
+            <div className="flex flex-col gap-3 border-t border-night-line pt-5 text-[13px]">
+              <p className="font-medium text-white">Context</p>
+              <p className="text-[#8a8f9a]">Emails, calls, records and product usage — joined on every account.</p>
+            </div>
+          </Reveal>
+          <div className="flex items-center justify-center px-6 py-14">
+            <div className="flex w-full max-w-[380px] flex-col gap-2.5">
+              {[
+                ["Halbrook raised a $40M Series B", "Funding", "#8b5cf6"],
+                ["Ava Bennett is now Head of RevOps at Kelvra", "Role change", "#266df0"],
+                ["Usage at Maplewing dropped 38% in 30 days", "Risk", "#ef4444"],
+                ["Solvane viewed pricing four times this week", "Intent", "#f59e0b"],
+              ].map(([t, tag, c], i) => (
+                <motion.div
+                  key={t}
+                  className="flex items-center gap-3 rounded-xl border border-night-line bg-night-2 px-3.5 py-3 text-[13px]"
+                  initial={{ opacity: 0, x: 24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.12, duration: 0.6, ease }}
+                >
+                  <span className="size-2 shrink-0 rounded-full" style={{ background: c, boxShadow: `0 0 12px ${c}` }} />
+                  <span className="flex-1 text-[#e9eaee]">{t}</span>
+                  <span className="rounded-md border border-night-line px-1.5 py-0.5 text-[11.5px] text-[#a9acb6]">{tag}</span>
+                </motion.div>
+              ))}
+            </div>
           </div>
-          <div role="img" aria-label="Monthly closed-won revenue, January to October, trending upward" className="mt-5 flex h-[190px] items-end gap-2.5 border-b border-line">
-            {VALUES.map((v, i) => (
-              <motion.span
-                key={i}
-                className="flex-1 origin-bottom rounded-t-md"
-                style={{ height: `${v}%`, background: i === VALUES.length - 1 ? "#3b5bfd" : "#c9d3ff" }}
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
-              />
-            ))}
-          </div>
-          <div aria-hidden className="mt-2 flex gap-2.5">
-            {MONTHS.map((m) => (
-              <span key={m} className="flex-1 text-center text-[11px] text-subtle">
-                {m}
-              </span>
-            ))}
-          </div>
-        </Reveal>
+        </div>
       </div>
-    </SplitSection>
-  );
-}
-
-function Integrations() {
-  return (
-    <section className="bg-soft">
-      <div className="rail px-[clamp(20px,5vw,60px)] pb-12 pt-[clamp(64px,9vw,112px)]">
-        <SectionIntro eyebrow="Ecosystem" lead="Connected from day one." rest="Two-way sync with your inbox, calendar and stack, plus webhooks and a typed REST API." />
-      </div>
-      <RevealGroup step={0.03} className="rail grid grid-cols-1 gap-px border-y border-line bg-line min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {INTEGRATIONS.map(([Icon, name, kind, color]) => (
-          <RevealItem key={name} className="group flex items-center gap-3 bg-soft p-5 transition-colors hover:bg-white">
-            <span
-              className="flex size-9 shrink-0 items-center justify-center rounded-[10px] text-white transition-transform duration-500 ease-[var(--ease-spring)] group-hover:-rotate-[8deg] group-hover:scale-110"
-              style={{ background: color }}
-            >
-              <Icon className="size-[18px]" />
-            </span>
-            <span className="flex flex-col">
-              <span className="text-sm font-semibold">{name}</span>
-              <span className="text-xs text-subtle">{kind}</span>
-            </span>
-          </RevealItem>
-        ))}
-      </RevealGroup>
     </section>
   );
 }
 
-function Testimonials() {
-  const [i, setI] = useState(0);
-  const t = TESTIMONIALS[i]!;
-  const go = (d: number) => setI((i + d + TESTIMONIALS.length) % TESTIMONIALS.length);
+/* ---------------------------------------------------------------- Dark: connectivity */
+
+const TILES = [Mail, Calendar, MessagesSquare, Video, CreditCard, Database, FileText, Headphones, Phone, FileSignature, Webhook, Workflow, Bot, Plug];
+
+function Connectivity() {
+  const reduce = useReducedMotion();
   return (
-    <section aria-label="Testimonials" aria-roledescription="carousel" className="border-b border-line bg-white">
-      <div className="rail px-[clamp(20px,5vw,60px)] py-[clamp(64px,9vw,112px)] text-center">
-        <div className="mx-auto min-h-[230px] max-w-[860px]" aria-live="polite">
-          <AnimatePresence mode="wait">
-            <motion.figure
-              key={t.name}
-              className="flex flex-col items-center gap-7"
-              initial={{ opacity: 0, y: 14, filter: "blur(5px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <blockquote className="text-balance text-[clamp(22px,2.8vw,32px)] font-medium leading-[1.3] tracking-[-0.03em]">“{t.quote}”</blockquote>
-              <figcaption className="flex items-center gap-3 text-left">
-                <Avatar name={t.name} size={44} />
-                <span className="flex flex-col">
-                  <b className="font-semibold">{t.name}</b>
-                  <span className="text-[13px] text-subtle">{t.role}</span>
-                </span>
-              </figcaption>
-            </motion.figure>
-          </AnimatePresence>
-        </div>
-        <div className="mt-8 flex items-center justify-center gap-3.5">
-          <Button variant="secondary" size="icon" className="size-11 rounded-full" aria-label="Previous testimonial" onClick={() => go(-1)}>
-            <ChevronLeft className="size-4" />
+    <section className="relative overflow-hidden border-t border-night-line bg-night text-white">
+      <div aria-hidden className="vlines-dark absolute inset-0" />
+      <div className="rail-dark relative flex flex-col items-center gap-6 px-6 pb-14 pt-[clamp(90px,10vw,150px)] text-center">
+        <Eyebrow dark>Connectivity</Eyebrow>
+        <h2 className="display text-[clamp(32px,3.4vw,44px)] font-medium leading-[1.1] tracking-[-0.01em]">Your whole stack, connected.</h2>
+        <p className="max-w-[340px] text-[16px] text-[#8a8f9a]">Inbox, calendar, chat, billing and anything your team and agents run on.</p>
+        <Button href="/platform/automations" variant="outline-inverse" size="md">
+          Explore integrations <ArrowRight className="size-3.5" />
+        </Button>
+      </div>
+      <div className="relative overflow-hidden pb-[clamp(90px,10vw,150px)] pt-8 [mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)]">
+        <motion.div className="flex w-max gap-8" animate={reduce ? undefined : { x: ["0%", "-50%"] }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}>
+          {[...TILES, ...TILES].map((Icon, i) => (
+            <span key={i} className="flex size-24 shrink-0 items-center justify-center rounded-[22px] border border-white/5 bg-[linear-gradient(180deg,#1f2023,#161618)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]">
+              <Icon aria-hidden className="size-8 text-[#c9cbd2]" strokeWidth={1.5} />
+            </span>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- Dark: developers */
+
+const CODE = `import { Vult } from "@vult/sdk";
+
+const vult = new Vult({ apiKey: process.env.VULT_API_KEY });
+
+await vult.records.create("deals", {
+  name: "Platform rollout",
+  company: "kelvra.example",
+  value: 84000,
+  stage: "Negotiation",
+});`;
+
+function Developers() {
+  const [tab, setTab] = useState<"sdk" | "api" | "mcp">("sdk");
+  const snippets = {
+    sdk: CODE,
+    api: `curl https://api.vult.example/v1/records/deals \\
+  -H "Authorization: Bearer $VULT_API_KEY" \\
+  -d '{ "name": "Platform rollout", "value": 84000 }'`,
+    mcp: `{
+  "mcpServers": {
+    "vult": { "url": "https://mcp.vult.example", "auth": "oauth" }
+  }
+}`,
+  };
+  return (
+    <section className="border-t border-night-line bg-night text-white">
+      <div className="rail-dark grid md:grid-cols-2">
+        <Reveal className="flex flex-col gap-6 px-[clamp(20px,4vw,58px)] py-[clamp(64px,8vw,120px)] md:border-r md:border-night-line">
+          <TwoTone dark lead="SDK. API. MCP." rest="Build anything on Vult." className="text-[clamp(30px,3.2vw,40px)] leading-[1.1]" />
+          <p className="max-w-[380px] text-[15px] text-[#8a8f9a]">Typed SDKs, a REST API, webhooks and an MCP server, so your code and your agents work from the same records.</p>
+          <Button href="/about" variant="outline-inverse" size="md" className="self-start">
+            View docs <ArrowRight className="size-3.5" />
           </Button>
-          <span className="flex gap-1.5">
-            {TESTIMONIALS.map((x, n) => (
-              <button
-                key={x.name}
-                type="button"
-                aria-label={`Show testimonial ${n + 1}`}
-                aria-current={n === i}
-                onClick={() => setI(n)}
-                className="flex h-6 items-center"
+        </Reveal>
+        <div className="flex items-center px-[clamp(16px,3vw,40px)] py-12">
+          <div className="w-full overflow-hidden rounded-xl border border-night-line bg-night-2">
+            <div role="tablist" aria-label="Code examples" className="flex gap-1 border-b border-night-line px-2 pt-2">
+              {(["sdk", "api", "mcp"] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === t}
+                  onClick={() => setTab(t)}
+                  className={cn("relative px-3 pb-2 pt-1 text-[12.5px] font-medium uppercase tracking-wide transition-colors", tab === t ? "text-white" : "text-[#8a8f9a] hover:text-white")}
+                >
+                  {t}
+                  {tab === t && <motion.span layoutId="code-tab" className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-accent" />}
+                </button>
+              ))}
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.pre
+                key={tab}
+                role="tabpanel"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-x-auto p-4 font-mono text-[12.5px] leading-relaxed text-[#c9cbd2]"
               >
-                <motion.span className="block h-1.5 rounded-full" animate={{ width: n === i ? 22 : 6, backgroundColor: n === i ? "#16171a" : "#d6d8de" }} transition={spring} />
-              </button>
-            ))}
-          </span>
-          <Button variant="secondary" size="icon" className="size-11 rounded-full" aria-label="Next testimonial" onClick={() => go(1)}>
-            <ChevronRight className="size-4" />
-          </Button>
+                {snippets[tab]}
+              </motion.pre>
+            </AnimatePresence>
+          </div>
         </div>
-        <p className="mt-4 text-xs text-subtle">Illustrative quotes from fictional customers.</p>
       </div>
     </section>
   );
 }
 
-function Security() {
+/* ---------------------------------------------------------------- Scale */
+
+const STATS = [
+  ["40M", "agent actions / month"],
+  ["1.8B", "API requests / month"],
+  ["52k", "active workspaces"],
+  ["12M", "emails synced / day"],
+];
+
+function Scale() {
+  const W = 1000;
+  const H = 520;
+  const curve = Array.from({ length: 101 }, (_, i) => {
+    const x = (i / 100) * W;
+    const y = H - 40 - Math.pow(i / 100, 2.6) * (H - 40);
+    return [x, y] as const;
+  });
+  const d = curve.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
   return (
-    <section className="relative overflow-hidden bg-white">
-      <div className="rail relative grid md:grid-cols-2">
-        <svg aria-hidden width="900" height="700" viewBox="0 0 900 700" className="pointer-events-none absolute -right-px top-0 max-w-[75%]">
-          <motion.path
-            d="M900 0 C 760 260, 520 520, 0 700"
-            fill="none"
-            stroke="#c9ccd3"
-            strokeWidth="1.5"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 2.4, ease: [0.16, 1, 0.3, 1] }}
-          />
+    <section className="border-t border-line bg-white">
+      <div className="rail relative grid min-h-[600px] overflow-hidden lg:grid-cols-[1fr_1.3fr]">
+        <svg aria-hidden viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 h-full w-full max-lg:opacity-40">
+          <defs>
+            <pattern id="scale-lines" width="7" height="10" patternUnits="userSpaceOnUse">
+              <rect width="1" height="10" fill="rgb(38 109 240 / 0.14)" />
+            </pattern>
+            <clipPath id="under-curve">
+              <path d={`${d} L ${W} ${H} L 0 ${H} Z`} />
+            </clipPath>
+          </defs>
+          <rect width={W} height={H} fill="url(#scale-lines)" clipPath="url(#under-curve)" />
+          <motion.path d={d} fill="none" stroke="#266df0" strokeWidth="2" vectorEffect="non-scaling-stroke" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 2, ease }} />
         </svg>
-        <Reveal className="relative flex flex-col gap-5 px-[clamp(20px,5vw,60px)] py-[clamp(56px,8vw,112px)]">
-          <Eyebrow className="self-start">Enterprise</Eyebrow>
-          <h2 className="text-[clamp(30px,3.6vw,44px)] font-medium leading-[1.12] tracking-[-0.035em]">
-            <span>Secure by default.</span>
-            <br />
-            <span className="text-subtle">
-              Ready for every team
+        <Reveal className="relative flex flex-col gap-10 px-[clamp(20px,4vw,58px)] py-[clamp(72px,9vw,130px)]">
+          <div className="flex flex-col gap-5">
+            <Eyebrow className="self-start">Built to scale</Eyebrow>
+            <h2 className="display text-[clamp(32px,3.2vw,40px)] font-medium leading-[1.1] tracking-[-0.01em]">
+              <span className="text-ink">Run at any scale.</span>
               <br />
-              and every agent.
-            </span>
-          </h2>
-          <Button href="/legal/privacy" variant="secondary" className="self-start" arrow>
-            Visit the trust center
-          </Button>
+              <span className="text-tone">Production-grade for your team and your agents.</span>
+            </h2>
+          </div>
+          <dl className="grid max-w-[480px] grid-cols-2 gap-x-8 gap-y-7">
+            {STATS.map(([v, l]) => (
+              <div key={l} className="border-l-2 border-accent pl-5">
+                <dt className="sr-only">{l}</dt>
+                <dd className="display text-[30px] font-medium leading-none tracking-[-0.01em]">{v}</dd>
+                <dd className="mt-1.5 text-[14px] text-ink-2">{l}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="text-[12px] text-subtle">Illustrative figures for a fictional product.</p>
         </Reveal>
-        <RevealGroup className="relative grid grid-cols-2 content-center gap-3 px-[clamp(20px,5vw,60px)] pb-14 md:py-[clamp(24px,6vw,112px)]">
-          {SECURITY.map(([t, d], i) => (
-            <RevealItem
-              key={t}
-              className="flex flex-col gap-2 rounded-[14px] border border-line bg-white/90 p-[18px] transition-[transform,box-shadow] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:shadow-card"
-            >
-              {i % 2 ? <Lock className="size-5" strokeWidth={1.8} /> : <ShieldCheck className="size-5" strokeWidth={1.8} />}
-              <span className="text-sm font-semibold">{t}</span>
-              <span className="text-[12.5px] text-ink-2">{d}</span>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- Stories + quote */
+
+function Stories() {
+  return (
+    <section className="border-t border-line bg-white">
+      <div className="rail grid md:grid-cols-2">
+        <Reveal className="flex flex-col justify-end gap-3 border-line px-[clamp(20px,4vw,58px)] py-[clamp(56px,7vw,100px)] md:border-r">
+          <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-subtle">Artificial intelligence</p>
+          <TwoTone lead="83% faster lead triage." rest="How Kelvra turned product signals into pipeline." className="max-w-[420px] text-[clamp(24px,2.4vw,30px)] leading-[1.15]" />
+          <Link href="/customers" className="group mt-2 inline-flex w-fit items-center gap-1 text-[14px] font-medium text-ink">
+            Read the story <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </Reveal>
+        <div className="relative min-h-[320px] overflow-hidden bg-[linear-gradient(135deg,#dfe7ff,#f3f0ff_60%,#fff4e6)]">
+          <div aria-hidden className="vlines absolute inset-0 opacity-50" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="flex items-center gap-3 rounded-2xl bg-white/80 px-6 py-4 shadow-card backdrop-blur">
+              <span className="size-7 rotate-45 bg-ink" />
+              <span className="text-[28px] font-bold tracking-[-0.04em]">kelvra</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const QUOTES = [
+  { q: "The first time I opened Vult, it felt like the next generation of CRM.", n: "Margot Lindell", r: "Head of Business Operations · Kelvra" },
+  { q: "Our reps open Vult before they open their inbox. That never happened with our old CRM.", n: "Daniel Osei", r: "VP Sales · Ortiq" },
+  { q: "We modeled partners, funds and portfolio companies without a single workaround.", n: "Elena Brandt", r: "Partner · Halbrook Capital" },
+];
+
+function Quote() {
+  const [i, setI] = useState(0);
+  const reduce = useReducedMotion();
+  useEffect(() => {
+    if (reduce) return;
+    const t = setInterval(() => setI((x) => (x + 1) % QUOTES.length), 7000);
+    return () => clearInterval(t);
+  }, [reduce]);
+  const q = QUOTES[i]!;
+  return (
+    <section aria-label="Testimonials" className="dot-grid border-t border-line bg-soft">
+      <div className="rail flex min-h-[460px] flex-col items-center justify-center gap-8 px-6 py-20 text-center">
+        <AnimatePresence mode="wait">
+          <motion.figure key={q.n} className="flex flex-col items-center gap-6" initial={{ opacity: 0, y: 10, filter: "blur(4px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.45, ease }}>
+            <blockquote className="display max-w-[760px] text-balance text-[clamp(26px,3vw,36px)] font-medium leading-[1.2] tracking-[-0.01em] text-[#5f6572]">“{q.q}”</blockquote>
+            <figcaption className="flex items-center gap-3 text-left text-[13px]">
+              <Avatar name={q.n} size={36} />
+              <span>
+                <b className="block font-semibold text-ink">{q.n}</b>
+                <span className="text-subtle">{q.r}</span>
+              </span>
+            </figcaption>
+          </motion.figure>
+        </AnimatePresence>
+        <div className="flex gap-1.5">
+          {QUOTES.map((x, n) => (
+            <button key={x.n} type="button" aria-label={`Show quote ${n + 1}`} aria-current={n === i} onClick={() => setI(n)} className="flex h-6 items-center">
+              <motion.span className="block h-1.5 rounded-full" animate={{ width: n === i ? 20 : 6, backgroundColor: n === i ? "#1b1c1e" : "#cfd2d8" }} />
+            </button>
+          ))}
+        </div>
+        <p className="text-[12px] text-subtle">Illustrative quotes from fictional customers.</p>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- Changelog + newsletter */
+
+const UPDATES = [
+  ["Oct 14, 2026", "Kanban swimlanes", "Group any board by owner or segment."],
+  ["Oct 2, 2026", "Agents, generally available", "Approvals and a full run log for every agent."],
+  ["Sep 18, 2026", "Forecast dashboards", "Weighted pipeline with week-over-week change."],
+  ["Sep 3, 2026", "Inline editing everywhere", "Edit any cell in place, keyboard first."],
+];
+
+function ChangelogStrip() {
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState("");
+  return (
+    <section className="border-t border-line bg-white">
+      <div className="rail grid lg:grid-cols-[1fr_2fr]">
+        <Reveal className="flex flex-col gap-5 px-[clamp(20px,4vw,58px)] py-[clamp(56px,7vw,100px)] lg:border-r lg:border-line">
+          <Eyebrow className="self-start">Changelog</Eyebrow>
+          <TwoTone lead="Better as you grow." rest="New features every week to keep pace with you." className="max-w-[340px] text-[clamp(26px,2.6vw,32px)] leading-[1.15]" />
+        </Reveal>
+        <RevealGroup className="grid border-line sm:grid-cols-2 xl:grid-cols-4">
+          {UPDATES.map(([date, t, d], i) => (
+            <RevealItem key={t} className={cn("flex flex-col gap-1.5 border-line px-6 py-10", i < 3 && "xl:border-r", i % 2 === 0 && "sm:max-xl:border-r", "max-xl:border-b")}>
+              <Link href="/changelog" className="group flex h-full flex-col gap-1.5">
+                <span className="text-[12px] text-subtle">{date}</span>
+                <span className="text-[15px] font-semibold text-ink group-hover:underline">{t}</span>
+                <span className="text-[13.5px] text-subtle">{d}</span>
+              </Link>
             </RevealItem>
           ))}
         </RevealGroup>
       </div>
-      <div className="rail h-16" />
+      <div className="rail flex flex-wrap items-center justify-between gap-6 border-t border-line px-[clamp(20px,4vw,58px)] py-12">
+        <TwoTone as="h3" lead="Stay ahead of revenue." rest="Product updates in your inbox." className="text-[22px] leading-[1.2]" />
+        {done ? (
+          <p role="status" className="text-[14px] font-medium text-[#16753f]">
+            Thanks — you&apos;re subscribed (demo).
+          </p>
+        ) : (
+          <form
+            noValidate
+            className="flex flex-wrap items-start gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErr("Enter a valid email address.");
+              setDone(true);
+            }}
+          >
+            <div className="flex flex-col gap-1">
+              <label htmlFor="newsletter" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="newsletter"
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErr("");
+                }}
+                aria-invalid={!!err}
+                aria-describedby={err ? "newsletter-err" : undefined}
+                placeholder="Your email address"
+                className="h-9 w-[260px] rounded-[10px] border border-line-strong bg-white px-3 text-[14px] outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgb(38_109_240/0.15)] aria-[invalid=true]:border-danger"
+              />
+              {err && (
+                <span id="newsletter-err" role="alert" className="text-[12.5px] text-danger">
+                  {err}
+                </span>
+              )}
+            </div>
+            <Button type="submit" size="md">
+              Subscribe
+            </Button>
+          </form>
+        )}
+      </div>
     </section>
   );
 }
@@ -688,24 +749,16 @@ export default function HomePage() {
     <>
       <Hero />
       <LogoGrid />
-      <PlatformIntro />
-      <Bento />
-      <Agents />
-      <Automations />
-      <Reporting />
-      <Integrations />
-      <Testimonials />
-      <Security />
-      <GlowCTA
-        title={
-          <>
-            Your pipeline,
-            <br />
-            finally in sync.
-          </>
-        }
-      />
+      <Platform />
+      <SelfBuilding />
+      <Memory />
+      <Connectivity />
+      <Developers />
+      <Scale />
+      <Stories />
+      <Quote />
+      <ChangelogStrip />
+      <GlowCTA title="Revenue runs on Vult." secondary="Talk to sales" />
     </>
   );
 }
-
