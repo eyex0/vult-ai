@@ -72,7 +72,7 @@ export function Footer() {
         <div className="mt-20 flex flex-wrap items-center justify-between gap-4 text-[12px] text-[#8a8d96]">
           <span className="flex gap-1">
             {SOCIAL.map((s) => (
-              <a key={s.label} href="#" aria-label={s.label} className="inline-flex size-8 items-center justify-center rounded-lg text-[#a9acb6] transition-colors hover:bg-white/5 hover:text-white">
+              <a key={s.label} href="#" onClick={(e) => e.preventDefault()} aria-label={s.label} className="inline-flex size-8 items-center justify-center rounded-lg text-[#a9acb6] transition-colors hover:bg-white/5 hover:text-white">
                 <svg aria-hidden width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d={s.path} />
                 </svg>
@@ -105,7 +105,12 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeScope theme="light">
       <div className="site min-h-screen overflow-x-clip bg-white text-ink">
-        <a href="#main" className="sr-only-focusable fixed left-3 top-3 z-[100] rounded-[10px] bg-ink px-3 py-2 text-sm text-white">
+        <a href="#main" onClick={(e) => {
+            e.preventDefault();
+            const m = document.getElementById("main");
+            m?.setAttribute("tabindex", "-1");
+            m?.focus();
+          }} className="sr-only-focusable fixed left-3 top-3 z-[100] rounded-[10px] bg-ink px-3 py-2 text-sm text-white">
           Skip to content
         </a>
         <AnnouncementBar />

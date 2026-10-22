@@ -9,7 +9,8 @@
     "preview": "vite preview --host 0.0.0.0",
     "lint": "tsc --noEmit -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:preview": "VITE_ROUTER=hash VITE_BASE=./ vite build --outDir dist-preview"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

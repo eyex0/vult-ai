@@ -80,6 +80,11 @@ export default function LegalPage({ doc }: { doc: string }) {
                 <li key={s.id}>
                   <a
                     href={`#${s.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" });
+                      setActive(s.id);
+                    }}
                     aria-current={active === s.id ? "location" : undefined}
                     className={cn("-ml-px block whitespace-nowrap border-l-2 py-1 pl-3 text-[13.5px] transition-colors", active === s.id ? "border-accent font-medium text-ink" : "border-transparent text-subtle hover:text-ink")}
                   >
