@@ -27,7 +27,7 @@ export function RevealItem({ className, ...rest }: HTMLMotionProps<"div">) {
   return <motion.div variants={fadeUp} className={className} {...rest} />;
 }
 
-/** Headline in two tones: a bold ink sentence, then a gray continuation. */
+/** Headline in two tones: a dark lead sentence, then a gray continuation (Inter Display, medium). */
 export function TwoTone({
   lead,
   rest,
@@ -42,9 +42,9 @@ export function TwoTone({
   className?: string;
 }) {
   return (
-    <Tag className={cn("text-balance font-medium tracking-[-0.035em]", className)}>
+    <Tag className={cn("display text-balance font-medium tracking-[-0.01em]", className)}>
       <span className={dark ? "text-white" : "text-ink"}>{lead}</span>{" "}
-      {rest && <span className={dark ? "text-[#8a8d96]" : "text-subtle"}>{rest}</span>}
+      {rest && <span className={dark ? "text-[#8a8f9a]" : "text-tone"}>{rest}</span>}
     </Tag>
   );
 }
@@ -65,9 +65,9 @@ export function SectionIntro({
   className?: string;
 }) {
   return (
-    <Reveal className={cn("flex flex-col gap-[22px]", center && "items-center text-center", className)}>
-      {eyebrow && <Eyebrow dark={dark}>{eyebrow}</Eyebrow>}
-      <TwoTone lead={lead} rest={rest} dark={dark} className={cn("max-w-[900px] text-[clamp(30px,3.6vw,44px)] leading-[1.12]")} />
+    <Reveal className={cn("flex flex-col gap-5", center && "items-center text-center", className)}>
+      {eyebrow && <Eyebrow dark={dark} className={center ? undefined : "self-start"}>{eyebrow}</Eyebrow>}
+      <TwoTone lead={lead} rest={rest} dark={dark} className={cn("max-w-[900px] text-[clamp(30px,3.2vw,40px)] leading-[1.1]", center && "mx-auto")} />
     </Reveal>
   );
 }
@@ -76,13 +76,13 @@ export function FAQ({ items, title = "Questions,", subtitle = "answered." }: { i
   const [open, setOpen] = useState(0);
   const id = useId();
   return (
-    <section className="border-b border-line bg-soft">
+    <section className="border-b border-line bg-white">
       <div className="rail grid gap-10 px-[clamp(20px,5vw,60px)] py-[clamp(56px,8vw,96px)] md:grid-cols-2">
         <Reveal>
-          <h2 className="text-[clamp(28px,3.4vw,40px)] font-medium leading-[1.12] tracking-[-0.035em]">
+          <h2 className="display text-[clamp(28px,3.2vw,40px)] font-medium leading-[1.1] tracking-[-0.01em]">
             <span className="text-ink">{title}</span>
             <br />
-            <span className="text-subtle">{subtitle}</span>
+            <span className="text-tone">{subtitle}</span>
           </h2>
         </Reveal>
         <div className="border-t border-line">
@@ -127,22 +127,23 @@ export function FAQ({ items, title = "Questions,", subtitle = "answered." }: { i
 
 export function GlowCTA({ title, primary = "Start for free", secondary = "Talk to sales" }: { title: ReactNode; primary?: string; secondary?: string | null }) {
   return (
-    <section className="relative overflow-hidden border-t border-night-line bg-night text-white">
+    <section className="relative overflow-hidden bg-night text-white">
+      <div aria-hidden className="vlines-dark absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,#000_40%,#000_70%,transparent)]" />
       <motion.div
         aria-hidden
-        className="absolute bottom-[-300px] left-1/2 h-[560px] w-[1000px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgb(59_91_253/0.55),rgb(110_90_255/0.18)_42%,transparent_70%)]"
-        animate={{ scale: [1, 1.12, 1], opacity: [1, 0.75, 1] }}
+        className="absolute bottom-[-340px] left-1/2 h-[560px] w-[1100px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgb(38_109_240/0.5),rgb(110_90_255/0.16)_42%,transparent_70%)]"
+        animate={{ scale: [1, 1.1, 1], opacity: [0.9, 0.65, 0.9] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
       />
-      <Reveal className="rail-dark relative flex flex-col items-center gap-6 px-6 py-[clamp(80px,11vw,150px)] text-center">
-        <h2 className="text-balance text-[clamp(36px,5vw,60px)] font-medium leading-[1.04] tracking-[-0.045em]">{title}</h2>
+      <Reveal className="rail-dark relative flex flex-col items-center gap-8 px-6 py-[clamp(96px,12vw,170px)] text-center">
+        <h2 className="display text-balance text-[clamp(40px,6vw,72px)] font-semibold leading-[0.98] tracking-[-0.025em]">{title}</h2>
         <div className="flex flex-wrap justify-center gap-2.5">
           {secondary && (
             <Button href="/contact" variant="outline-inverse" size="lg">
               {secondary}
             </Button>
           )}
-          <Button href="/signup" variant="inverse" size="lg" arrow>
+          <Button href="/signup" variant="inverse" size="lg">
             {primary}
           </Button>
         </div>
