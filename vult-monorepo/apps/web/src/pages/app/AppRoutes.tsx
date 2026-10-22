@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { lazy, Suspense, type ReactNode } from "react";
 import { Redirect, Route, Switch, useLocation } from "wouter";
 import { AppShell } from "@/components/app/AppShell";
@@ -42,18 +42,16 @@ function AppPage({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const key = location.split("/").slice(0, 3).join("/");
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={key}
-        className="h-full"
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <Suspense fallback={<Fallback />}>{children}</Suspense>
-      </motion.div>
-    </AnimatePresence>
+    // Enter-only: an exit animation with mode="wait" could leave the new page stuck at opacity 0.
+    <motion.div
+      key={key}
+      className="h-full"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <Suspense fallback={<Fallback />}>{children}</Suspense>
+    </motion.div>
   );
 }
 

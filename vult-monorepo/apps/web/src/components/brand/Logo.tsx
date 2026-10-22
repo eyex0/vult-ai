@@ -1,10 +1,12 @@
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
+import logoBlack from "@/assets/brand/vult-logo-black.png";
+import logoWhite from "@/assets/brand/vult-logo-white.png";
 
 export function LogoMark({ tone = "dark", size = 26, className }: { tone?: "dark" | "light"; size?: number; className?: string }) {
   return (
     <img
-      src={`${import.meta.env.BASE_URL}brand/vult-logo-${tone === "dark" ? "black" : "white"}.png`}
+      src={tone === "dark" ? logoBlack : logoWhite}
       alt=""
       width={size}
       height={size}
