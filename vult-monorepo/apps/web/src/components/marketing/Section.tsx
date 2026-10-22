@@ -3,7 +3,7 @@ import { Minus, Plus } from "lucide-react";
 import { useId, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Badge";
-import { fadeUp, inView, stagger } from "@/lib/motion";
+import { EASE, fadeUp, inView, stagger } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 /** Fades and slides children in once they scroll into view. */
@@ -11,7 +11,7 @@ export function Reveal({ className, delay = 0, ...rest }: HTMLMotionProps<"div">
   return (
     <motion.div
       {...inView}
-      variants={{ hidden: fadeUp.hidden, show: { ...(fadeUp.show as object), transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay } } }}
+      variants={{ hidden: fadeUp.hidden, show: { ...(fadeUp.show as object), transition: { duration: 0.42, ease: EASE.outCubic, delay } } }}
       className={className}
       {...rest}
     />

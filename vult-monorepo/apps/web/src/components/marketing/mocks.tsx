@@ -1,9 +1,9 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUp, Bot, Building2, CalendarDays, Check, CheckSquare, ChevronDown, CircleDollarSign, Clock3, FileText, Filter, GitBranch, Globe,
   Mail, MessageSquare, Mic, MoreHorizontal, Play, Search, Send, Sparkles, Star, Table2, User, Users, Zap,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { LogoMark } from "@/components/brand/Logo";
 import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,36 @@ import { cn } from "@/lib/utils";
 /* All names, companies and numbers in these mockups are fictional. */
 
 const ease = [0.16, 1, 0.3, 1] as const;
+
+/** Types `text` out character by character (instant when reduced motion is on). */
+function Typewriter({ text, delay = 0, speed = 28, onDone }: { text: string; delay?: number; speed?: number; onDone?: () => void }) {
+  const reduce = useReducedMotion();
+  const [n, setN] = useState(reduce ? text.length : 0);
+  useEffect(() => {
+    if (reduce) {
+      onDone?.();
+      return;
+    }
+    let i = 0;
+    let t: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      i += 1;
+      setN(i);
+      if (i < text.length) t = setTimeout(tick, speed);
+      else onDone?.();
+    };
+    t = setTimeout(tick, delay);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, reduce]);
+  return (
+    <>
+      <span aria-hidden>{text.slice(0, n)}</span>
+      {n < text.length && <span aria-hidden className="caret ml-px inline-block h-[1em] w-px translate-y-[2px] bg-current" />}
+      <span className="sr-only">{text}</span>
+    </>
+  );
+}
 
 export function Window({ children, dark, title, className, bodyClassName }: { children: ReactNode; dark?: boolean; title?: ReactNode; className?: string; bodyClassName?: string }) {
   return (
@@ -148,6 +178,7 @@ export function EmailSuggestion({ to = "Ava Bennett", subject = "Send a follow-u
 }
 
 export function ChatWindow() {
+  const [replied, setReplied] = useState(false);
   return (
     <Window title="# pipeline" className="w-[300px]">
       <div className="flex flex-col gap-3 p-3 text-[12.5px]">
@@ -158,11 +189,12 @@ export function ChatWindow() {
               <b className="font-semibold">Marcus</b> <span className="text-[11px] text-subtle">10:24</span>
             </p>
             <p>
-              <span className="rounded bg-accent-soft px-0.5 text-accent-ink">@Vult</span> which deals should I push today?
+              <span className="rounded bg-accent-soft px-0.5 text-accent-ink">@Vult</span>{" "}
+              <Typewriter text="which deals should I push today?" delay={900} onDone={() => setReplied(true)} />
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <motion.div className="flex gap-2" initial={false} animate={replied ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 6, filter: "blur(1.5px)" }} transition={{ duration: 0.42, ease: [0.33, 1, 0.68, 1], delay: 0.35 }}>
           <span className="flex size-[26px] shrink-0 items-center justify-center rounded-md bg-ink">
             <LogoMark tone="light" size={16} />
           </span>
@@ -175,7 +207,7 @@ export function ChatWindow() {
               Kelvra (verbal yes, waiting on the order form) and Halbrook (stalled in legal — I drafted a nudge).
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </Window>
   );
@@ -236,13 +268,80 @@ export function TerminalWindow() {
   );
 }
 
-export function HeroApp() {
+function AgentRunScene() {
+  const steps = [
+    ["Read the Kelvra record", "14 fields · 3 open deals"],
+    ["Researched recent news", "New VP Sales, four AE roles open"],
+    ["Scored account fit", "ICP 98 — moved to Tier 1"],
+    ["Drafted a follow-up", "Waiting for your review"],
+    ["Created a task for Ava Bennett", "Call before Thursday"],
+  ];
+  return (
+    <div className="p-4 text-[13px]">
+      <p className="flex items-center gap-2 font-semibold">
+        <span className="flex size-6 items-center justify-center rounded-md bg-accent text-white">
+          <Bot className="size-3.5" />
+        </span>
+        Account research agent
+        <span className="ml-auto inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[#16753f]">
+          <span className="size-1.5 animate-pulse-soft rounded-full bg-[#16a34a]" /> Running
+        </span>
+      </p>
+      <ol className="mt-3 flex flex-col gap-1">
+        {steps.map(([t, d], i) => (
+          <motion.li key={t} className="flex gap-3 rounded-lg px-2 py-2" initial={{ opacity: 0.35 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 + i * 0.55, duration: 0.3 }}>
+            <motion.span
+              className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px]"
+              initial={{ backgroundColor: "#ffffff", borderColor: "#d6d8de" }}
+              animate={{ backgroundColor: "#266df0", borderColor: "#266df0" }}
+              transition={{ delay: 0.25 + i * 0.55, duration: 0.25 }}
+            >
+              <Check className="size-2.5 text-white" strokeWidth={3.5} />
+            </motion.span>
+            <span>
+              <span className="block font-medium">{t}</span>
+              <span className="text-[12px] text-subtle">{d}</span>
+            </span>
+          </motion.li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function ForecastScene() {
+  const bars = [42, 55, 48, 66, 72, 61, 80, 94];
+  return (
+    <div className="p-5 text-[13px]">
+      <p className="text-subtle">Forecast · Q4</p>
+      <p className="display mt-0.5 text-[30px] font-semibold tracking-[-0.02em]">$1,240,500</p>
+      <p className="text-[12px] font-medium text-[#16753f]">+18% vs. last quarter</p>
+      <div role="img" aria-label="Forecast bars rising over eight weeks" className="mt-5 flex h-[190px] items-end gap-3 border-b border-[#eef0f2]">
+        {bars.map((h, i) => (
+          <motion.span
+            key={i}
+            className="flex-1 origin-bottom rounded-t-[4px]"
+            style={{ height: `${h}%`, background: i === bars.length - 1 ? "#266df0" : "#c9d8ff" }}
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ delay: 0.15 + i * 0.06, duration: 0.7, ease }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export const HERO_SCENES = ["accounts", "agent", "forecast"] as const;
+export type HeroScene = (typeof HERO_SCENES)[number];
+
+export function HeroApp({ scene = "accounts" }: { scene?: HeroScene }) {
   const nav = [
-    [Search, "Search"],
-    [CheckSquare, "Tasks"],
-    [FileText, "Notes"],
-    [Mail, "Emails"],
-    [Zap, "Workflows"],
+    [Search, "Search", null],
+    [CheckSquare, "Tasks", null],
+    [FileText, "Notes", null],
+    [Bot, "Agents", "agent"],
+    [Zap, "Reports", "forecast"],
   ] as const;
   return (
     <Window className="w-full" bodyClassName="flex min-h-[460px]">
@@ -253,14 +352,16 @@ export function HeroApp() {
           </span>
           Ridgeway Labs
         </span>
-        {nav.map(([Icon, l]) => (
-          <span key={l} className="flex h-7 items-center gap-2 rounded-md px-1.5 text-ink-2">
-            <Icon className="size-3.5" /> {l}
+        {nav.map(([Icon, l, sc]) => (
+          <span key={l} className={cn("relative flex h-7 items-center gap-2 rounded-md px-1.5 text-ink-2 transition-colors", sc === scene && "font-medium text-ink")}>
+            {sc === scene && <motion.span layoutId="hero-nav" className="absolute inset-0 rounded-md bg-[#f1f2f4]" transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }} />}
+            <Icon className="relative size-3.5" /> <span className="relative">{l}</span>
           </span>
         ))}
         <span className="mt-3 px-1.5 text-[11px] font-medium text-subtle">Records</span>
-        <span className="flex h-7 items-center gap-2 rounded-md bg-[#f1f2f4] px-1.5 font-medium">
-          <Building2 className="size-3.5 text-accent" /> Companies
+        <span className={cn("relative flex h-7 items-center gap-2 rounded-md px-1.5", scene === "accounts" ? "font-medium" : "text-ink-2")}>
+          {scene === "accounts" && <motion.span layoutId="hero-nav" className="absolute inset-0 rounded-md bg-[#f1f2f4]" transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }} />}
+          <Building2 className="relative size-3.5 text-accent" /> <span className="relative">Companies</span>
         </span>
         <span className="flex h-7 items-center gap-2 rounded-md px-1.5 text-ink-2">
           <Users className="size-3.5 text-[#16a34a]" /> People
@@ -270,15 +371,26 @@ export function HeroApp() {
         </span>
       </aside>
       <div className="relative min-w-0 flex-1 text-left">
-        <CompaniesTable />
-        <motion.div
-          className="absolute bottom-4 right-4 hidden lg:block"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.4, duration: 0.7, ease }}
-        >
-          <EmailSuggestion />
-        </motion.div>
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={scene}
+            initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
+            animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+            exit={{ opacity: 0, filter: "blur(4px)", y: -6 }}
+            transition={{ duration: 0.45, ease: [0.33, 1, 0.68, 1] }}
+          >
+            {scene === "accounts" && (
+              <>
+                <CompaniesTable />
+                <motion.div className="absolute bottom-4 right-4 hidden lg:block" initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.9, duration: 0.5, ease }}>
+                  <EmailSuggestion />
+                </motion.div>
+              </>
+            )}
+            {scene === "agent" && <AgentRunScene />}
+            {scene === "forecast" && <ForecastScene />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </Window>
   );
@@ -297,8 +409,10 @@ export function AskList() {
   ];
   return (
     <div className="flex w-full max-w-[400px] flex-col gap-2">
-      <Card className="flex items-center gap-2 px-3 py-2.5 text-[13px] text-subtle">
-        Ask anything…
+      <Card className="shine flex items-center gap-2 px-3 py-2.5 text-[13px] text-ink">
+        <span className="min-w-0 flex-1 truncate">
+          <Typewriter text="Which accounts should we reach out to this week?" delay={400} speed={24} />
+        </span>
         <span className="ml-auto flex size-7 items-center justify-center rounded-lg bg-accent text-white">
           <ArrowUp className="size-3.5" />
         </span>
@@ -330,8 +444,8 @@ export function Orbit() {
         <motion.span
           key={s}
           aria-hidden
-          className="absolute inset-0 m-auto rounded-full border border-[#dfe2e8]"
-          style={{ width: `${s * 100}%`, height: `${s * 100}%` }}
+          className="ring-pulse absolute inset-0 m-auto rounded-full border border-[#dfe2e8]"
+          style={{ width: `${s * 100}%`, height: `${s * 100}%`, animationDelay: `${i * 0.35}s` }}
           initial={{ scale: 0.6, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
@@ -366,7 +480,10 @@ function FlowNode({ icon: Icon, title, sub, color, className }: { icon: typeof Z
   );
 }
 
+const FLOW_PATH = "M95 52 H330 Q350 52 350 72 V110 Q350 130 330 130 H110 Q90 130 90 150 V178 H440";
+
 export function FlowGraph() {
+  const reduce = useReducedMotion();
   return (
     <div className="relative mx-auto h-[300px] w-[640px] max-w-full overflow-hidden">
       <svg aria-hidden className="absolute inset-0 h-full w-full" viewBox="0 0 640 300" fill="none">
@@ -379,8 +496,15 @@ export function FlowGraph() {
           viewport={{ once: true }}
           transition={{ duration: 1.6, ease }}
         />
+        {!reduce &&
+          [0, 1.2, 2.4].map((begin) => (
+            <circle key={begin} r="3.5" fill="#266df0">
+              <animateMotion dur="3.6s" begin={`${begin}s`} repeatCount="indefinite" path={FLOW_PATH} />
+            </circle>
+          ))}
       </svg>
-      <FlowNode icon={Zap} title="Record created" sub="New inbound lead" color="#266df0" className="absolute left-3 top-6 ring-2 ring-accent/40" />
+      <span className="spin-border absolute left-[10px] top-[22px] h-[56px] w-[176px] rounded-[13px] opacity-70 blur-[1px]" aria-hidden />
+      <FlowNode icon={Zap} title="Record created" sub="New inbound lead" color="#266df0" className="absolute left-3 top-6" />
       <FlowNode icon={Globe} title="Web agent" sub="Research the company" color="#7048e8" className="absolute left-[215px] top-6" />
       <FlowNode icon={Bot} title="Custom agent" sub="Score for ICP fit" color="#16a34a" className="absolute left-3 top-[150px]" />
       <FlowNode icon={GitBranch} title="If" sub="Route by segment" color="#e8780e" className="absolute left-[205px] top-[150px] w-[115px]" />
@@ -390,43 +514,70 @@ export function FlowGraph() {
   );
 }
 
-const BOARD = [
-  ["Discovery", "#e8780e", [["Kelvra", "$20,800", "Ava Bennett"], ["Driftline", "$36,400", "Jun Park"]]],
-  ["Demo", "#266df0", [["Ortiq", "$54,000", "Theo Lindqvist"], ["Quillstone", "$18,200", "Maya Ruiz"]]],
-  ["Proposal", "#7048e8", [["Halbrook", "$31,200", "Ines Okafor"], ["Sablewood", "$62,500", "Dani Rossi"]]],
-  ["Negotiation", "#16a34a", [["Solvane", "$76,000", "Maya Ruiz"]]],
-] as const;
+type BoardCard = { name: string; value: string; owner: string; stage: number };
+const STAGES: [string, string][] = [
+  ["Discovery", "#e8780e"],
+  ["Demo", "#266df0"],
+  ["Proposal", "#7048e8"],
+  ["Negotiation", "#16a34a"],
+];
+const BOARD_START: BoardCard[] = [
+  { name: "Kelvra", value: "$20,800", owner: "Ava Bennett", stage: 0 },
+  { name: "Driftline", value: "$36,400", owner: "Jun Park", stage: 0 },
+  { name: "Ortiq", value: "$54,000", owner: "Theo Lindqvist", stage: 1 },
+  { name: "Quillstone", value: "$18,200", owner: "Maya Ruiz", stage: 1 },
+  { name: "Halbrook", value: "$31,200", owner: "Ines Okafor", stage: 2 },
+  { name: "Sablewood", value: "$62,500", owner: "Dani Rossi", stage: 2 },
+  { name: "Solvane", value: "$76,000", owner: "Maya Ruiz", stage: 3 },
+];
 
+/** Pipeline board where one deal advances a stage every few seconds. */
 export function Board() {
+  const reduce = useReducedMotion();
+  const [cards, setCards] = useState(BOARD_START);
+  useEffect(() => {
+    if (reduce) return;
+    const t = setInterval(() => {
+      setCards((cs) => cs.map((c) => (c.name === "Kelvra" ? { ...c, stage: (c.stage + 1) % STAGES.length } : c)));
+    }, 2600);
+    return () => clearInterval(t);
+  }, [reduce]);
   return (
-    <div className="flex gap-3 overflow-hidden">
-      {BOARD.map(([stage, color, cards], c) => (
-        <div key={stage} className="flex w-[200px] shrink-0 flex-col gap-2 rounded-xl bg-[#f3f4f6] p-2">
-          <p className="flex items-center gap-1.5 px-1 text-[12.5px] font-semibold">
-            <span className="size-2 rounded-full" style={{ background: color }} /> {stage}
-            <span className="text-subtle">{cards.length}</span>
-          </p>
-          {cards.map(([n, v, o], i) => (
-            <motion.div key={n} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: c * 0.1 + i * 0.08 }}>
-              <Card className="flex flex-col gap-1.5 p-2.5 text-[12px]">
-                <span className="flex items-center gap-1.5 font-semibold">
-                  <Avatar name={n} square size={14} /> {n}
-                </span>
-                <span className="flex items-center gap-1.5 text-ink-2">
-                  <CalendarDays className="size-3 text-subtle" /> Nov {12 + i * 7}, 2026
-                </span>
-                <span className="flex items-center gap-1.5 text-ink-2">
-                  <CircleDollarSign className="size-3 text-subtle" /> {v}
-                </span>
-                <span className="flex items-center gap-1.5 text-ink-2">
-                  <Avatar name={o} size={14} /> {o}
-                </span>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      ))}
-    </div>
+    <LayoutGroup>
+      <div className="flex gap-3 overflow-hidden">
+        {STAGES.map(([stage, color], c) => {
+          const col = cards.filter((x) => x.stage === c);
+          return (
+            <div key={stage} className="flex w-[200px] shrink-0 flex-col gap-2 rounded-xl bg-[#f3f4f6] p-2">
+              <p className="flex items-center gap-1.5 px-1 text-[12.5px] font-semibold">
+                <span className="size-2 rounded-full" style={{ background: color }} /> {stage}
+                <motion.span key={col.length} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-subtle">
+                  {col.length}
+                </motion.span>
+              </p>
+              {col.map((card, i) => (
+                <motion.div key={card.name} layoutId={`board-${card.name}`} layout transition={{ layout: { duration: 0.55, ease: [0.65, 0, 0.35, 1] } }}>
+                  <Card className={cn("flex flex-col gap-1.5 p-2.5 text-[12px] transition-shadow", card.name === "Kelvra" && "ring-2 ring-accent/30")}>
+                    <span className="flex items-center gap-1.5 font-semibold">
+                      <Avatar name={card.name} square size={14} /> {card.name}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-ink-2">
+                      <CalendarDays className="size-3 text-subtle" /> Nov {12 + i * 7}, 2026
+                    </span>
+                    <span className="flex items-center gap-1.5 text-ink-2">
+                      <CircleDollarSign className="size-3 text-subtle" /> {card.value}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-ink-2">
+                      <Avatar name={card.owner} size={14} /> {card.owner}
+                    </span>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </LayoutGroup>
   );
 }
 

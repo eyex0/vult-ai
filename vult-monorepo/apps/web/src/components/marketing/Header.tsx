@@ -31,7 +31,7 @@ function MenuItem({ item }: { item: NavItem }) {
 
 function GroupPanel({ groups, feature }: { groups: NavGroup[]; feature: React.ReactNode }) {
   return (
-    <NM.Content className="absolute left-0 top-[calc(100%+10px)] flex w-[min(1000px,calc(100vw-232px))] gap-2 rounded-2xl border border-line bg-white p-2 shadow-pop data-[state=open]:animate-pop">
+    <NM.Content className="nav-content absolute left-0 top-0 flex w-[min(1000px,calc(100vw-232px))] gap-2 p-2">
       <div className="grid flex-1 grid-cols-3 gap-1 p-1">
         {groups.map((g) => (
           <div key={g.title} className="flex flex-col gap-0.5">
@@ -130,6 +130,9 @@ export function Header() {
                 </NM.Item>
               ))}
             </NM.List>
+            <div className="absolute left-0 top-[calc(100%+12px)]">
+              <NM.Viewport className="nav-viewport relative overflow-hidden rounded-2xl border border-line bg-white shadow-pop" />
+            </div>
           </NM.Root>
           <div className="ml-auto flex items-center gap-2.5">
             {session ? (
