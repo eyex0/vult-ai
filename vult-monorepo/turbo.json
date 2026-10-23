@@ -36,9 +36,6 @@
         "^build"
       ],
       "outputs": []
-    },
-    "@vult/shared-types#build": {
-      "outputs": []
     }
   },
   "globalPassThroughEnv": [

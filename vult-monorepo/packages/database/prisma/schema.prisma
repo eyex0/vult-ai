@@ -10,15 +10,25 @@ datasource db {
 }
 
 model Tenant {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String  @id @default(uuid()) @db.Uuid
   name      String
-  legalName String?  @map("legal_name")
-  vatNumber String?  @map("vat_number")
-  taxCode   String?  @map("tax_code")
-  sdiCode   String?  @map("sdi_code")
-  pecEmail  String?  @map("pec_email")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  legalName String? @map("legal_name")
+  vatNumber String? @map("vat_number")
+  taxCode   String? @map("tax_code")
+  sdiCode   String? @map("sdi_code")
+  pecEmail  String? @map("pec_email")
+
+  /// Billing: a workspace starts on a trial, then a paid plan through Stripe.
+  plan                 PlanTier  @default(TRIAL)
+  trialEndsAt          DateTime? @map("trial_ends_at")
+  subscriptionStatus   String?   @map("subscription_status")
+  stripeCustomerId     String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?   @map("stripe_subscription_id")
+  currentPeriodEnd     DateTime? @map("current_period_end")
+  /// Created time of the last Stripe event applied, so late or replayed events never undo newer ones.
+  billingEventAt       DateTime? @map("billing_event_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
 
   users           User[]
   objectTypes     ObjectType[]
@@ -37,9 +47,9 @@ model Tenant {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id           String    @id @default(uuid()) @db.Uuid
+  tenantId     String    @map("tenant_id") @db.Uuid
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   /// Lowercase. Unique across workspaces until users can belong to several.
   email        String    @unique
   name         String
@@ -55,6 +65,13 @@ model User {
   @@unique([tenantId, email])
   @@unique([id, tenantId])
   @@map("users")
+}
+
+enum PlanTier {
+  TRIAL
+  START
+  GROWTH
+  SCALE
 }
 
 enum UserRole {
