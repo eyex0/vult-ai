@@ -6,11 +6,13 @@
   "scripts": {
     "build": "prisma generate && tsc -p tsconfig.build.json",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push && prisma generate && tsx scripts/apply-rls.ts",
     "db:seed": "tsx prisma/seed.ts",
     "lint": "tsc --noEmit -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:check-rls": "tsx scripts/check-rls.ts"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

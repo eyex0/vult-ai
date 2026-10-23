@@ -9,13 +9,14 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "db:generate": "pnpm --filter @vult/database db:generate",
-    "db:push": "pnpm --filter @vult/database db:push",
     "db:seed": "pnpm --filter @vult/database db:seed",
     "web:dev": "pnpm --filter @vult/web dev",
     "api:dev": "pnpm --filter @vult/api-server dev",
     "worker:dev": "pnpm --filter @vult/ingestion-worker dev",
     "ai:dev": "cd apps/ai-orchestrator && python3 -m uvicorn main:app --reload --host 0.0.0.0 --port 8000",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "db:migrate": "pnpm --filter @vult/database db:migrate",
+    "db:check-rls": "pnpm --filter @vult/database db:check-rls"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
