@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { prisma, withTenantContext, type Prisma } from '@vult/database';
 import { authRouter } from './auth/routes.js';
+import { leadsRouter } from './leads/routes.js';
 import { CSRF_HEADER } from './auth/session.js';
 import { config } from './config.js';
 import { asyncRoute } from './http.js';
@@ -68,6 +69,7 @@ app.get('/ready', asyncRoute(async (_req, res) => {
 }));
 app.use('/api', rateLimit({ windowMs: 60_000, limit: 300, standardHeaders: 'draft-7', legacyHeaders: false }));
 app.use('/api/v1/auth', authRouter());
+app.use('/api/v1/leads', leadsRouter());
 app.use('/api', tenantIsolationMiddleware);
 
 app.get('/api/v1/objects', asyncRoute(async (req, res) => {

@@ -374,3 +374,20 @@ model MatchMemory {
 
   @@map("match_memories")
 }
+
+/// Early-access requests from the website. Not workspace data, so not under row-level security.
+model Lead {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  email            String
+  company          String
+  role             String?
+  invoicesPerMonth String?  @map("invoices_per_month")
+  message          String?  @db.Text
+  language         String   @default("en")
+  source           String?
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("leads")
+}

@@ -15,6 +15,9 @@ export const APP_NAV: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Workflows", href: "/app/workflows", icon: Workflow },
 ];
 
+/** Pages that run on the workspace's real data; in production builds the sidebar shows only these. */
+export const LIVE_PAGES = new Set(["/app/match"]);
+
 export const RECORD_NAV: { label: string; href: string; icon: LucideIcon; color: string }[] = [
   { label: "Companies", href: "/app/companies", icon: Building2, color: "#6f87ff" },
   { label: "People", href: "/app/people", icon: Users, color: "#3ddc84" },

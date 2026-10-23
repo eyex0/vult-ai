@@ -23,7 +23,9 @@ COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --offline --frozen-lockfile
 # The web app talks to this API; it is baked in at build time.
 ARG VITE_API_URL=""
-ENV VITE_API_URL=$VITE_API_URL
+ARG VITE_CONTACT_EMAIL=""
+ARG VITE_LEGAL_ENTITY=""
+ENV VITE_API_URL=$VITE_API_URL VITE_CONTACT_EMAIL=$VITE_CONTACT_EMAIL VITE_LEGAL_ENTITY=$VITE_LEGAL_ENTITY
 RUN pnpm turbo run build --ui=stream --filter=@vult/api-server... --filter=@vult/ingestion-worker... --filter=@vult/web
 # Self-contained production installs for the Node services.
 RUN pnpm deploy --filter=@vult/api-server --prod /out/api \

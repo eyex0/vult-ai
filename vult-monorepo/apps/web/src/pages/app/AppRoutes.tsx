@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { lazy, Suspense, type ReactNode } from "react";
 import { Redirect, Route, Switch, useLocation } from "wouter";
 import { AppShell } from "@/components/app/AppShell";
+import { API_MODE } from "@/lib/api";
 import { useSession, useSessionLoading } from "@/lib/session";
 
 const AppHome = lazy(() => import("@/pages/app/Home"));
@@ -63,6 +64,16 @@ export default function AppRoutes() {
     <RequireSession>
       <AppShell>
         <AppPage>
+          {API_MODE ? (
+            // Live workspaces: only the pages backed by real data.
+            <Switch>
+              <Route path="/app/match" component={MatchPage} />
+              <Route path="/app/settings/:tab?" component={SettingsPage} />
+              <Route>
+                <Redirect to="/app/match" />
+              </Route>
+            </Switch>
+          ) : (
           <Switch>
             <Route path="/app/home" component={AppHome} />
             <Route path="/app/inbox" component={InboxPage} />
@@ -84,6 +95,7 @@ export default function AppRoutes() {
               <Redirect to="/app/home" />
             </Route>
           </Switch>
+          )}
         </AppPage>
       </AppShell>
     </RequireSession>

@@ -3,6 +3,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { prisma, withTenantContext, type PrismaClient } from '@vult/database';
+import { TRIAL_DAYS } from '@vult/shared-types';
 import { config } from '../config.js';
 import { asyncRoute } from '../http.js';
 import { log } from '../log.js';
@@ -69,7 +70,9 @@ export function authRouter(): Router {
     const passwordHash = await hashPassword(body.data.password);
     const vat = body.data.vatNumber ? body.data.vatNumber.replace(/^IT/i, '') : null;
     await withTenantContext(tenantId, async (tx) => {
-      await tx.tenant.create({ data: { id: tenantId, name: body.data.workspace, legalName: body.data.workspace, vatNumber: vat } });
+      await tx.tenant.create({
+        data: { id: tenantId, name: body.data.workspace, legalName: body.data.workspace, vatNumber: vat, trialEndsAt: new Date(Date.now() + TRIAL_DAYS * 86_400_000) },
+      });
       await tx.user.create({ data: { id: userId, tenantId, email: body.data.email, name: body.data.name, role: 'ADMIN', passwordHash, lastLoginAt: new Date() } });
       await createDefaultObjects(tx, tenantId);
     });

@@ -136,6 +136,9 @@ importers:
       '@vult/match':
         specifier: workspace:*
         version: link:../../packages/match
+      '@vult/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       clsx:
         specifier: ^2.1.1
         version: 2.1.1

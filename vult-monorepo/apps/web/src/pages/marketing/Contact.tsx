@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { useDocumentTitle } from "@/lib/useDocumentTitle";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 type Form = { name: string; email: string; company: string; size: string; message: string };
 const EMPTY: Form = { name: "", email: "", company: "", size: "", message: "" };
@@ -54,7 +55,7 @@ export default function ContactPage() {
             {[
               [MessagesSquare, "A 30-minute walkthrough tailored to your sales process"],
               [Building, "Security review, SSO and data residency for enterprise"],
-              [Mail, "Prefer email? sales@vult.example"],
+              [Mail, `Prefer email? ${CONTACT_EMAIL}`],
             ].map(([Icon, t]) => {
               const I = Icon as typeof Mail;
               return (

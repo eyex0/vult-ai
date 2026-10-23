@@ -3,6 +3,7 @@ import { useState } from "react";
 import { GlowCTA, Reveal, SectionIntro } from "@/components/marketing/Section";
 import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 const ROLES = [
   { title: "Senior Frontend Engineer", team: "Engineering", location: "Remote · Europe", type: "Full-time" },
@@ -41,7 +42,7 @@ export default function CareersPage() {
           <ul className="overflow-hidden rounded-card border border-line bg-white">
             {shown.map((r) => (
               <li key={r.title} className="border-b border-line last:border-b-0">
-                <a href={`mailto:jobs@vult.example?subject=${encodeURIComponent(r.title)}`} className={cn("group grid items-center gap-1 px-6 py-5 transition-colors hover:bg-soft sm:grid-cols-[1.6fr_1fr_1fr_auto] sm:gap-4")}>
+                <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(r.title)}`} className={cn("group grid items-center gap-1 px-6 py-5 transition-colors hover:bg-soft sm:grid-cols-[1.6fr_1fr_1fr_auto] sm:gap-4")}>
                   <span className="font-semibold text-ink">{r.title}</span>
                   <span className="text-sm text-ink-2">{r.team}</span>
                   <span className="text-sm text-subtle">{r.location} · {r.type}</span>
@@ -52,7 +53,7 @@ export default function CareersPage() {
           </ul>
         </div>
       </section>
-      <GlowCTA title="Don’t see your role? Say hello." primary="Start for free" secondary="Contact us" />
+      <GlowCTA title="Don’t see your role? Say hello." primary="Get early access" secondary="Contact us" />
     </>
   );
 }

@@ -6,7 +6,7 @@ import { useHashLocation } from "wouter/use-hash-location";
 import { MarketingLayout } from "@/components/marketing/Layout";
 import { TooltipProvider } from "@/components/ui/Tooltip";
 import { SignInPage, SignUpPage } from "@/pages/auth/Auth";
-import HomePage from "@/pages/marketing/Home";
+import EarlyAccessPage from "@/pages/marketing/EarlyAccess";
 
 // Marketing (Home is eager for first paint; the rest load on demand)
 const PlatformPage = lazy(() => import("@/pages/marketing/Platform"));
@@ -71,7 +71,8 @@ export default function App() {
             </Route>
             <Route path="/">
               <MarketingLayout>
-                <HomePage />
+                {/* Launch: the homepage is the focused early-access landing. */}
+                <EarlyAccessPage lang="en" />
               </MarketingLayout>
             </Route>
             <Route path="/platform/:slug">
@@ -99,6 +100,20 @@ export default function App() {
               {() => (
                 <Marketing>
                   <ChangelogPage />
+                </Marketing>
+              )}
+            </Route>
+            <Route path="/early-access">
+              {() => (
+                <Marketing>
+                  <EarlyAccessPage lang="en" />
+                </Marketing>
+              )}
+            </Route>
+            <Route path="/it">
+              {() => (
+                <Marketing>
+                  <EarlyAccessPage lang="it" />
                 </Marketing>
               )}
             </Route>

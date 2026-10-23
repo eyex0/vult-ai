@@ -1,4 +1,5 @@
-# TLS certificates are obtained and renewed automatically for public domains.
+# One public address serves everything: the web app, and the API under /api.
+# TLS certificates are obtained and renewed automatically.
 # For a staging box without public DNS, set CADDY_GLOBAL_OPTIONS=local_certs to use Caddy's own CA.
 {
   {$CADDY_GLOBAL_OPTIONS}
@@ -6,13 +7,16 @@
 
 {$APP_ADDRESS} {
   encode zstd gzip
-  reverse_proxy web:8080
-}
 
-{$API_ADDRESS} {
-  encode zstd gzip
-  request_body {
-    max_size 60MB
+  @api path /api/* /health /ready
+  handle @api {
+    request_body {
+      max_size 60MB
+    }
+    reverse_proxy api:4000
   }
-  reverse_proxy api:4000
+
+  handle {
+    reverse_proxy web:8080
+  }
 }

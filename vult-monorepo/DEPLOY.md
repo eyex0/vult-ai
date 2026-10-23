@@ -8,8 +8,10 @@ intermediary feed) and the **ai** memory service are optional.
 
 - A Linux server with Docker and the Compose plugin: 2 vCPU, 4 GB RAM, 40 GB disk is enough to start.
   Pick an EU region (Milan, Frankfurt, Paris): invoices hold personal data under GDPR.
-- Two DNS records pointing to the server, for example `app.example.com` and `api.example.com`. Keep both under
-  the same parent domain: the session cookie is SameSite=Lax, so the app and the API must be the same site.
+- One address pointing to the server, for example `app.example.com` (a DNS A record). The web app and the
+  API share it: the API answers under `/api`, so there is no cross-site cookie or CORS to configure.
+  **No domain yet?** Use the free `sslip.io` name of your server's IP: for IP `203.0.113.10` the address is
+  `203-0-113-10.sslip.io`, and Caddy still gets a real certificate. Buy a domain before inviting customers.
 - Ports 80 and 443 open. Caddy gets and renews the TLS certificates by itself.
 
 ## 2. First deployment
@@ -62,7 +64,7 @@ invoice files themselves in object storage with a retention policy.
 
 ## 5. Watching it
 
-- `GET https://api.example.com/health`: the process is up. `GET /ready`: the database answers.
+- `GET https://app.example.com/health`: the process is up. `GET /ready`: the database answers.
   Point an uptime monitor (Better Stack, UptimeRobot) at `/ready`.
 - Logs are one JSON object per line, with a request id that is also returned in the `x-request-id` header:
   `docker compose -f docker-compose.prod.yml logs -f api`.
@@ -82,11 +84,12 @@ works without either profile.
 
 | Variable | Required | What it does |
 | --- | --- | --- |
-| `APP_DOMAIN`, `API_DOMAIN` | yes | Public host names; the web app is built to call `https://API_DOMAIN` |
+| `APP_DOMAIN` | yes | Public address; the web app is served at `/` and the API at `/api` |
+| `CONTACT_EMAIL`, `LEGAL_ENTITY` | yes | Shown on the website and in the privacy policy and terms |
+| `LEADS_WEBHOOK_URL` | no | Each early-access request is also posted here (Slack, Make, Zapier); export them with `pnpm --filter @vult/api-server leads` |
 | `POSTGRES_OWNER_PASSWORD` | yes | Owner of the tables; used only by `migrate` |
 | `POSTGRES_APP_PASSWORD` | yes | `vult_app`, used by the API and worker |
 | `JWT_SECRET` | yes | Signs sessions; 32+ characters. Changing it signs everyone out |
-| `COOKIE_DOMAIN` | no | Parent domain shared by app and API, e.g. `.example.com` |
 | `SIGNUP_ENABLED` | no | `false` closes public sign-up |
 | `IMAGE_PREFIX`, `VERSION` | no | Image names when pushing to a registry |
 | `CADDY_GLOBAL_OPTIONS` | no | `local_certs` for a staging box without public DNS (Caddy's own certificates) |
@@ -104,7 +107,8 @@ The same images run on managed platforms (Render, Fly.io, Railway, Scaleway, Goo
 3. Run the `api` image with `DATABASE_URL` for `vult_app`, `JWT_SECRET`, `CORS_ORIGINS=https://app.example.com`,
    `NODE_ENV=production`, `TRUST_PROXY_HOPS=1`. Health check: `/ready`.
 4. Build the `web` image with `--build-arg VITE_API_URL=https://api.example.com` and run it with
-   `API_ORIGIN=https://api.example.com` (port 8080). Or upload `apps/web/dist` to any static host with an
+   `API_ORIGIN=https://api.example.com` (port 8080). On a managed platform the API usually gets its own
+   address: keep both under the same parent domain, because the session cookie is SameSite=Lax. Or upload `apps/web/dist` to any static host with an
    SPA fallback to `index.html`.
 
 ## 9. Before the first paying customer

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { CONTACT_EMAIL, LEGAL_ENTITY } from "@/lib/site";
 import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 import NotFoundPage from "./NotFound";
@@ -11,37 +12,85 @@ interface Doc {
   sections: { id: string; title: string; body: string[] }[];
 }
 
+// The legal entity behind Vult is set at build time; brackets show what is still missing.
+const ENTITY = LEGAL_ENTITY;
+const PRIVACY_EMAIL = CONTACT_EMAIL;
+const UPDATED = "October 24, 2026";
+
 const DOCS: Record<string, Doc> = {
   privacy: {
     title: "Privacy Policy",
-    updated: "October 1, 2026",
-    intro: "This sample policy explains how a CRM like Vult handles personal data. It is placeholder text for a demo product and is not legal advice.",
+    updated: UPDATED,
+    intro: `This policy explains what personal data Vult processes during the early-access programme, why, and what you can do about it. Vult is operated by ${ENTITY}.`,
     sections: [
-      { id: "scope", title: "1. Scope", body: ["This policy covers information we process when you visit our website, create an account, or use the Vult application.", "Customers who store data about their own contacts in Vult act as the controller of that data; Vult processes it on their behalf."] },
-      { id: "collect", title: "2. Information we collect", body: ["Account information such as your name, email address and workspace details.", "Usage information such as pages visited, features used and device information.", "Content you add to Vult, including records, notes, emails and files."] },
-      { id: "use", title: "3. How we use information", body: ["To provide, maintain and improve the service.", "To secure accounts, prevent abuse and comply with legal obligations.", "To communicate with you about your account and product updates. You can opt out of marketing messages at any time."] },
-      { id: "ai", title: "4. AI features", body: ["Agents and Ask Vult process workspace data only to answer your requests and perform the actions you approve.", "Workspace content is not used to train general-purpose models."] },
-      { id: "sharing", title: "5. Sharing", body: ["We share information with sub-processors that help us operate the service, under contracts that require appropriate protection.", "We do not sell personal information."] },
-      { id: "retention", title: "6. Retention", body: ["We keep account data for as long as your account is active. Workspace admins can delete records at any time; deleted data is purged from backups within 30 days."] },
-      { id: "rights", title: "7. Your rights", body: ["Depending on where you live, you may have the right to access, correct, delete or export your personal data, and to object to certain processing.", "Contact privacy@vult.example to exercise these rights."] },
-      { id: "security", title: "8. Security", body: ["Data is encrypted in transit and at rest. Access is limited to personnel who need it, and all access is logged."] },
-      { id: "changes", title: "9. Changes", body: ["We will notify you of material changes by email or in the product before they take effect."] },
+      { id: "roles", title: "1. Who is responsible", body: [
+        `For your account and for early-access requests sent through our website, ${ENTITY} is the data controller.`,
+        "For the invoices and bank statements you upload, your company is the controller and Vult processes them on your behalf, as your data processor under Article 28 GDPR. We sign a data processing agreement (DPA) with every company before it uploads data.",
+      ] },
+      { id: "collect", title: "2. What we process", body: [
+        "Account data: your name, work email, company name, optional Partita IVA, and a hashed password.",
+        "Early-access requests: name, email, company, role, approximate invoice volume and your message.",
+        "Workspace data you upload: electronic invoices (customers, amounts, dates, payment terms) and bank statements (dates, amounts, payer names, IBANs, descriptions). Invoices to sole traders can contain personal data.",
+        "Technical data: server logs with time, address requested, response status and an anonymous request id. We do not use analytics or advertising trackers.",
+      ] },
+      { id: "use", title: "3. Why we process it", body: [
+        "To run the service you asked for: matching payments to invoices and showing balances (performance of a contract, Art. 6(1)(b) GDPR).",
+        "To answer early-access requests and set up pilots (pre-contractual steps, Art. 6(1)(b)).",
+        "To keep the service secure and working (legitimate interest, Art. 6(1)(f)), and to meet legal obligations such as tax records (Art. 6(1)(c)).",
+        "We do not sell personal data, do not use it for advertising, and do not use workspace data to train AI models.",
+      ] },
+      { id: "where", title: "4. Where it is stored", body: [
+        "On servers located in the European Union. Each company's data is isolated by the database itself (row-level security), and the application cannot read across companies.",
+        "We use a small number of providers to run the service (hosting, email delivery). They act as sub-processors under contracts with GDPR safeguards. The current list is available on request.",
+      ] },
+      { id: "retention", title: "5. How long we keep it", body: [
+        "Workspace data: while your company uses Vult. If you stop after the pilot or close your account, we delete it within 30 days, and from backups within a further 14 days.",
+        "Account data: while the account exists. Early-access requests: up to 12 months if no pilot starts.",
+        "Server logs: up to 30 days.",
+      ] },
+      { id: "rights", title: "6. Your rights", body: [
+        `You can ask to access, correct, delete or export your personal data, to restrict or object to processing, by writing to ${PRIVACY_EMAIL}. We answer within 30 days.`,
+        "For data in a workspace, write to the company that uses Vult: it decides about that data, and we help it answer.",
+        "You can also complain to the Italian data protection authority, the Garante per la protezione dei dati personali (garanteprivacy.it).",
+      ] },
+      { id: "security", title: "7. Security", body: [
+        "Connections are encrypted (HTTPS). Passwords are stored as scrypt hashes. Sessions use secure, httpOnly cookies, and changes require a protection header against cross-site requests.",
+        "Access to production systems is limited to the people who run the service.",
+      ] },
+      { id: "cookies", title: "8. Cookies", body: [
+        "We use one cookie, vult_session, to keep you signed in. It is strictly necessary, so it needs no consent. The site also remembers small preferences (for example a dismissed banner) in your browser's local storage.",
+      ] },
+      { id: "changes", title: "9. Changes", body: ["If we change this policy in a way that matters, we tell you by email before the change applies."] },
     ],
   },
   terms: {
     title: "Terms of Service",
-    updated: "October 1, 2026",
-    intro: "These sample terms describe the agreement between a customer and a CRM provider. They are placeholder text for a demo product and are not legal advice.",
+    updated: UPDATED,
+    intro: `These terms apply to the use of Vult during the early-access programme. Vult is provided by ${ENTITY}.`,
     sections: [
-      { id: "agreement", title: "1. Agreement", body: ["By creating an account or using Vult you agree to these terms on behalf of yourself or the organisation you represent."] },
-      { id: "accounts", title: "2. Accounts", body: ["You are responsible for activity under your account and for keeping your credentials secure.", "Workspace admins control who has access and what each member can do."] },
-      { id: "use", title: "3. Acceptable use", body: ["Don’t use Vult to send spam, violate others’ rights, or attempt to break or overload the service.", "You are responsible for having a lawful basis to store and contact the people in your workspace."] },
-      { id: "data", title: "4. Your data", body: ["You own the content you put into Vult. You grant us the limited rights needed to host and process it to provide the service.", "You can export your data at any time."] },
-      { id: "billing", title: "5. Plans and billing", body: ["Paid plans are billed in advance per seat. Upgrades take effect immediately and are prorated; downgrades apply at the next renewal."] },
-      { id: "ai", title: "6. AI features", body: ["Outputs from agents may be inaccurate. Review important actions before approving them. You remain responsible for messages sent from your workspace."] },
-      { id: "termination", title: "7. Termination", body: ["You can cancel at any time. We may suspend accounts that breach these terms, with notice where practical."] },
-      { id: "liability", title: "8. Liability", body: ["To the extent permitted by law, the service is provided as is, and our total liability is limited to the fees paid in the twelve months before a claim."] },
-      { id: "contact", title: "9. Contact", body: ["Questions about these terms? Write to legal@vult.example."] },
+      { id: "agreement", title: "1. Agreement", body: ["By creating a workspace or using Vult you accept these terms on behalf of the company you represent, and confirm you are allowed to do so."] },
+      { id: "service", title: "2. The service", body: [
+        "Vult reads the electronic invoices and bank statements you upload, matches payments to invoices, and shows balances and overdue amounts. It does not move money, does not access your bank account, and does not send invoices to SDI on your behalf.",
+        "Vult is in early access: features change often and the service may occasionally be unavailable. Automatic matches are suggestions you can review and undo; check important figures before acting on them.",
+      ] },
+      { id: "pilot", title: "3. Free pilot and plans", body: [
+        "Each workspace starts with a free 30-day pilot. No payment details are needed for the pilot.",
+        "After the pilot you can choose a paid plan, priced by the number of invoices imported per month, in euros, VAT excluded. Paid plans renew monthly or yearly until cancelled; you can cancel at any time with effect from the end of the current period.",
+      ] },
+      { id: "data", title: "4. Your data", body: [
+        "Your company owns the data it uploads. We process it only to provide the service, under the data processing agreement and the Privacy Policy.",
+        "You are responsible for having the right to upload the invoices and statements, and for their content. You can export or delete your data at any time.",
+      ] },
+      { id: "accounts", title: "5. Accounts and acceptable use", body: [
+        "Keep your password safe; activity in your workspace is your responsibility.",
+        "Do not try to access other companies' data, disrupt the service, or use it for unlawful purposes.",
+      ] },
+      { id: "liability", title: "6. Liability", body: [
+        "During the free pilot the service is provided as is. To the extent allowed by law, our total liability for paid plans is limited to the fees paid in the twelve months before the claim, and we are not liable for indirect losses. Nothing limits liability for wilful misconduct or gross negligence.",
+      ] },
+      { id: "termination", title: "7. Ending the service", body: ["You can stop at any time. We may suspend a workspace that breaches these terms, with notice where possible. When a workspace closes, its data is deleted as described in the Privacy Policy."] },
+      { id: "law", title: "8. Law", body: ["These terms are governed by Italian law. Mandatory consumer and data protection rules still apply where relevant."] },
+      { id: "contact", title: "9. Contact", body: [`Questions about these terms: ${PRIVACY_EMAIL}.`] },
     ],
   },
 };

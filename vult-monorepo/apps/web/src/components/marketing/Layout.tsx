@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Logo } from "@/components/brand/Logo";
 import { ThemeScope } from "@/components/ui/ThemeScope";
 import { FOOTER_COLUMNS } from "@/content/nav";
@@ -9,7 +9,9 @@ import { readJSON, writeJSON } from "@/lib/storage";
 import { Header } from "./Header";
 
 function AnnouncementBar() {
-  const [show, setShow] = useState(() => !readJSON("announce.agents", false));
+  const [location] = useLocation();
+  const italian = location === "/it";
+  const [show, setShow] = useState(() => !readJSON("announce.early", false));
   return (
     <AnimatePresence initial={false}>
       {show && (
@@ -21,8 +23,8 @@ function AnnouncementBar() {
           className="relative overflow-hidden bg-black text-[14px] text-white"
         >
           <div className="flex h-12 items-center justify-center px-12">
-            <Link href="/platform/agents" className="group inline-flex items-center gap-1.5 font-medium text-white">
-              Vult Agents are here — hand off the busywork
+            <Link href={italian ? "/it#pilot" : "/early-access"} className="group inline-flex items-center gap-1.5 font-medium text-white">
+              {italian ? "Accesso anticipato aperto: 30 giorni di prova gratuita per le aziende B2B italiane" : "Early access is open: a free 30-day pilot for Italian B2B companies"}
               <ArrowRight aria-hidden className="size-3.5 transition-transform duration-150 group-hover:translate-x-[3px]" />
             </Link>
           </div>
@@ -31,7 +33,7 @@ function AnnouncementBar() {
             aria-label="Dismiss banner"
             onClick={() => {
               setShow(false);
-              writeJSON("announce.agents", true);
+              writeJSON("announce.early", true);
             }}
             className="absolute right-3 top-1.5 inline-flex size-9 items-center justify-center rounded-[10px] text-[#a3a6b0] transition-colors hover:bg-white/10 hover:text-white"
           >

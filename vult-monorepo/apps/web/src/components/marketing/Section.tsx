@@ -125,7 +125,19 @@ export function FAQ({ items, title = "Questions,", subtitle = "answered." }: { i
   );
 }
 
-export function GlowCTA({ title, primary = "Start for free", secondary = "Talk to sales" }: { title: ReactNode; primary?: string; secondary?: string | null }) {
+export function GlowCTA({
+  title,
+  primary = "Get early access",
+  primaryHref = "/early-access",
+  secondary = "Talk to us",
+  secondaryHref = "/contact",
+}: {
+  title: ReactNode;
+  primary?: string;
+  primaryHref?: string;
+  secondary?: string | null;
+  secondaryHref?: string;
+}) {
   return (
     <section className="relative overflow-hidden bg-night text-white">
       <div aria-hidden className="vlines-dark absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,#000_40%,#000_70%,transparent)]" />
@@ -139,11 +151,11 @@ export function GlowCTA({ title, primary = "Start for free", secondary = "Talk t
         <h2 className="display text-balance text-[clamp(40px,6vw,72px)] font-semibold leading-[0.98] tracking-[-0.025em]">{title}</h2>
         <div className="flex flex-wrap justify-center gap-2.5">
           {secondary && (
-            <Button href="/contact" variant="outline-inverse" size="lg">
+            <Button href={secondaryHref} variant="outline-inverse" size="lg">
               {secondary}
             </Button>
           )}
-          <Button href="/signup" variant="inverse" size="lg">
+          <Button href={primaryHref} variant="inverse" size="lg">
             {primary}
           </Button>
         </div>

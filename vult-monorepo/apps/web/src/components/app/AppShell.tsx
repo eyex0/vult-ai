@@ -16,13 +16,14 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { store, uid, useDB } from "@/data/store";
 import type { ChecklistKey } from "@/data/types";
 import { API_MODE } from "@/lib/api";
+import { CONTACT_EMAIL } from "@/lib/site";
 import { signOut, useSession } from "@/lib/session";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { AskVultPanel } from "./AskVult";
 import { CommandPalette } from "./CommandPalette";
-import { APP_NAV, RECORD_NAV } from "./nav";
+import { APP_NAV, LIVE_PAGES, RECORD_NAV } from "./nav";
 import { PageMetaProvider, usePageMetaValue } from "./PageMeta";
 import { toast } from "sonner";
 
@@ -238,9 +239,11 @@ function Sidebar({
             <DropdownItem onSelect={() => setInvite(true)}>
               <UserPlus /> Invite members
             </DropdownItem>
-            <DropdownItem onSelect={() => store.reset()}>
-              <RotateCcw /> Reset demo data
-            </DropdownItem>
+            {!API_MODE && (
+              <DropdownItem onSelect={() => store.reset()}>
+                <RotateCcw /> Reset demo data
+              </DropdownItem>
+            )}
             <DropdownSeparator />
             <DropdownItem
               onSelect={() => {
@@ -273,6 +276,7 @@ function Sidebar({
             </button>
           </Tooltip>
         ) : null}
+        {!API_MODE && (
         <button
           type="button"
           onClick={onSearch}
@@ -290,10 +294,14 @@ function Sidebar({
             </>
           )}
         </button>
-        {APP_NAV.map((n) => (
+        )}
+        {/* The live product shows only what works on real data today; the rest of the CRM stays in the demo. */}
+        {(API_MODE ? APP_NAV.filter((n) => LIVE_PAGES.has(n.href)) : APP_NAV).map((n) => (
           <NavLink key={n.href} href={n.href} label={n.label} collapsed={collapsed} onNavigate={onNavigate} badge={n.label === "Inbox" ? unread : undefined} icon={<n.icon className="size-[15px]" strokeWidth={1.8} />} />
         ))}
 
+        {!API_MODE && (
+        <>
         {!collapsed && <SectionToggle title="Records" open={sections.records} onToggle={() => toggle("records")} />}
         {collapsed && <span aria-hidden className="mx-1 my-2.5 h-px bg-app-line-soft" />}
         <AnimatePresence initial={false}>
@@ -330,10 +338,22 @@ function Sidebar({
             </AnimatePresence>
           </>
         )}
+        </>
+        )}
       </nav>
 
       {!collapsed && (
         <div className="flex shrink-0 flex-col gap-2 border-t border-app-line-soft p-2.5">
+          {API_MODE ? (
+            <div className="flex flex-col gap-1 rounded-[10px] border border-[rgb(59_91_253/0.3)] bg-[linear-gradient(180deg,rgb(59_91_253/0.18),rgb(59_91_253/0.06))] px-3 py-2.5 text-[12.5px]">
+              <span className="font-[550] text-white">Early access</span>
+              <span className="text-app-dim">Free while we build Vult with you. Tell us what to fix.</span>
+              <a href={`mailto:${CONTACT_EMAIL}?subject=Vult%20early%20access`} className="font-[550] text-[#9daeff] hover:text-white">
+                Send feedback →
+              </a>
+            </div>
+          ) : (
+          <>
           <GettingStarted />
           <button
             type="button"
@@ -348,6 +368,8 @@ function Sidebar({
               Choose a plan →
             </Link>
           </div>
+          </>
+          )}
         </div>
       )}
       <InviteModal open={invite} onOpenChange={setInvite} />
@@ -379,9 +401,11 @@ function TopBar({ onMenu, onAsk }: { onMenu: () => void; onAsk: () => void }) {
       <Button href="/contact" variant="ghost" size="sm" className="hidden text-app-dim sm:inline-flex">
         <CircleHelp className="size-3.5" /> Help
       </Button>
-      <Button variant="accent" size="sm" onClick={onAsk}>
-        <Sparkles className="size-3.5" /> Ask Vult
-      </Button>
+      {!API_MODE && (
+        <Button variant="accent" size="sm" onClick={onAsk}>
+          <Sparkles className="size-3.5" /> Ask Vult
+        </Button>
+      )}
     </header>
   );
 }
@@ -402,7 +426,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      if (!API_MODE && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPalette((p) => !p);
       }

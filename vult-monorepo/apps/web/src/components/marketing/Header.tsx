@@ -141,11 +141,14 @@ export function Header() {
               </Button>
             ) : (
               <>
+                <Link href={location === "/it" ? "/" : "/it"} className="hidden h-9 items-center rounded-[10px] px-2.5 text-[14px] font-medium text-subtle transition-colors hover:bg-soft-2 hover:text-ink sm:inline-flex" hrefLang={location === "/it" ? "en" : "it"}>
+                  {location === "/it" ? "English" : "Italiano"}
+                </Link>
                 <Button href="/signin" variant="secondary" size="md" className="hidden sm:inline-flex">
                   Sign in
                 </Button>
-                <Button href="/signup" size="md">
-                  Start for free
+                <Button href="/early-access" size="md">
+                  Get early access
                 </Button>
               </>
             )}
@@ -243,8 +246,8 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
             <Button href="/signin" variant="secondary" size="lg">
               Sign in
             </Button>
-            <Button href="/signup" size="lg">
-              Start for free
+            <Button href="/early-access" size="lg">
+              Get early access
             </Button>
           </div>
         </motion.div>

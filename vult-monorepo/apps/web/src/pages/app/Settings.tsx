@@ -11,16 +11,19 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { store, useDB } from "@/data/store";
 import type { Member } from "@/data/types";
+import { API_MODE } from "@/lib/api";
 import { updateProfileName, useSession } from "@/lib/session";
 import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const TABS = [
+const ALL_TABS = [
   ["profile", "Profile"],
   ["workspace", "Workspace"],
   ["members", "Members"],
   ["billing", "Billing"],
 ] as const;
+// Workspace, members and billing settings are still demo-only.
+const TABS = API_MODE ? ALL_TABS.filter(([t]) => t === "profile") : ALL_TABS;
 
 function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return (

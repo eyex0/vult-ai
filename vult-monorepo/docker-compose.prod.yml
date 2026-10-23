@@ -42,9 +42,9 @@ services:
       <<: *node-env
       API_PORT: "4000"
       CORS_ORIGINS: https://${APP_DOMAIN:?}
-      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
       TRUST_PROXY_HOPS: "1"
       SIGNUP_ENABLED: ${SIGNUP_ENABLED:-true}
+      LEADS_WEBHOOK_URL: ${LEADS_WEBHOOK_URL:-}
       AI_ORCHESTRATOR_URL: http://ai:8000
       AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
     depends_on:
@@ -56,10 +56,12 @@ services:
       context: .
       target: web
       args:
-        VITE_API_URL: https://${API_DOMAIN:?}
+        VITE_API_URL: https://${APP_DOMAIN:?}
+        VITE_CONTACT_EMAIL: ${CONTACT_EMAIL:?}
+        VITE_LEGAL_ENTITY: ${LEGAL_ENTITY:?}
     restart: unless-stopped
     environment:
-      API_ORIGIN: https://${API_DOMAIN:?}
+      API_ORIGIN: https://${APP_DOMAIN:?}
 
   caddy:
     image: caddy:2.8-alpine
@@ -67,7 +69,6 @@ services:
     ports: ["80:80", "443:443"]
     environment:
       APP_ADDRESS: ${APP_DOMAIN:?}
-      API_ADDRESS: ${API_DOMAIN:?}
       CADDY_GLOBAL_OPTIONS: ${CADDY_GLOBAL_OPTIONS:-}
     volumes:
       - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro

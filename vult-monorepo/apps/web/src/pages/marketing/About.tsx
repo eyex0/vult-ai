@@ -59,7 +59,7 @@ export default function AboutPage() {
           </RevealGroup>
         </div>
       </section>
-      <GlowCTA title="Come build with us." primary="Start for free" secondary={null} />
+      <GlowCTA title="Come build with us." primary="Get early access" secondary={null} />
     </>
   );
 }

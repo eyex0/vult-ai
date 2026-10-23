@@ -19,6 +19,8 @@ const schema = z
     SIGNUP_ENABLED: bool.default('true'),
     AI_ORCHESTRATOR_URL: z.string().default('http://localhost:8000'),
     AI_SERVICE_TOKEN: z.string().optional(),
+    /** Optional: each early-access request is also POSTed here (Slack incoming webhook, Make, Zapier). */
+    LEADS_WEBHOOK_URL: z.string().url().optional().or(z.literal('').transform(() => undefined)),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return;
