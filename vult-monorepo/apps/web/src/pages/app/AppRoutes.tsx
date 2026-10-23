@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { lazy, Suspense, type ReactNode } from "react";
 import { Redirect, Route, Switch, useLocation } from "wouter";
 import { AppShell } from "@/components/app/AppShell";
-import { useSession } from "@/lib/session";
+import { useSession, useSessionLoading } from "@/lib/session";
 
 const AppHome = lazy(() => import("@/pages/app/Home"));
 const InboxPage = lazy(() => import("@/pages/app/Inbox"));
@@ -33,7 +33,9 @@ function Fallback() {
 
 function RequireSession({ children }: { children: ReactNode }) {
   const session = useSession();
+  const loading = useSessionLoading();
   const [location] = useLocation();
+  if (loading) return <Fallback />;
   if (!session) return <Redirect to={`/signin?next=${encodeURIComponent(location)}`} />;
   return <>{children}</>;
 }

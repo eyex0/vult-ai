@@ -15,6 +15,7 @@ import { ThemeScope, useThemeClass } from "@/components/ui/ThemeScope";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { store, uid, useDB } from "@/data/store";
 import type { ChecklistKey } from "@/data/types";
+import { API_MODE } from "@/lib/api";
 import { signOut, useSession } from "@/lib/session";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { spring } from "@/lib/motion";
@@ -123,8 +124,15 @@ export function InviteModal({ open, onOpenChange }: { open: boolean; onOpenChang
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Member");
   const [error, setError] = useState("");
+  const session = useSession();
+  const db = useDB();
+  const workspaceName = session?.workspace ?? db.workspace.name;
   const submit = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Enter a valid email address.");
+    if (API_MODE) {
+      toast("Inviting teammates is coming soon", { description: "For now, each teammate can create an account with their own email." });
+      return;
+    }
     const name = email.split("@")[0]!.replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
     store.create("members", { id: uid("m"), name, email, role: role as "Member", title: "Invited" });
     store.tick("invite");
@@ -138,7 +146,7 @@ export function InviteModal({ open, onOpenChange }: { open: boolean; onOpenChang
       open={open}
       onOpenChange={onOpenChange}
       title="Invite members"
-      description="They’ll get access to the Ridgeway Labs workspace."
+      description={`They’ll get access to the ${workspaceName} workspace.`}
       footer={
         <>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
@@ -217,7 +225,7 @@ function Sidebar({
             </span>
             {!collapsed && (
               <>
-                <span className="truncate text-[13.5px] font-semibold">{db.workspace.name}</span>
+                <span className="truncate text-[13.5px] font-semibold">{session?.workspace ?? db.workspace.name}</span>
                 <ChevronDown aria-hidden className="size-3 shrink-0 text-app-mute" />
               </>
             )}
@@ -236,8 +244,7 @@ function Sidebar({
             <DropdownSeparator />
             <DropdownItem
               onSelect={() => {
-                signOut();
-                navigate("/");
+                void signOut().then(() => navigate("/"));
               }}
             >
               <LogOut /> Sign out

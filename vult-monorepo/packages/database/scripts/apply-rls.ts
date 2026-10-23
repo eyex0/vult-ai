@@ -49,7 +49,27 @@ async function main() {
   }
 }
 
+/**
+ * Sign-in happens before the workspace is known, so a second, read-only policy lets a transaction that has
+ * set app.auth_email see exactly the user with that email, and nothing else.
+ */
+async function applyAuthLookupPolicy() {
+  await prisma.$executeRawUnsafe(`
+    DO $policy$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE schemaname = current_schema() AND tablename = 'users' AND policyname = 'users_auth_lookup'
+      ) THEN
+        CREATE POLICY "users_auth_lookup" ON "users" FOR SELECT
+          USING ("email" = current_setting('app.auth_email', true));
+      END IF;
+    END
+    $policy$;
+  `);
+}
+
 main()
+  .then(applyAuthLookupPolicy)
   .catch((error: unknown) => {
     console.error('Failed to apply tenant RLS policies', error);
     process.exitCode = 1;

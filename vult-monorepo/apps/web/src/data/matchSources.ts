@@ -57,6 +57,7 @@ export interface MatchModel {
 }
 
 const moreAuto = (n: number) => (n ? (n > 1 ? `${n} more payments now match automatically` : "1 more payment now matches automatically") : "");
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const joinNotes = (parts: string[]) => parts.filter(Boolean).join(" · ") || undefined;
 
 // ---------------------------------------------------------------------------
@@ -151,7 +152,7 @@ export function useDemoMatch(): MatchModel {
       const known = new Set(computed.transactions.map((t) => t.id));
       const fresh = transactions.filter((t) => !known.has(t.id));
       setState({ ...state, uploaded: [...state.uploaded, ...fresh] });
-      return { title: `Imported ${fresh.length} transactions`, description: skipped.length ? `${skipped.length} rows skipped` : undefined };
+      return { title: `Imported ${plural(fresh.length, "transaction")}`, description: skipped.length ? `${skipped.length} rows skipped` : undefined };
     },
     reset() {
       removeKey(DEMO_KEY);
@@ -195,7 +196,6 @@ interface RunSummary {
 }
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const describeRun = (r: RunSummary) => joinNotes([r.auto ? `${plural(r.auto, "payment")} matched automatically` : "", r.review ? `${r.review} to review` : ""]);
 
 function toRow(t: ApiTransaction): MatchRow {
@@ -291,7 +291,7 @@ export function useLiveMatch(conn: ApiConnection | null): MatchModel {
       guarded(async () => {
         const res = await upload("/bank/statements", file, "text/csv");
         const run = await runMatching();
-        return { title: `Imported ${res.imported} transactions`, description: joinNotes([res.duplicates ? `${res.duplicates} already imported` : "", describeRun(run) ?? ""]) };
+        return { title: `Imported ${plural(Number(res.imported), "transaction")}`, description: joinNotes([res.duplicates ? `${res.duplicates} already imported` : "", describeRun(run) ?? ""]) };
       }),
     uploadInvoices: (file) =>
       guarded(async () => {
@@ -299,7 +299,7 @@ export function useLiveMatch(conn: ApiConnection | null): MatchModel {
         const run = await runMatching();
         const skipped = Array.isArray(res.skipped) ? res.skipped.length : 0;
         return {
-          title: `Imported ${res.created} invoices`,
+          title: `Imported ${plural(Number(res.created), "invoice")}`,
           description: joinNotes([res.existing ? `${res.existing} already there` : "", res.purchases ? `${res.purchases} supplier invoices skipped` : "", skipped ? `${skipped} files not read` : "", describeRun(run) ?? ""]),
         };
       }),

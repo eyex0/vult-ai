@@ -1,5 +1,5 @@
 import { Queue } from 'bullmq';
-import IORedis from 'ioredis';
+import { Redis } from 'ioredis';
 
 export type SdiInvoiceJob = {
   tenantId: string;
@@ -7,7 +7,7 @@ export type SdiInvoiceJob = {
   fileName: string;
 };
 
-const connection = new IORedis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
+const connection = new Redis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
   maxRetriesPerRequest: null,
   enableReadyCheck: true
 });

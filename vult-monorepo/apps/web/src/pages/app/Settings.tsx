@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { store, useDB } from "@/data/store";
 import type { Member } from "@/data/types";
-import { signIn, useSession } from "@/lib/session";
+import { updateProfileName, useSession } from "@/lib/session";
 import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -54,8 +54,11 @@ function Profile() {
         <Button
           className="self-start"
           onClick={() => {
-            if (session) signIn(session.email, name);
-            toast.success("Profile saved");
+            if (!name.trim()) return void toast.error("Enter your name");
+            updateProfileName(name.trim()).then(
+              () => toast.success("Profile saved"),
+              (e: unknown) => toast.error("Could not save", { description: e instanceof Error ? e.message : undefined }),
+            );
           }}
         >
           Save changes

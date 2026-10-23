@@ -1,6 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import type { TenantContext } from '@vult/shared-types';
+import { CSRF_HEADER, readCookie, SESSION_COOKIE } from '../auth/session.js';
+import { config } from '../config.js';
 
 export type AuthenticatedTenantRequest = Request & {
   tenant: TenantContext;
@@ -21,16 +23,28 @@ type VultClaims = JwtPayload & {
 
 const roles = new Set<TenantContext['role']>(['ADMIN', 'MANAGER', 'MEMBER', 'READ_ONLY']);
 
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+
+/**
+ * Accepts either an API token (Authorization: Bearer, for scripts and integrations) or the browser session cookie.
+ * Cookie-authenticated writes must carry the CSRF header, which a page on another site cannot add.
+ */
 export function tenantIsolationMiddleware(req: Request, res: Response, next: NextFunction): void {
   const authorization = req.header('authorization');
-  const secret = process.env.JWT_SECRET;
-  if (!secret || !authorization?.startsWith('Bearer ')) {
+  const bearer = authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined;
+  const cookie = bearer ? undefined : readCookie(req, SESSION_COOKIE);
+  const token = bearer ?? cookie;
+  if (!token) {
     res.status(401).json({ error: 'Authentication required' });
+    return;
+  }
+  if (cookie && !SAFE_METHODS.has(req.method) && req.header(CSRF_HEADER) !== '1') {
+    res.status(403).json({ error: 'Missing CSRF header' });
     return;
   }
 
   try {
-    const decoded = jwt.verify(authorization.slice(7), secret, { algorithms: ['HS256'] });
+    const decoded = jwt.verify(token, config().JWT_SECRET, { algorithms: ['HS256'] });
     if (typeof decoded === 'string') throw new Error('Invalid token payload');
     const claims = decoded as VultClaims;
     if (

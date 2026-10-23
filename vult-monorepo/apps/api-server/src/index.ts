@@ -1,13 +1,24 @@
 import { prisma } from '@vult/database';
-import { app } from './app.js';
+import { config } from './config.js';
+import { errorFields, log } from './log.js';
 
-const port = Number(process.env.API_PORT ?? process.env.PORT ?? 4000);
+// Fail fast on a bad environment before anything else loads.
+let port: number;
+try {
+  port = config().API_PORT;
+} catch (error) {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+}
+const { app } = await import('./app.js');
 
-const server = app.listen(port, '0.0.0.0', () => {
-  console.log(`[Vult API] listening on ${port}`);
-});
+const server = app.listen(port, '0.0.0.0', () => log('info', 'api listening', { port, env: config().NODE_ENV }));
+process.on('unhandledRejection', (error) => log('error', 'unhandled rejection', errorFields(error)));
 
 async function shutdown() {
+  log('info', 'shutting down');
+  // Stop taking connections, let in-flight requests finish, then force exit after 10 s.
+  setTimeout(() => process.exit(1), 10_000).unref();
   server.close(async () => {
     await prisma.$disconnect();
     process.exit(0);

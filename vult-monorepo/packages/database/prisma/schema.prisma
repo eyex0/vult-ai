@@ -38,11 +38,15 @@ model User {
   id        String   @id @default(uuid()) @db.Uuid
   tenantId  String   @map("tenant_id") @db.Uuid
   tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  email     String
-  name      String
-  role      UserRole @default(MEMBER)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  /// Lowercase. Unique across workspaces until users can belong to several.
+  email        String    @unique
+  name         String
+  role         UserRole  @default(MEMBER)
+  /// scrypt hash; null for users who cannot sign in with a password.
+  passwordHash String?   @map("password_hash")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
   aiMemories AiMemory[]
 

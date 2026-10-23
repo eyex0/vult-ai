@@ -3,8 +3,13 @@ import express, { type ErrorRequestHandler } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { z } from 'zod';
-import { withTenantContext, type Prisma } from '@vult/database';
+import { randomUUID } from 'node:crypto';
+import { prisma, withTenantContext, type Prisma } from '@vult/database';
+import { authRouter } from './auth/routes.js';
+import { CSRF_HEADER } from './auth/session.js';
+import { config } from './config.js';
 import { asyncRoute } from './http.js';
+import { errorFields, log } from './log.js';
 import { matchRouter } from './match/routes.js';
 import {
   requireWriteAccess,
@@ -12,24 +17,57 @@ import {
 } from './middleware/tenantIsolation.js';
 
 export const app = express();
-const jsonLimit = process.env.JSON_BODY_LIMIT ?? '1mb';
+const cfg = config();
 const recordInput = z.object({
   objectSlug: z.string().min(1).max(80).regex(/^[a-z0-9][a-z0-9_-]*$/),
   attributes: z.record(z.unknown())
 });
 
 app.disable('x-powered-by');
-app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS ?? 0));
+app.set('trust proxy', cfg.TRUST_PROXY_HOPS);
 app.use(helmet());
 app.use(cors({
-  origin: (process.env.CORS_ORIGINS ?? 'http://localhost:3000').split(',').map((origin) => origin.trim()),
+  origin: cfg.corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Authorization', 'Content-Type']
+  allowedHeaders: ['Authorization', 'Content-Type', CSRF_HEADER, 'X-Request-Id'],
+  maxAge: 600
 }));
-app.use(express.json({ limit: jsonLimit }));
+
+// Request id for tracing across services, and one log line per request (never bodies or tokens).
+app.use((req, res, next) => {
+  const incoming = req.header('x-request-id');
+  const id = incoming && /^[\w-]{8,64}$/.test(incoming) ? incoming : randomUUID();
+  res.setHeader('x-request-id', id);
+  const start = process.hrtime.bigint();
+  res.on('finish', () => {
+    if (req.path === '/health') return;
+    log(res.statusCode >= 500 ? 'error' : 'info', 'request', {
+      id,
+      method: req.method,
+      path: req.originalUrl.split('?')[0],
+      status: res.statusCode,
+      ms: Number((process.hrtime.bigint() - start) / 1_000_000n),
+      tenant: req.tenant?.tenantId
+    });
+  });
+  next();
+});
+
+app.use(express.json({ limit: cfg.JSON_BODY_LIMIT }));
+/** Liveness: the process is up. */
 app.get('/health', (_req, res) => res.json({ status: 'healthy', timestamp: new Date().toISOString() }));
-app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
+/** Readiness: the database answers, so the load balancer can send traffic. */
+app.get('/ready', asyncRoute(async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ready' });
+  } catch {
+    res.status(503).json({ status: 'database unavailable' });
+  }
+}));
+app.use('/api', rateLimit({ windowMs: 60_000, limit: 300, standardHeaders: 'draft-7', legacyHeaders: false }));
+app.use('/api/v1/auth', authRouter());
 app.use('/api', tenantIsolationMiddleware);
 
 app.get('/api/v1/objects', asyncRoute(async (req, res) => {
@@ -170,8 +208,8 @@ app.use('/api/v1', matchRouter());
 
 app.post('/api/v1/ai/search', asyncRoute(async (req, res) => {
   const body = z.object({ query: z.string().trim().min(1).max(4000), limit: z.number().int().min(1).max(20).default(5) }).safeParse(req.body);
-  const aiUrl = process.env.AI_ORCHESTRATOR_URL ?? 'http://localhost:8000';
-  const serviceToken = process.env.AI_SERVICE_TOKEN;
+  const aiUrl = cfg.AI_ORCHESTRATOR_URL;
+  const serviceToken = cfg.AI_SERVICE_TOKEN;
   if (!body.success) {
     res.status(400).json({ error: 'Invalid search request', details: body.error.flatten() });
     return;
@@ -190,8 +228,11 @@ app.post('/api/v1/ai/search', asyncRoute(async (req, res) => {
   res.status(response.status).json(await response.json());
 }));
 
-const errorHandler: ErrorRequestHandler = (error: unknown, _req, res, _next) => {
-  console.error('API request failed', error);
+const errorHandler: ErrorRequestHandler = (error: unknown, req, res, _next) => {
+  // Body parser errors (too large, malformed JSON) are the client's.
+  const status = typeof (error as { status?: unknown }).status === 'number' ? (error as { status: number }).status : 500;
+  if (status < 500) return void res.status(status).json({ error: status === 413 ? 'Request too large' : 'Malformed request' });
+  log('error', 'request failed', { id: res.getHeader('x-request-id'), path: req.path, ...errorFields(error) });
   res.status(500).json({ error: 'Internal server error' });
 };
 app.use(errorHandler);

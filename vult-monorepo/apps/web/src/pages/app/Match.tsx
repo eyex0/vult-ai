@@ -15,7 +15,7 @@ import { COMMISSION_RATE } from "@/data/matchDemo";
 import { useDemoMatch, useLiveMatch, type DisplayItem, type MatchModel, type MatchRow, type Outcome } from "@/data/matchSources";
 import { memberName } from "@/data/selectors";
 import { useDB } from "@/data/store";
-import { apiFetch, clearConnection, DEFAULT_API_URL, getConnection, saveConnection, type ApiConnection } from "@/lib/api";
+import { API_MODE, apiFetch, clearConnection, DEFAULT_API_URL, getConnection, saveConnection, sessionConnection, type ApiConnection } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -210,7 +210,8 @@ function ConnectModal({ open, onOpenChange, onConnected }: { open: boolean; onOp
 export default function MatchPage() {
   usePage({ title: "Match", icon: ArrowLeftRight });
   const db = useDB();
-  const [conn, setConn] = useState<ApiConnection | null>(() => getConnection());
+  // Signed in against the API: always live. Demo build: live only after an admin pastes a token.
+  const [conn, setConn] = useState<ApiConnection | null>(() => (API_MODE ? sessionConnection : getConnection()));
   const demo = useDemoMatch();
   const live = useLiveMatch(conn);
   const model: MatchModel = conn ? live : demo;
@@ -287,7 +288,7 @@ export default function MatchPage() {
                 <RotateCcw className="size-3.5" /> Reset demo
               </Button>
             )}
-            {model.mode === "live" ? (
+            {API_MODE ? null : model.mode === "live" ? (
               <Button size="sm" variant="ghost" onClick={disconnect}>
                 <Unplug className="size-3.5" /> Disconnect
               </Button>
@@ -302,8 +303,12 @@ export default function MatchPage() {
         {model.error && (
           <div role="alert" className="flex flex-wrap items-center gap-3 rounded-xl border border-[#5a2a2a] bg-[rgb(240_82_82/0.08)] px-4 py-3 text-sm text-[#f59090]">
             <span className="flex-1">{model.error}</span>
-            <Button size="sm" variant="ghost" onClick={() => setConnectOpen(true)}>Check connection</Button>
-            <Button size="sm" variant="ghost" onClick={disconnect}>Use demo data</Button>
+            {!API_MODE && (
+              <>
+                <Button size="sm" variant="ghost" onClick={() => setConnectOpen(true)}>Check connection</Button>
+                <Button size="sm" variant="ghost" onClick={disconnect}>Use demo data</Button>
+              </>
+            )}
           </div>
         )}
 
