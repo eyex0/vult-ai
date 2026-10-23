@@ -21,6 +21,7 @@ export default defineConfig({
         : { manualChunks: { react: ["react", "react-dom", "wouter"], motion: ["framer-motion"], charts: ["recharts"] } },
     },
   },
-  server: { port: 3000 },
+  // Same layout as production: the API answers under /api on the app's own address.
+  server: { port: 3000, proxy: { "/api": process.env.VITE_DEV_API ?? "http://localhost:4000" } },
   test: { environment: "node", include: ["src/**/*.test.{ts,tsx}"] },
 });
