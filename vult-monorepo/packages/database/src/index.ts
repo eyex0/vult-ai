@@ -8,12 +8,13 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.vultPrisma = prisma;
 
 export async function withTenantContext<T>(
 	tenantId: string,
-	callback: (transaction: PrismaClient) => Promise<T>
+	callback: (transaction: PrismaClient) => Promise<T>,
+	options?: { timeout?: number; maxWait?: number }
 ): Promise<T> {
 	return prisma.$transaction(async (transaction) => {
 		await transaction.$executeRaw`SELECT set_config('app.tenant_id', ${tenantId}, true)`;
 		return callback(transaction as unknown as PrismaClient);
-	});
+	}, options);
 }
 
 export * from '@prisma/client';

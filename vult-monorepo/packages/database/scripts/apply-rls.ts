@@ -9,10 +9,23 @@ const tables = [
   ['attribute_values', 'tenant_id'],
   ['record_relations', 'tenant_id'],
   ['documents', 'tenant_id'],
-  ['ai_memories', 'tenant_id']
+  ['ai_memories', 'tenant_id'],
+  ['invoices', 'tenant_id'],
+  ['invoice_installments', 'tenant_id'],
+  ['bank_transactions', 'tenant_id'],
+  ['payment_allocations', 'tenant_id'],
+  ['match_memories', 'tenant_id']
 ] as const;
 
 async function main() {
+  // Every table that holds tenant data must be listed above; fail loudly when one is forgotten.
+  const tenantTables = await prisma.$queryRawUnsafe<{ table_name: string }[]>(
+    `SELECT table_name FROM information_schema.columns WHERE table_schema = current_schema() AND column_name = 'tenant_id'`
+  );
+  const listed = new Set<string>(tables.map(([table]) => table));
+  const missing = tenantTables.map((row) => row.table_name).filter((table) => !listed.has(table));
+  if (missing.length) throw new Error(`Tables with tenant_id but no RLS policy: ${missing.join(', ')}`);
+
   for (const [table, tenantColumn] of tables) {
     const policy = `${table}_tenant_isolation`;
     await prisma.$executeRawUnsafe(`ALTER TABLE "${table}" ENABLE ROW LEVEL SECURITY`);

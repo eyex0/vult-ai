@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@vult/database": "workspace:*",
+    "@vult/fatturapa": "workspace:*",
     "@vult/match": "workspace:*",
     "@vult/shared-types": "workspace:*",
     "cors": "^2.8.5",

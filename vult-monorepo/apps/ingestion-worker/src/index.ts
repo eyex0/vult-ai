@@ -1,7 +1,7 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Worker } from 'bullmq';
 import { prisma, withTenantContext } from '@vult/database';
-import { parseSdiXmlInvoice } from './parser.js';
+import { parseSdiXmlInvoices, saveSdiInvoices } from '@vult/fatturapa';
 import { connection, type SdiInvoiceJob } from './queue.js';
 
 const bucket = process.env.S3_BUCKET;
@@ -18,8 +18,10 @@ const worker = new Worker<SdiInvoiceJob>('vult-document-ingestion', async (job) 
   if (!objectKey.startsWith(`tenants/${tenantId}/`)) throw new Error('Object key is outside the tenant storage prefix');
   const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: objectKey }));
   if (!response.Body) throw new Error('Invoice object has no readable body');
-  const xmlContent = await response.Body.transformToString('utf-8');
-  const invoice = await parseSdiXmlInvoice(xmlContent);
+  // Bytes, not text: signed invoices (.p7m) are binary.
+  const file = Buffer.from(await response.Body.transformToByteArray());
+  const invoices = await parseSdiXmlInvoices(file);
+  const invoice = invoices[0]!;
 
   const documentId = await withTenantContext(tenantId, async (tx) => {
     const companyType = await tx.objectType.findFirst({ where: { tenantId, slug: 'companies' } });
@@ -47,6 +49,9 @@ const worker = new Worker<SdiInvoiceJob>('vult-document-ingestion', async (job) 
       },
       select: { id: true }
     });
+    // Issued invoices become receivables for Vult Match; invoices received from suppliers are skipped.
+    const tenant = await tx.tenant.findUnique({ where: { id: tenantId }, select: { vatNumber: true } });
+    await saveSdiInvoices(tx, tenantId, invoices, { tenantVat: tenant?.vatNumber, documentId: document.id, recordId });
     return document.id;
   });
 

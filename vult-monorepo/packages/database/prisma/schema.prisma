@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Tenant {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String
-  legalName   String?  @map("legal_name")
-  vatNumber   String?  @map("vat_number")
-  taxCode     String?  @map("tax_code")
-  sdiCode     String?  @map("sdi_code")
-  pecEmail    String?  @map("pec_email")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  legalName String?  @map("legal_name")
+  vatNumber String?  @map("vat_number")
+  taxCode   String?  @map("tax_code")
+  sdiCode   String?  @map("sdi_code")
+  pecEmail  String?  @map("pec_email")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   users           User[]
   objectTypes     ObjectType[]
@@ -24,6 +24,11 @@ model Tenant {
   documents       Document[]
   aiMemories      AiMemory[]
   recordRelations RecordRelation[]
+  invoices        Invoice[]
+  installments    InvoiceInstallment[]
+  bankTxs         BankTransaction[]
+  allocations     PaymentAllocation[]
+  matchMemory     MatchMemory?
 
   @@index([vatNumber])
   @@map("tenants")
@@ -112,10 +117,10 @@ model Record {
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
 
-  values        AttributeValue[]
-  sourceRel     RecordRelation[] @relation("SourceRecord")
-  targetRel     RecordRelation[] @relation("TargetRecord")
-  documents     Document[]
+  values    AttributeValue[]
+  sourceRel RecordRelation[] @relation("SourceRecord")
+  targetRel RecordRelation[] @relation("TargetRecord")
+  documents Document[]
 
   @@unique([id, tenantId])
   @@unique([id, objectTypeId])
@@ -132,14 +137,14 @@ model AttributeValue {
   record       Record    @relation(fields: [recordId, objectTypeId], references: [id, objectTypeId], onDelete: Cascade)
   attribute    Attribute @relation(fields: [attributeId, objectTypeId, tenantId], references: [id, objectTypeId, tenantId], onDelete: Cascade)
 
-  textValue     String?   @map("text_value") @db.Text
-  numberValue   Float?    @map("number_value")
-  decimalValue  Decimal?  @map("decimal_value") @db.Decimal(20, 4)
-  booleanValue  Boolean?  @map("boolean_value")
-  dateValue     DateTime? @map("date_value")
-  jsonValue     Json?     @map("json_value")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  textValue    String?   @map("text_value") @db.Text
+  numberValue  Float?    @map("number_value")
+  decimalValue Decimal?  @map("decimal_value") @db.Decimal(20, 4)
+  booleanValue Boolean?  @map("boolean_value")
+  dateValue    DateTime? @map("date_value")
+  jsonValue    Json?     @map("json_value")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
   @@unique([recordId, attributeId])
   @@index([tenantId, attributeId, textValue])
@@ -208,4 +213,139 @@ enum SourceType {
   INVOICE
   MEETING
   NOTE
+}
+
+// ---------------------------------------------------------------------------
+// Vult Match: invoices from SDI, bank transactions, and the payments between them.
+// Amounts are integer euro cents.
+
+enum InvoiceKind {
+  INVOICE
+  CREDIT_NOTE
+}
+
+enum PaymentMethod {
+  TRANSFER
+  RIBA
+  DIRECT_DEBIT
+  CASH
+  CARD
+  OTHER
+}
+
+enum BankTransactionStatus {
+  UNMATCHED
+  SUGGESTED
+  MATCHED
+  IGNORED
+}
+
+enum AllocationSource {
+  AUTO
+  CONFIRMED
+}
+
+model Invoice {
+  id               String      @id @default(uuid()) @db.Uuid
+  tenantId         String      @map("tenant_id") @db.Uuid
+  tenant           Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documentId       String?     @map("document_id") @db.Uuid
+  recordId         String?     @map("record_id") @db.Uuid
+  kind             InvoiceKind
+  documentType     String      @map("document_type")
+  number           String
+  issueDate        DateTime    @map("issue_date") @db.Date
+  customerVat      String      @map("customer_vat")
+  customerName     String      @map("customer_name")
+  currency         String      @default("EUR")
+  totalCents       BigInt      @map("total_cents")
+  withholdingCents BigInt      @default(0) @map("withholding_cents")
+  splitPayment     Boolean     @default(false) @map("split_payment")
+  createdAt        DateTime    @default(now()) @map("created_at")
+
+  installments InvoiceInstallment[]
+
+  @@unique([tenantId, customerVat, number, issueDate])
+  @@unique([id, tenantId])
+  @@index([tenantId, customerVat])
+  @@map("invoices")
+}
+
+model InvoiceInstallment {
+  id          String        @id @default(uuid()) @db.Uuid
+  tenantId    String        @map("tenant_id") @db.Uuid
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invoiceId   String        @map("invoice_id") @db.Uuid
+  invoice     Invoice       @relation(fields: [invoiceId, tenantId], references: [id, tenantId], onDelete: Cascade)
+  seq         Int
+  dueDate     DateTime      @map("due_date") @db.Date
+  amountCents BigInt        @map("amount_cents")
+  /// Collected so far (for a credit note: used so far). Kept in step with payment_allocations.
+  paidCents   BigInt        @default(0) @map("paid_cents")
+  method      PaymentMethod
+  iban        String?
+  estimated   Boolean       @default(false)
+
+  allocations PaymentAllocation[]
+
+  @@unique([invoiceId, seq])
+  @@unique([id, tenantId])
+  @@index([tenantId, dueDate])
+  @@map("invoice_installments")
+}
+
+model BankTransaction {
+  id               String                @id @default(uuid()) @db.Uuid
+  tenantId         String                @map("tenant_id") @db.Uuid
+  tenant           Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  /// Stable id from the statement, so importing the same file twice adds nothing.
+  externalId       String                @map("external_id")
+  bookingDate      DateTime              @map("booking_date") @db.Date
+  amountCents      BigInt                @map("amount_cents")
+  counterpartyName String                @map("counterparty_name")
+  counterpartyIban String?               @map("counterparty_iban")
+  description      String                @db.Text
+  status           BankTransactionStatus @default(UNMATCHED)
+  /// Latest engine proposal (best candidate and alternatives) for people to review.
+  suggestion       Json?
+  confidence       Float?
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+
+  allocations PaymentAllocation[]
+
+  @@unique([tenantId, externalId])
+  @@unique([id, tenantId])
+  @@index([tenantId, status, bookingDate])
+  @@map("bank_transactions")
+}
+
+model PaymentAllocation {
+  id            String             @id @default(uuid()) @db.Uuid
+  tenantId      String             @map("tenant_id") @db.Uuid
+  tenant        Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  transactionId String             @map("transaction_id") @db.Uuid
+  transaction   BankTransaction    @relation(fields: [transactionId, tenantId], references: [id, tenantId], onDelete: Cascade)
+  installmentId String             @map("installment_id") @db.Uuid
+  installment   InvoiceInstallment @relation(fields: [installmentId, tenantId], references: [id, tenantId], onDelete: Cascade)
+  /// Negative for a credit note used up or a Ri.Ba. returned unpaid.
+  amountCents   BigInt             @map("amount_cents")
+  source        AllocationSource
+  confidence    Float?
+  confirmedById String?            @map("confirmed_by_id") @db.Uuid
+  createdAt     DateTime           @default(now()) @map("created_at")
+
+  @@index([tenantId, installmentId])
+  @@index([tenantId, transactionId])
+  @@map("payment_allocations")
+}
+
+/// What the engine learned from confirmed matches: payer IBANs, aliases, discounts.
+model MatchMemory {
+  tenantId  String   @id @map("tenant_id") @db.Uuid
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  data      Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("match_memories")
 }
