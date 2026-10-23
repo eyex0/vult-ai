@@ -1,0 +1,13 @@
+# TLS certificates are obtained and renewed automatically for public domains.
+{$APP_ADDRESS} {
+  encode zstd gzip
+  reverse_proxy web:8080
+}
+
+{$API_ADDRESS} {
+  encode zstd gzip
+  request_body {
+    max_size 60MB
+  }
+  reverse_proxy api:4000
+}

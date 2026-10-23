@@ -1,0 +1,124 @@
+# Production stack on one server:  docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+# Optional parts: --profile sdi (invoice worker for an SDI intermediary feed), --profile ai (memory search).
+name: vult
+
+x-node-env: &node-env
+  NODE_ENV: production
+  DATABASE_URL: postgresql://vult_app:${POSTGRES_APP_PASSWORD:?}@postgres:5432/vult
+  JWT_SECRET: ${JWT_SECRET:?}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vult_owner
+      POSTGRES_PASSWORD: ${POSTGRES_OWNER_PASSWORD:?}
+      POSTGRES_DB: vult
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init.sh:/docker-entrypoint-initdb.d/10-app-role.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vult_owner -d vult"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    image: ${IMAGE_PREFIX:-vult}/migrate:${VERSION:-latest}
+    build: { context: ., target: migrate }
+    environment:
+      DATABASE_URL: postgresql://vult_owner:${POSTGRES_OWNER_PASSWORD:?}@postgres:5432/vult
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+
+  api:
+    image: ${IMAGE_PREFIX:-vult}/api:${VERSION:-latest}
+    build: { context: ., target: api }
+    restart: unless-stopped
+    environment:
+      <<: *node-env
+      API_PORT: "4000"
+      CORS_ORIGINS: https://${APP_DOMAIN:?}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+      TRUST_PROXY_HOPS: "1"
+      SIGNUP_ENABLED: ${SIGNUP_ENABLED:-true}
+      AI_ORCHESTRATOR_URL: http://ai:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  web:
+    image: ${IMAGE_PREFIX:-vult}/web:${VERSION:-latest}
+    build:
+      context: .
+      target: web
+      args:
+        VITE_API_URL: https://${API_DOMAIN:?}
+    restart: unless-stopped
+    environment:
+      API_ORIGIN: https://${API_DOMAIN:?}
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      APP_ADDRESS: ${APP_DOMAIN:?}
+      API_ADDRESS: ${API_DOMAIN:?}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [api, web]
+
+  redis:
+    image: redis:7-alpine
+    profiles: [sdi]
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redis_data:/data]
+
+  worker:
+    image: ${IMAGE_PREFIX:-vult}/worker:${VERSION:-latest}
+    build: { context: ., target: worker }
+    profiles: [sdi]
+    restart: unless-stopped
+    environment:
+      <<: *node-env
+      REDIS_URL: redis://redis:6379
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      AWS_REGION: ${AWS_REGION:-eu-south-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AI_ORCHESTRATOR_URL: http://ai:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_started }
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    profiles: [ai]
+    restart: unless-stopped
+    volumes: [qdrant_data:/qdrant/storage]
+
+  ai:
+    image: ${IMAGE_PREFIX:-vult}/ai:${VERSION:-latest}
+    build: { context: ./apps/ai-orchestrator }
+    profiles: [ai]
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      QDRANT_URL: http://qdrant:6333
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+    depends_on: [qdrant]
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  caddy_data:

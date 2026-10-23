@@ -4,6 +4,10 @@ import { prisma, withTenantContext } from '@vult/database';
 import { parseSdiXmlInvoices, saveSdiInvoices } from '@vult/fatturapa';
 import { connection, type SdiInvoiceJob } from './queue.js';
 
+/** One JSON object per line, like the API. */
+const log = (level: 'info' | 'error', msg: string, fields: Record<string, unknown> = {}) =>
+  (level === 'error' ? console.error : console.log)(JSON.stringify({ time: new Date().toISOString(), level, msg, service: 'worker', ...fields }));
+
 const bucket = process.env.S3_BUCKET;
 const s3 = new S3Client({
   region: process.env.AWS_REGION ?? 'eu-west-1',
@@ -78,11 +82,13 @@ const worker = new Worker<SdiInvoiceJob>('vult-document-ingestion', async (job) 
   return { documentId, invoice };
 }, { connection, concurrency, limiter: { max: 30, duration: 60_000 } });
 
-worker.on('completed', (job, result) => console.info(`Ingested invoice ${job.id}`, result.documentId));
-worker.on('failed', (job, error) => console.error(`Invoice job ${job?.id ?? 'unknown'} failed`, error.message));
-console.info(`Vult ingestion worker listening with concurrency ${concurrency}`);
+worker.on('completed', (job, result) => log('info', 'invoice ingested', { job: job.id, document: result.documentId }));
+worker.on('failed', (job, error) => log('error', 'invoice job failed', { job: job?.id, attempts: job?.attemptsMade, error: error.message }));
+log('info', 'worker listening', { concurrency });
 
 async function shutdown() {
+  log('info', 'shutting down');
+  // Finish the jobs in progress before exiting.
   await worker.close();
   await connection.quit();
   await s3.destroy();

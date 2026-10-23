@@ -1,5 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+  // Generated inside this package so deployments (pnpm deploy, Docker) carry it along.
+  output   = "../generated/client"
 }
 
 datasource db {

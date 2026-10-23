@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/dist-preview
+**/generated
+**/.turbo
+**/.venv
+**/__pycache__
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+.git
+docker-compose*.yml
