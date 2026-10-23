@@ -8,7 +8,8 @@ intermediary feed) and the **ai** memory service are optional.
 
 - A Linux server with Docker and the Compose plugin: 2 vCPU, 4 GB RAM, 40 GB disk is enough to start.
   Pick an EU region (Milan, Frankfurt, Paris): invoices hold personal data under GDPR.
-- Two DNS records pointing to the server, for example `app.example.com` and `api.example.com`.
+- Two DNS records pointing to the server, for example `app.example.com` and `api.example.com`. Keep both under
+  the same parent domain: the session cookie is SameSite=Lax, so the app and the API must be the same site.
 - Ports 80 and 443 open. Caddy gets and renews the TLS certificates by itself.
 
 ## 2. First deployment
@@ -88,6 +89,7 @@ works without either profile.
 | `COOKIE_DOMAIN` | no | Parent domain shared by app and API, e.g. `.example.com` |
 | `SIGNUP_ENABLED` | no | `false` closes public sign-up |
 | `IMAGE_PREFIX`, `VERSION` | no | Image names when pushing to a registry |
+| `CADDY_GLOBAL_OPTIONS` | no | `local_certs` for a staging box without public DNS (Caddy's own certificates) |
 
 The API checks its settings at startup and exits with a clear message if one is missing or still the example
 value. Compose refuses to start when a required variable is empty.

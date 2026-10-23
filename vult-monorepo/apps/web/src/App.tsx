@@ -14,6 +14,7 @@ const PricingPage = lazy(() => import("@/pages/marketing/Pricing"));
 const CustomersPage = lazy(() => import("@/pages/marketing/Customers"));
 const ChangelogPage = lazy(() => import("@/pages/marketing/Changelog"));
 const AboutPage = lazy(() => import("@/pages/marketing/About"));
+const ArchitecturePage = lazy(() => import("@/pages/marketing/Architecture"));
 const CareersPage = lazy(() => import("@/pages/marketing/Careers"));
 const ContactPage = lazy(() => import("@/pages/marketing/Contact"));
 const LegalPage = lazy(() => import("@/pages/marketing/Legal"));
@@ -98,6 +99,13 @@ export default function App() {
               {() => (
                 <Marketing>
                   <ChangelogPage />
+                </Marketing>
+              )}
+            </Route>
+            <Route path="/architecture">
+              {() => (
+                <Marketing>
+                  <ArchitecturePage />
                 </Marketing>
               )}
             </Route>

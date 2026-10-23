@@ -1,4 +1,9 @@
 # TLS certificates are obtained and renewed automatically for public domains.
+# For a staging box without public DNS, set CADDY_GLOBAL_OPTIONS=local_certs to use Caddy's own CA.
+{
+  {$CADDY_GLOBAL_OPTIONS}
+}
+
 {$APP_ADDRESS} {
   encode zstd gzip
   reverse_proxy web:8080

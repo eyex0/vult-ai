@@ -1,6 +1,6 @@
 import {
   BarChart3, BookOpen, Bot, Boxes, Code2, FileClock, GraduationCap, Handshake, LifeBuoy, MessageSquare, Newspaper, Plug, Rocket, Send,
-  Sparkles, Users2, Workflow, type LucideIcon,
+  Layers, Sparkles, Users2, Workflow, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -37,6 +37,7 @@ export const PLATFORM_GROUPS: NavGroup[] = [
     title: "Ecosystem",
     items: [
       { title: "Integrations", desc: "Inbox, calendar, chat and billing", href: "/platform/automations", icon: Plug },
+      { title: "Architecture", desc: "How Vult turns invoices into revenue", href: "/architecture", icon: Layers },
       { title: "Developer platform", desc: "REST API, webhooks and SDKs", href: "/about", icon: Code2 },
       { title: "Ask Vult", desc: "Answers from your workspace", href: "/platform/reporting", icon: MessageSquare },
     ],
@@ -74,7 +75,7 @@ export const RESOURCES_NAV: NavItem[] = RESOURCES_GROUPS.flatMap((g) => g.items)
 
 export const FOOTER_COLUMNS: { title: string; links: [string, string][] }[] = [
   { title: "Platform", links: [...PLATFORM_NAV.map((n) => [n.title, n.href] as [string, string]), ["Pricing", "/pricing"]] },
-  { title: "Company", links: [["About", "/about"], ["Customers", "/customers"], ["Changelog", "/changelog"], ["Careers", "/careers"]] },
+  { title: "Company", links: [["About", "/about"], ["Architecture", "/architecture"], ["Customers", "/customers"], ["Changelog", "/changelog"], ["Careers", "/careers"]] },
   { title: "Resources", links: [["Help center", "/contact"], ["Documentation", "/about"], ["Contact sales", "/contact"], ["Sign in", "/signin"]] },
   { title: "Legal", links: [["Privacy", "/legal/privacy"], ["Terms", "/legal/terms"]] },
 ];

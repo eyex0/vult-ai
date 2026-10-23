@@ -68,6 +68,7 @@ services:
     environment:
       APP_ADDRESS: ${APP_DOMAIN:?}
       API_ADDRESS: ${API_DOMAIN:?}
+      CADDY_GLOBAL_OPTIONS: ${CADDY_GLOBAL_OPTIONS:-}
     volumes:
       - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
