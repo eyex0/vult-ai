@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:FatturaElettronica versione="FPR12" xmlns:p="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2">
+  <FatturaElettronicaHeader>
+    <DatiTrasmissione><CodiceDestinatario>0000000</CodiceDestinatario></DatiTrasmissione>
+    <CedentePrestatore><DatiAnagrafici><IdFiscaleIVA><IdPaese>IT</IdPaese><IdCodice>00000000909</IdCodice></IdFiscaleIVA><Anagrafica><Nome>Giulia</Nome><Cognome>Demo</Cognome></Anagrafica></DatiAnagrafici></CedentePrestatore>
+    <CessionarioCommittente><DatiAnagrafici><IdFiscaleIVA><IdPaese>IT</IdPaese><IdCodice>00000000303</IdCodice></IdFiscaleIVA><Anagrafica><Denominazione>Studio Luce S.n.c.</Denominazione></Anagrafica></DatiAnagrafici></CessionarioCommittente>
+  </FatturaElettronicaHeader>
+  <FatturaElettronicaBody>
+    <DatiGenerali><DatiGeneraliDocumento>
+      <TipoDocumento>TD06</TipoDocumento><Divisa>EUR</Divisa><Data>2025-03-01</Data><Numero>9</Numero>
+      <DatiRitenuta><TipoRitenuta>RT01</TipoRitenuta><ImportoRitenuta>200.00</ImportoRitenuta><AliquotaRitenuta>20.00</AliquotaRitenuta><CausalePagamento>A</CausalePagamento></DatiRitenuta>
+    </DatiGeneraliDocumento></DatiGenerali>
+    <DatiBeniServizi><DatiRiepilogo><AliquotaIVA>22.00</AliquotaIVA><ImponibileImporto>1000.00</ImponibileImporto><Imposta>220.00</Imposta></DatiRiepilogo></DatiBeniServizi>
+  </FatturaElettronicaBody>
+  <FatturaElettronicaBody>
+    <DatiGenerali><DatiGeneraliDocumento>
+      <TipoDocumento>TD04</TipoDocumento><Divisa>EUR</Divisa><Data>2025-03-05</Data><Numero>NC-2</Numero><ImportoTotaleDocumento>122.00</ImportoTotaleDocumento>
+    </DatiGeneraliDocumento></DatiGenerali>
+    <DatiBeniServizi><DatiRiepilogo><AliquotaIVA>22.00</AliquotaIVA><ImponibileImporto>100.00</ImponibileImporto><Imposta>22.00</Imposta><EsigibilitaIVA>S</EsigibilitaIVA></DatiRiepilogo></DatiBeniServizi>
+    <DatiPagamento><CondizioniPagamento>TP02</CondizioniPagamento><DettaglioPagamento><ModalitaPagamento>MP05</ModalitaPagamento><GiorniTerminiPagamento>60</GiorniTerminiPagamento><ImportoPagamento>100.00</ImportoPagamento><IBAN>IT00 X000 0000 0000 0000 0000 909</IBAN></DettaglioPagamento></DatiPagamento>
+  </FatturaElettronicaBody>
+</p:FatturaElettronica>
