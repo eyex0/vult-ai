@@ -133,6 +133,18 @@ function nearbyCustomers(payer: string[], text: string[], ctx: Ctx): Set<string>
   return near;
 }
 
+/** Average days between a candidate's due dates and the payment: the tie-breaker between equal installments. */
+const dueDistance = new WeakMap<Candidate, number>();
+const NEAR = 0.05;
+
+/** Same customer, same total, but due further from the payment date: a weaker reading, not a real rival. */
+function outranks(best: Candidate, rival: Candidate): boolean {
+  const total = (c: Candidate) => c.allocations.reduce((s, a) => s + a.amount, 0);
+  const db = dueDistance.get(best);
+  const dr = dueDistance.get(rival);
+  return best.customerVat !== null && best.customerVat === rival.customerVat && total(best) === total(rival) && db !== undefined && dr !== undefined && dr > db + 7;
+}
+
 function amountFit(diff: Cents, total: Cents, vat: string | null, ctx: Ctx): { score: number; reason: Reason } | null {
   if (Math.abs(diff) <= 1) return { score: 0.35, reason: { code: 'exact_amount', label: 'Exact amount' } };
   if (diff > 0) {
@@ -226,7 +238,9 @@ function customerCandidates(
         ...chosen.map((i) => ({ itemId: i.id, amount: open(i) })),
         ...cn.map((c) => ({ itemId: c.id, amount: -open(c) })),
       ];
-      out.push({ customerVat: vat, allocations, confidence: clamp(score), difference: diff, reasons });
+      const candidate: Candidate = { customerVat: vat, allocations, confidence: clamp(score), difference: diff, reasons };
+      dueDistance.set(candidate, chosen.reduce((s, i) => s + Math.abs(daysBetween(i.dueDate, tx.date)), 0) / chosen.length);
+      out.push(candidate);
     }
   }
 
@@ -363,14 +377,22 @@ function propose(tx: BankTransaction, ctx: Ctx): Proposal {
     }
   }
 
-  candidates.sort((a, b) => b.confidence - a.confidence || a.allocations.length - b.allocations.length);
+  candidates.sort((a, b) => {
+    // Near ties go to the installment due closest to the payment date ("rata" of March paid in March).
+    if (Math.abs(a.confidence - b.confidence) <= NEAR) {
+      const da = dueDistance.get(a);
+      const dbb = dueDistance.get(b);
+      if (da !== undefined && dbb !== undefined && Math.abs(da - dbb) > 7) return da - dbb;
+    }
+    return b.confidence - a.confidence || a.allocations.length - b.allocations.length;
+  });
   const unique: Candidate[] = [];
   for (const c of candidates) if (!unique.some((u) => sameAllocations(u, c))) unique.push(c);
   const [best, second] = unique;
-  if (best && second && second.confidence >= best.confidence - 0.05) {
-    const rivals = unique.filter((c) => c.confidence >= best.confidence - 0.05).length;
+  const rivals = best ? unique.filter((c) => c !== best && c.confidence >= best.confidence - NEAR && !outranks(best, c)) : [];
+  if (best && second && rivals.length) {
     best.confidence = clamp(best.confidence - 0.25);
-    best.reasons.push({ code: 'ambiguous', label: `${rivals} possible matches` });
+    best.reasons.push({ code: 'ambiguous', label: `${rivals.length + 1} possible matches` });
   }
   if (!best) return { transactionId: tx.id, kind, status: 'unmatched', best: null, alternatives: [] };
   const partial = best.reasons.some((r) => r.code === 'partial');

@@ -150,6 +150,17 @@ describe('reconcile', () => {
     expect(res.proposals[0]!.best!.allocations[0]!.itemId).toBe(a.id);
   });
 
+  it('pairs equal installments with the payment closest to each due date', () => {
+    const march = inv(AURORA, '2025/118', 122_000, '2025-03-31');
+    const april = { ...inv(AURORA, '2025/118', 122_000, '2025-04-30'), invoiceId: march.invoiceId };
+    const res = reconcile({
+      items: [march, april],
+      transactions: [tx(122_000, 'PASTIFICIO AURORA SRL', 'RATA', { date: '2025-04-30' }), tx(122_000, 'PASTIFICIO AURORA SRL', 'RATA', { date: '2025-03-31' })],
+    });
+    expect(res.proposals.map((p) => p.best!.allocations[0]!.itemId)).toEqual([april.id, march.id]);
+    expect(res.proposals.every((p) => !p.best!.reasons.some((r) => r.code === 'ambiguous'))).toBe(true);
+  });
+
   it('ignores ordinary outgoing payments', () => {
     const p = reconcile({ items: [], transactions: [tx(-12_000, 'ENEL ENERGIA', 'ADDEBITO SDD BOLLETTA')] }).proposals[0]!;
     expect(p.kind).toBe('outgoing');

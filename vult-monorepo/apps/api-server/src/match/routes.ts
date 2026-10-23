@@ -6,7 +6,7 @@ import { parseBankCsv } from '@vult/match';
 import { parseCamt } from '../bank/camt.js';
 import { asyncRoute } from '../http.js';
 import { requireWriteAccess } from '../middleware/tenantIsolation.js';
-import { confirmMatch, ignoreTransaction, importTransactions, listTransactions, MatchError, receivables, runMatching } from './service.js';
+import { confirmMatch, ignoreTransaction, unmatchTransaction, importTransactions, listTransactions, MatchError, receivables, runMatching } from './service.js';
 
 /** Matching runs can touch thousands of rows: give their transactions more than Prisma's 5 s default. */
 const LONG = { timeout: 120_000, maxWait: 10_000 };
@@ -89,6 +89,17 @@ export function matchRouter(): Router {
         LONG,
       );
       res.json({ success: true, ...result });
+    } catch (error) {
+      fail(res, error);
+    }
+  }));
+
+  r.post('/match/transactions/:id/unmatch', requireWriteAccess, asyncRoute(async (req, res) => {
+    const id = uuid.safeParse(req.params.id);
+    if (!id.success) return void res.status(400).json({ error: 'Invalid id' });
+    try {
+      await withTenantContext(req.tenant.tenantId, (tx) => unmatchTransaction(tx, req.tenant.tenantId, id.data));
+      res.json({ success: true });
     } catch (error) {
       fail(res, error);
     }

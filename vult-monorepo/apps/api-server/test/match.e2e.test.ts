@@ -75,6 +75,17 @@ describe.skipIf(!enabled)('Vult Match API', () => {
     expect(balances.body.data[0]).toMatchObject({ customerVat: '00000000101', billed: 244_000, collected: 244_000, open: 0 });
   });
 
+  it('undoes a match: reopens the invoice and stops matching it automatically', async () => {
+    const matched = (await call('/match/transactions?status=MATCHED')).body.transactions;
+    const auto = matched.find((t: { allocations: { source: string }[] }) => t.allocations[0]?.source === 'AUTO');
+    expect((await call(`/match/transactions/${auto.id}/unmatch`, { method: 'POST' })).status).toBe(200);
+    expect((await call('/receivables?today=2025-05-01')).body.data[0]).toMatchObject({ collected: 122_000, open: 122_000 });
+    const run = await call('/match/run', json({ today: '2025-05-01' }));
+    expect(run.body.auto).toBe(0);
+    const again = (await call('/match/transactions?status=SUGGESTED')).body.transactions.find((t: { id: string }) => t.id === auto.id);
+    expect(again.suggestion.best.allocations).toHaveLength(1);
+  });
+
   it('keeps tenants apart', async () => {
     const other = await call('/match/transactions', {}, otherToken);
     expect(other.body.transactions).toEqual([]);

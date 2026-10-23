@@ -1,88 +1,32 @@
-import {
-  emptyMemory,
-  formatEuro,
-  learn,
-  parseBankCsv,
-  reconcile,
-  summarizeCustomers,
-  type AppliedPayment,
-  type BankTransaction,
-  type Candidate,
-  type MatchMemory,
-  type OpenItem,
-  type Proposal,
-} from "@vult/match";
+import { formatEuro, type BankTransaction, type Candidate, type Proposal } from "@vult/match";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeftRight, Check, FileUp, RotateCcw, Sparkles, Undo2, X } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { ArrowLeftRight, Check, FileText, FileUp, Loader2, Play, Plug, RotateCcw, Sparkles, Undo2, Unplug, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { usePage } from "@/components/app/PageMeta";
 import { Avatar } from "@/components/ui/Avatar";
-import { Badge, type BadgeTone } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Field, Input } from "@/components/ui/Field";
+import { Modal } from "@/components/ui/Modal";
 import { Tabs } from "@/components/ui/Tabs";
-import { COMMISSION_RATE, DEMO_CUSTOMERS, DEMO_ITEMS, DEMO_TRANSACTIONS, MATCH_TODAY } from "@/data/matchDemo";
+import { COMMISSION_RATE } from "@/data/matchDemo";
+import { useDemoMatch, useLiveMatch, type DisplayItem, type MatchModel, type MatchRow, type Outcome } from "@/data/matchSources";
 import { memberName } from "@/data/selectors";
 import { useDB } from "@/data/store";
+import { apiFetch, clearConnection, DEFAULT_API_URL, getConnection, saveConnection, type ApiConnection } from "@/lib/api";
 import { formatDate } from "@/lib/format";
-import { readJSON, removeKey, writeJSON } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
-const KEY = "match.v1";
+type Items = Map<string, DisplayItem>;
 
-interface Confirmed {
-  allocations: { itemId: string; amount: number }[];
-  at: string;
+const Spinner = () => <Loader2 aria-label="Loading" className="size-3.5 animate-spin text-app-dim" />;
+
+function notify(o: Outcome | void) {
+  if (!o) return;
+  (o.error ? toast.error : toast.success)(o.title, { description: o.description });
 }
-
-interface MatchState {
-  memory: MatchMemory;
-  confirmed: Record<string, Confirmed>;
-  ignored: string[];
-  uploaded: BankTransaction[];
-}
-
-const initial = (): MatchState => ({ memory: emptyMemory(), confirmed: {}, ignored: [], uploaded: [] });
-
-function useMatchState() {
-  const [state, setState] = useState<MatchState>(() => ({ ...initial(), ...readJSON<Partial<MatchState>>(KEY, {}) }));
-  const update = (next: MatchState) => {
-    setState(next);
-    writeJSON(KEY, next);
-  };
-  return [state, update] as const;
-}
-
-/** Everything the page shows, recomputed from the demo data, the uploaded rows and what the person decided. */
-function useReconciliation(state: MatchState) {
-  return useMemo(() => {
-    const transactions = [...DEMO_TRANSACTIONS, ...state.uploaded];
-    const byTx = new Map(transactions.map((t) => [t.id, t]));
-    const items = new Map(DEMO_ITEMS.map((i) => [i.id, i]));
-    const paid: Record<string, number> = {};
-    const payments: AppliedPayment[] = [];
-    const applyAlloc = (txId: string, allocations: { itemId: string; amount: number }[]) => {
-      const date = byTx.get(txId)?.date ?? MATCH_TODAY;
-      for (const a of allocations) {
-        const item = items.get(a.itemId);
-        if (!item) continue;
-        paid[a.itemId] = (paid[a.itemId] ?? 0) + (item.kind === "credit_note" ? Math.abs(a.amount) : a.amount);
-        payments.push({ itemId: a.itemId, amount: a.amount, date });
-      }
-    };
-    for (const [txId, c] of Object.entries(state.confirmed)) applyAlloc(txId, c.allocations);
-    const pending = transactions.filter((t) => !state.confirmed[t.id] && !state.ignored.includes(t.id));
-    const { proposals } = reconcile({ items: DEMO_ITEMS, transactions: pending, paid, memory: state.memory });
-    for (const p of proposals) if (p.status === "auto" && p.best) applyAlloc(p.transactionId, p.best.allocations);
-    const byId = new Map(proposals.map((p) => [p.transactionId, p]));
-    return { transactions, byTx, items, proposals: byId, payments, balances: summarizeCustomers(DEMO_ITEMS, payments, MATCH_TODAY) };
-  }, [state]);
-}
-
-type View = ReturnType<typeof useReconciliation>;
-
-const confidenceTone = (c: number): BadgeTone => (c >= 0.85 ? "green" : c >= 0.6 ? "blue" : c >= 0.45 ? "amber" : "neutral");
 
 function ConfidenceBar({ value }: { value: number }) {
   const color = value >= 0.85 ? "#3ddc84" : value >= 0.6 ? "#6f87ff" : value >= 0.45 ? "#f2994a" : "#8a8d96";
@@ -96,19 +40,24 @@ function ConfidenceBar({ value }: { value: number }) {
   );
 }
 
-function Allocations({ candidate, items }: { candidate: Pick<Candidate, "allocations">; items: View["items"] }) {
+function Allocations({ allocations, items }: { allocations: { itemId: string; amount: number }[]; items: Items }) {
   return (
     <ul className="flex flex-col gap-1">
-      {candidate.allocations.map((a) => {
+      {allocations.map((a) => {
         const item = items.get(a.itemId);
-        if (!item) return null;
-        const credit = item.kind === "credit_note";
+        const credit = item?.kind === "credit_note";
         return (
           <li key={a.itemId} className="flex items-center justify-between gap-3 rounded-lg border border-app-line-soft bg-app-raise px-2.5 py-1.5 text-[13px]">
             <span className="min-w-0 truncate">
-              <span className={cn("font-medium", credit ? "text-[#f6b67a]" : "text-white")}>{credit ? "Credit note" : "FT"} {item.invoiceNumber.replace(/^NC\s*/, "")}</span>
-              <span className="text-app-mute"> · {item.customerName}</span>
-              <span className="text-app-mute"> · due {formatDate(item.dueDate)}</span>
+              {item ? (
+                <>
+                  <span className={cn("font-medium", credit ? "text-[#f6b67a]" : "text-white")}>{credit ? "Credit note" : "FT"} {item.invoiceNumber.replace(/^NC\s*/, "")}</span>
+                  <span className="text-app-mute"> · {item.customerName}</span>
+                  <span className="text-app-mute"> · due {formatDate(item.dueDate)}</span>
+                </>
+              ) : (
+                <span className="text-app-mute">Invoice no longer open</span>
+              )}
             </span>
             <span className={cn("tabular shrink-0", a.amount < 0 ? "text-[#f59090]" : "text-app-text")}>{formatEuro(a.amount)}</span>
           </li>
@@ -148,20 +97,30 @@ function TxHeader({ tx }: { tx: BankTransaction }) {
   );
 }
 
-function ReviewCard({ tx, proposal, view, onConfirm, onIgnore }: { tx: BankTransaction; proposal: Proposal; view: View; onConfirm: (c: Candidate) => void; onIgnore: () => void }) {
+function ReviewCard({ row, items, onConfirm, onIgnore }: { row: MatchRow; items: Items; onConfirm: (c: Candidate) => Promise<void>; onIgnore: () => Promise<void> }) {
+  const proposal: Proposal = row.proposal ?? { transactionId: row.tx.id, kind: "payment", status: "unmatched", best: null, alternatives: [] };
   const options = [proposal.best, ...proposal.alternatives].filter((c): c is Candidate => !!c);
   const [pick, setPick] = useState(0);
+  const [busy, setBusy] = useState(false);
   const chosen = options[pick];
+  const act = (work: () => Promise<void>) => async () => {
+    setBusy(true);
+    try {
+      await work();
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <motion.li layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 24, transition: { duration: 0.2 } }} className="flex flex-col gap-3 rounded-xl border border-app-line bg-app-panel p-4">
-      <TxHeader tx={tx} />
+      <TxHeader tx={row.tx} />
       {chosen ? (
         <>
           <div className="flex items-center justify-between gap-3">
             <span className="text-xs font-medium uppercase tracking-wide text-app-mute">{options.length > 1 ? `Suggestion ${pick + 1} of ${options.length}` : "Suggestion"}</span>
             <ConfidenceBar value={chosen.confidence} />
           </div>
-          <Allocations candidate={chosen} items={view.items} />
+          <Allocations allocations={chosen.allocations} items={items} />
           {chosen.difference !== 0 && (
             <p className="text-xs text-app-mute">
               Difference {formatEuro(chosen.difference)} — {chosen.difference < 0 ? "written off as fee or discount" : "paid in excess"}
@@ -174,16 +133,16 @@ function ReviewCard({ tx, proposal, view, onConfirm, onIgnore }: { tx: BankTrans
       )}
       <div className="flex flex-wrap items-center gap-2">
         {chosen && (
-          <Button size="sm" variant="accent" onClick={() => onConfirm(chosen)}>
-            <Check className="size-3.5" /> Confirm
+          <Button size="sm" variant="accent" disabled={busy} onClick={act(() => onConfirm(chosen))}>
+            {busy ? <Spinner /> : <Check className="size-3.5" />} Confirm
           </Button>
         )}
         {options.length > 1 && (
-          <Button size="sm" variant="ghost" onClick={() => setPick((pick + 1) % options.length)}>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={() => setPick((pick + 1) % options.length)}>
             <ArrowLeftRight className="size-3.5" /> Other option
           </Button>
         )}
-        <Button size="sm" variant="ghost" className="ml-auto" onClick={onIgnore}>
+        <Button size="sm" variant="ghost" className="ml-auto" disabled={busy} onClick={act(onIgnore)}>
           <X className="size-3.5" /> Not a customer payment
         </Button>
       </div>
@@ -201,99 +160,158 @@ function Stat({ label, value, sub, tone }: { label: string; value: string; sub?:
   );
 }
 
+function ConnectModal({ open, onOpenChange, onConnected }: { open: boolean; onOpenChange: (v: boolean) => void; onConnected: (c: ApiConnection) => void }) {
+  const [url, setUrl] = useState(() => getConnection()?.url ?? DEFAULT_API_URL);
+  const [token, setToken] = useState("");
+  const [error, setError] = useState("");
+  const [testing, setTesting] = useState(false);
+  const connect = async () => {
+    const conn = { url: url.trim().replace(/\/+$/, ""), token: token.trim() };
+    if (!/^https?:\/\//.test(conn.url)) return setError("Enter the API address, starting with http:// or https://");
+    if (!conn.token) return setError("Paste the workspace token.");
+    setTesting(true);
+    setError("");
+    try {
+      await apiFetch(conn, "/match/transactions?status=MATCHED");
+      saveConnection(conn);
+      onConnected(conn);
+      onOpenChange(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Connection failed");
+    } finally {
+      setTesting(false);
+    }
+  };
+  return (
+    <Modal
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Connect to your workspace"
+      description="Use your own invoices and bank movements instead of the demo. The token stays in this browser."
+      footer={
+        <>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button variant="accent" disabled={testing} onClick={() => void connect()}>
+            {testing && <Spinner />} Connect
+          </Button>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-3.5">
+        <Field label="API address">{(p) => <Input {...p} value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://api.example.com" />}</Field>
+        <Field label="Workspace token" error={error || false} hint={<>Ask your admin, or run <code className="font-mono">pnpm --filter @vult/api-server token -- --tenant &lt;id&gt;</code></>}>
+          {(p) => <Input {...p} type="password" autoComplete="off" value={token} onChange={(e) => setToken(e.target.value)} placeholder="eyJ…" />}
+        </Field>
+      </div>
+    </Modal>
+  );
+}
+
 export default function MatchPage() {
   usePage({ title: "Match", icon: ArrowLeftRight });
   const db = useDB();
-  const [state, setState] = useMatchState();
-  const view = useReconciliation(state);
+  const [conn, setConn] = useState<ApiConnection | null>(() => getConnection());
+  const demo = useDemoMatch();
+  const live = useLiveMatch(conn);
+  const model: MatchModel = conn ? live : demo;
   const [tab, setTab] = useState("review");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [connectOpen, setConnectOpen] = useState(false);
+  const statementRef = useRef<HTMLInputElement>(null);
+  const invoiceRef = useRef<HTMLInputElement>(null);
 
-  const rows = view.transactions.map((tx) => {
-    const p = view.proposals.get(tx.id);
-    const confirmed = state.confirmed[tx.id];
-    const ignored = state.ignored.includes(tx.id) || p?.kind === "outgoing";
-    const status = confirmed ? "confirmed" : ignored ? "ignored" : p?.status ?? "unmatched";
-    return { tx, p, confirmed, status };
-  });
-  const incoming = rows.filter((r) => r.tx.amount > 0 || r.p?.kind === "riba_return");
+  const rows = model.rows;
+  const incoming = rows.filter((r) => r.tx.amount > 0 || r.proposal?.kind === "riba_return");
   const review = rows.filter((r) => r.status === "review");
   const unmatched = rows.filter((r) => r.status === "unmatched");
   const matched = rows.filter((r) => r.status === "auto" || r.status === "confirmed").sort((a, b) => b.tx.date.localeCompare(a.tx.date));
   const autoCount = rows.filter((r) => r.status === "auto").length;
-  const collected = view.balances.reduce((s, b) => s + b.collected, 0);
-  const overdue = view.balances.reduce((s, b) => s + b.overdue, 0);
+  const collected = model.balances.reduce((s, b) => s + b.collected, 0);
+  const overdue = model.balances.reduce((s, b) => s + b.overdue, 0);
 
-  const confirm = (tx: BankTransaction, c: Candidate) => {
-    const settled = c.allocations.map((a) => view.items.get(a.itemId)).filter((i): i is OpenItem => !!i);
-    const { memory, lessons } = learn(state.memory, tx, settled);
-    const next: MatchState = { ...state, memory, confirmed: { ...state.confirmed, [tx.id]: { allocations: c.allocations, at: new Date().toISOString() } } };
-    // How many more payments the engine now matches by itself thanks to what it just learned.
-    const before = new Set(rows.filter((r) => r.status === "auto").map((r) => r.tx.id));
-    const pending = view.transactions.filter((t) => !next.confirmed[t.id] && !next.ignored.includes(t.id));
-    const paid: Record<string, number> = {};
-    for (const conf of Object.values(next.confirmed)) for (const a of conf.allocations) {
-      const item = view.items.get(a.itemId);
-      if (item) paid[a.itemId] = (paid[a.itemId] ?? 0) + (item.kind === "credit_note" ? Math.abs(a.amount) : a.amount);
-    }
-    const after = reconcile({ items: DEMO_ITEMS, transactions: pending, paid, memory }).proposals.filter((p) => p.status === "auto" && !before.has(p.transactionId)).length;
-    setState(next);
-    toast.success("Match confirmed", {
-      description: [...lessons.map((l) => `Learned: ${l}`), after ? (after > 1 ? `${after} more payments now match automatically` : "1 more payment now matches automatically") : ""].filter(Boolean).join(" · ") || undefined,
-    });
+  const disconnect = () => {
+    clearConnection();
+    setConn(null);
+    toast("Back to demo data");
   };
-  const ignore = (tx: BankTransaction) => setState({ ...state, ignored: [...state.ignored, tx.id] });
-  const undo = (tx: BankTransaction) => {
-    const { [tx.id]: _, ...confirmedRest } = state.confirmed;
-    setState({ ...state, confirmed: confirmedRest, ignored: state.ignored.filter((id) => id !== tx.id) });
-  };
-  const upload = async (file: File) => {
-    const { transactions, skipped } = parseBankCsv(await file.text());
-    const known = new Set(view.transactions.map((t) => t.id));
-    const fresh = transactions.filter((t) => !known.has(t.id));
-    setState({ ...state, uploaded: [...state.uploaded, ...fresh] });
-    if (!transactions.length) toast.error("No transactions found in this file", { description: skipped[0]?.reason });
-    else toast.success(`Imported ${fresh.length} transactions`, { description: skipped.length ? `${skipped.length} rows skipped` : undefined });
-  };
-  const reset = () => {
-    removeKey(KEY);
-    setState(initial());
-    toast("Demo reset");
+  const pickFile = (handler: ((f: File) => Promise<Outcome>) | undefined) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (file && handler) notify(await handler(file));
   };
 
-  const owners = new Map<string, string>(DEMO_CUSTOMERS.map((c) => [c.vat, c.ownerId]));
-  const commissions = [...view.balances.reduce((m, b) => {
-    const owner = owners.get(b.customerVat) ?? "m1";
-    const row = m.get(owner) ?? { owner, collected: 0, customers: 0 };
-    row.collected += b.collected;
-    row.customers++;
-    return m.set(owner, row);
-  }, new Map<string, { owner: string; collected: number; customers: number }>()).values()].sort((a, b) => b.collected - a.collected);
+  const owners = model.owners;
+  const commissions = owners
+    ? [...model.balances.reduce((m, b) => {
+        const owner = owners.get(b.customerVat) ?? "m1";
+        const row = m.get(owner) ?? { owner, collected: 0, customers: 0 };
+        row.collected += b.collected;
+        row.customers++;
+        return m.set(owner, row);
+      }, new Map<string, { owner: string; collected: number; customers: number }>()).values()].sort((a, b) => b.collected - a.collected)
+    : [];
 
   return (
     <div className="scrollbar-thin h-full overflow-y-auto p-4 sm:p-6">
       <div className="mx-auto flex max-w-[1040px] flex-col gap-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">Payments matched to invoices</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">Payments matched to invoices</h1>
+              {model.mode === "live" ? (
+                <Badge dark tone="green" dot title={conn?.url}>Live</Badge>
+              ) : (
+                <Badge dark tone="neutral">Demo data</Badge>
+              )}
+              {model.loading && <Spinner />}
+            </div>
             <p className="mt-1 max-w-xl text-sm text-app-dim">Vult reads your SDI invoices and bank movements and matches them by itself. Confirm the few it is unsure about and it learns for next time.</p>
           </div>
-          <div className="flex gap-2">
-            <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ""; }} />
-            <Button size="sm" variant="secondary" onClick={() => fileRef.current?.click()}>
-              <FileUp className="size-3.5" /> Upload bank CSV
+          <div className="flex flex-wrap gap-2">
+            <input ref={statementRef} type="file" accept={model.mode === "live" ? ".csv,.xml,text/csv,application/xml" : ".csv,text/csv"} className="hidden" onChange={pickFile(model.uploadStatement)} />
+            <input ref={invoiceRef} type="file" accept=".xml,.p7m,.zip" className="hidden" onChange={pickFile(model.uploadInvoices)} />
+            {model.uploadInvoices && (
+              <Button size="sm" variant="secondary" onClick={() => invoiceRef.current?.click()}>
+                <FileText className="size-3.5" /> Upload invoices
+              </Button>
+            )}
+            <Button size="sm" variant="secondary" onClick={() => statementRef.current?.click()}>
+              <FileUp className="size-3.5" /> {model.mode === "live" ? "Upload bank statement" : "Upload bank CSV"}
             </Button>
-            <Button size="sm" variant="ghost" onClick={reset}>
-              <RotateCcw className="size-3.5" /> Reset demo
-            </Button>
+            {model.run && (
+              <Button size="sm" variant="ghost" onClick={async () => notify(await model.run!())}>
+                <Play className="size-3.5" /> Run matching
+              </Button>
+            )}
+            {model.reset && (
+              <Button size="sm" variant="ghost" onClick={() => notify(model.reset!())}>
+                <RotateCcw className="size-3.5" /> Reset demo
+              </Button>
+            )}
+            {model.mode === "live" ? (
+              <Button size="sm" variant="ghost" onClick={disconnect}>
+                <Unplug className="size-3.5" /> Disconnect
+              </Button>
+            ) : (
+              <Button size="sm" variant="ghost" onClick={() => setConnectOpen(true)}>
+                <Plug className="size-3.5" /> Connect API
+              </Button>
+            )}
           </div>
         </div>
+
+        {model.error && (
+          <div role="alert" className="flex flex-wrap items-center gap-3 rounded-xl border border-[#5a2a2a] bg-[rgb(240_82_82/0.08)] px-4 py-3 text-sm text-[#f59090]">
+            <span className="flex-1">{model.error}</span>
+            <Button size="sm" variant="ghost" onClick={() => setConnectOpen(true)}>Check connection</Button>
+            <Button size="sm" variant="ghost" onClick={disconnect}>Use demo data</Button>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label="Matched automatically" value={`${incoming.length ? Math.round((autoCount / incoming.length) * 100) : 0}%`} sub={`${autoCount} of ${incoming.length} incoming`} tone="#6fe3a5" />
           <Stat label="To review" value={String(review.length)} sub="One click each" tone={review.length ? "#f6b67a" : undefined} />
-          <Stat label="Collected" value={formatEuro(collected)} sub={`${matched.length} payments`} />
-          <Stat label="Overdue" value={formatEuro(overdue)} sub={`as of ${formatDate(MATCH_TODAY)}`} tone={overdue ? "#f59090" : undefined} />
+          <Stat label="Collected" value={formatEuro(collected)} sub={matched.length === 1 ? "1 payment" : `${matched.length} payments`} />
+          <Stat label="Overdue" value={formatEuro(overdue)} sub={`as of ${formatDate(model.today)}`} tone={overdue ? "#f59090" : undefined} />
         </div>
 
         <Tabs
@@ -304,15 +322,23 @@ export default function MatchPage() {
             { value: "matched", label: "Matched", count: matched.length },
             { value: "unmatched", label: "Unmatched", count: unmatched.length },
             { value: "customers", label: "Customers" },
-            { value: "commissions", label: "Commissions" },
+            ...(owners ? [{ value: "commissions", label: "Commissions" }] : []),
           ]}
         />
 
-        {tab === "review" && (
+        {model.mode === "live" && !model.loading && !rows.length && !model.error && (
+          <EmptyState icon={FileUp} title="Start with your own data">
+            Upload your invoices (XML, .p7m, or the ZIP from the Agenzia delle Entrate portal), then a bank statement (camt.053 or CSV). Vult matches them right away.
+          </EmptyState>
+        )}
+
+        {tab === "review" && !!rows.length && (
           review.length ? (
             <ul className="flex flex-col gap-3">
               <AnimatePresence initial={false} mode="popLayout">
-                {review.map((r) => <ReviewCard key={r.tx.id} tx={r.tx} proposal={r.p!} view={view} onConfirm={(c) => confirm(r.tx, c)} onIgnore={() => ignore(r.tx)} />)}
+                {review.map((r) => (
+                  <ReviewCard key={r.tx.id} row={r} items={model.items} onConfirm={async (c) => notify(await model.confirm(r, c))} onIgnore={async () => notify(await model.ignore(r))} />
+                ))}
               </AnimatePresence>
             </ul>
           ) : (
@@ -322,15 +348,19 @@ export default function MatchPage() {
 
         {tab === "matched" && (
           <ul className="flex flex-col gap-2">
-            {matched.map(({ tx, p, confirmed, status }) => (
-              <motion.li key={tx.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-2.5 rounded-xl border border-app-line bg-app-panel p-4">
-                <TxHeader tx={tx} />
-                <Allocations candidate={confirmed ?? p!.best!} items={view.items} />
+            {matched.map((r) => (
+              <motion.li key={r.tx.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-2.5 rounded-xl border border-app-line bg-app-panel p-4">
+                <TxHeader tx={r.tx} />
+                <Allocations allocations={r.applied ?? []} items={model.items} />
                 <div className="flex flex-wrap items-center gap-2">
-                  {status === "auto" ? <Badge dark tone="green"><Sparkles className="size-3" /> Matched automatically</Badge> : <Badge dark tone="blue"><Check className="size-3" /> Confirmed by you</Badge>}
-                  {status === "auto" && p?.best && <Reasons candidate={p.best} />}
-                  {status === "confirmed" && (
-                    <Button size="sm" variant="ghost" className="ml-auto" onClick={() => undo(tx)}>
+                  {r.status === "auto" ? (
+                    <Badge dark tone="green"><Sparkles className="size-3" /> Matched automatically</Badge>
+                  ) : (
+                    <Badge dark tone="blue"><Check className="size-3" /> Confirmed by you</Badge>
+                  )}
+                  {r.status === "auto" && r.proposal?.best && <Reasons candidate={r.proposal.best} />}
+                  {(r.status === "confirmed" || model.mode === "live") && (
+                    <Button size="sm" variant="ghost" className="ml-auto" onClick={async () => notify(await model.undo(r))}>
                       <Undo2 className="size-3.5" /> Undo
                     </Button>
                   )}
@@ -344,7 +374,9 @@ export default function MatchPage() {
           unmatched.length ? (
             <ul className="flex flex-col gap-3">
               <AnimatePresence initial={false} mode="popLayout">
-                {unmatched.map((r) => <ReviewCard key={r.tx.id} tx={r.tx} proposal={r.p ?? { transactionId: r.tx.id, kind: "payment", status: "unmatched", best: null, alternatives: [] }} view={view} onConfirm={(c) => confirm(r.tx, c)} onIgnore={() => ignore(r.tx)} />)}
+                {unmatched.map((r) => (
+                  <ReviewCard key={r.tx.id} row={r} items={model.items} onConfirm={async (c) => notify(await model.confirm(r, c))} onIgnore={async () => notify(await model.ignore(r))} />
+                ))}
               </AnimatePresence>
             </ul>
           ) : (
@@ -359,7 +391,7 @@ export default function MatchPage() {
                 <tr>{["Customer", "Billed", "Collected", "Open", "Overdue", "Pays", "Last payment"].map((h, i) => <th key={h} className={cn("px-3 py-2 font-medium", i > 0 && i < 5 && "text-right")}>{h}</th>)}</tr>
               </thead>
               <tbody>
-                {view.balances.map((b) => (
+                {model.balances.map((b) => (
                   <tr key={b.customerVat} className="border-t border-app-line-soft">
                     <td className="px-3 py-2.5"><span className="font-medium text-white">{b.customerName}</span><span className="block text-xs text-app-mute">P.IVA {b.customerVat}</span></td>
                     <td className="tabular px-3 text-right">{formatEuro(b.billed)}</td>
@@ -375,7 +407,7 @@ export default function MatchPage() {
           </div>
         )}
 
-        {tab === "commissions" && (
+        {tab === "commissions" && owners && (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-app-dim">Commission of {COMMISSION_RATE * 100}% on money actually collected, per account owner. No spreadsheet, no disputes: every euro links to an invoice and a bank movement.</p>
             <div className="overflow-x-auto rounded-xl border border-app-line">
@@ -397,13 +429,8 @@ export default function MatchPage() {
             </div>
           </div>
         )}
-
-        {!!review.length && tab !== "review" && (
-          <p className="text-center text-xs text-app-mute">
-            <Badge dark tone={confidenceTone(0.5)}>{review.length} to review</Badge>
-          </p>
-        )}
       </div>
+      <ConnectModal open={connectOpen} onOpenChange={setConnectOpen} onConnected={(c) => { setConn(c); toast.success("Connected", { description: c.url }); }} />
     </div>
   );
 }

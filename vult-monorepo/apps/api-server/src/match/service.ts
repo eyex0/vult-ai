@@ -129,6 +129,8 @@ export async function runMatching(db: Db, tenantId: string, today = isoDay(new D
   const byId = new Map(items.map((i) => [i.id, i]));
   const paid = Object.fromEntries(installments.map((i) => [i.id, Number(i.paidCents)]));
   const { proposals } = reconcile({ items, transactions: rows.map(toBankTransaction), paid, memory });
+  const blocked = new Set(rows.filter((r) => r.autoBlocked).map((r) => r.id));
+  for (const p of proposals) if (p.status === 'auto' && blocked.has(p.transactionId)) p.status = 'review';
 
   const summary: RunSummary = { auto: 0, review: 0, unmatched: 0, ignored: 0 };
   for (const p of proposals) {
@@ -240,6 +242,25 @@ export async function confirmMatch(db: Db, tenantId: string, userId: string, tra
   });
   const rerun = await runMatching(db, tenantId, today);
   return { lessons, rerun };
+}
+
+/** Takes a match back: removes its allocations, reopens the invoices, and keeps the engine from matching it alone again. */
+export async function unmatchTransaction(db: Db, tenantId: string, transactionId: string) {
+  await lockTenant(db, tenantId);
+  const row = await db.bankTransaction.findFirst({
+    where: { id: transactionId, tenantId },
+    include: { allocations: { include: { installment: { include: { invoice: true } } } } },
+  });
+  if (!row) throw new MatchError(404, 'Transaction not found');
+  for (const a of row.allocations) {
+    const delta = a.installment.invoice.kind === 'CREDIT_NOTE' ? (a.amountCents < 0n ? -a.amountCents : a.amountCents) : a.amountCents;
+    await db.invoiceInstallment.update({ where: { id: a.installmentId }, data: { paidCents: { decrement: delta } } });
+  }
+  await db.paymentAllocation.deleteMany({ where: { tenantId, transactionId } });
+  await db.bankTransaction.update({
+    where: { id: row.id },
+    data: { status: 'SUGGESTED', autoBlocked: true, confidence: row.confidence },
+  });
 }
 
 export async function ignoreTransaction(db: Db, tenantId: string, transactionId: string) {
