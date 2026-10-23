@@ -33,7 +33,8 @@ export type Config = z.infer<typeof schema> & { corsOrigins: string[]; cookieSec
 
 /** Reads and checks the environment once, so a bad deploy fails at startup instead of on the first request. */
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
-  const parsed = schema.safeParse(env);
+  // Managed platforms (Render, Railway, Cloud Run) tell the service which port to use in PORT.
+  const parsed = schema.safeParse({ API_PORT: env.PORT, ...env });
   if (!parsed.success) {
     const problems = parsed.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
     throw new Error(`Invalid API configuration:\n${problems}`);

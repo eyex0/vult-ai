@@ -111,7 +111,22 @@ The same images run on managed platforms (Render, Fly.io, Railway, Scaleway, Goo
    address: keep both under the same parent domain, because the session cookie is SameSite=Lax. Or upload `apps/web/dist` to any static host with an
    SPA fallback to `index.html`.
 
-## 9. Before the first paying customer
+## 9. Vercel + Render + Neon (no server)
+
+- **Neon** (Postgres, region Frankfurt). In the SQL editor, before the first deploy:
+  `CREATE ROLE vult_app LOGIN PASSWORD '…' NOSUPERUSER NOBYPASSRLS;`
+  Use the direct (not pooled) connection strings.
+- **Render**, web service from this repository: root directory `vult-monorepo`, runtime Docker (the
+  Dockerfile's last stage is the API). Pre-deploy command `npm run migrate`, health check path `/ready`.
+  Environment: `NODE_ENV=production`, `DATABASE_URL` (as `vult_app`), `MIGRATION_DATABASE_URL` (as the Neon
+  owner), `JWT_SECRET`, `CORS_ORIGINS=https://<your-app>.vercel.app`, `TRUST_PROXY_HOPS=2`. The API listens
+  on Render's `PORT`.
+- **Vercel**, project from this repository: root directory `vult-monorepo`; `vercel.json` sets the build.
+  Environment: `VITE_API_URL=https://<your-app>.vercel.app`, `VITE_CONTACT_EMAIL`, `VITE_LEGAL_ENTITY`.
+  If the Render service is not called `vult-api`, edit the `/api` rewrite in `vercel.json`: Vercel forwards
+  `/api/*` to Render, so the browser sees one address and the session cookie works.
+
+## 10. Before the first paying customer
 
 - [ ] Backups running and one restore tested.
 - [ ] Uptime monitor on `/ready`, alerts on error logs.

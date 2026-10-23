@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# One Dockerfile, several images:  docker build --target api|worker|migrate|web .
+# One Dockerfile, several images:  docker build --target api|worker|migrate|web .  (no --target builds the API)
 # Behind a TLS-inspecting proxy, pass its CA:  --secret id=extra_ca,src=/path/to/ca.crt
 ARG NODE_IMAGE=node:22-bookworm-slim
 
@@ -42,13 +42,6 @@ WORKDIR /app
 # The services handle SIGTERM themselves (graceful shutdown), so node runs as PID 1 without an init.
 USER node
 
-FROM runtime AS api
-COPY --from=build --chown=node:node /out/api /app
-EXPOSE 4000
-HEALTHCHECK --interval=15s --timeout=3s --start-period=10s \
-  CMD node -e "fetch('http://127.0.0.1:'+(process.env.API_PORT||4000)+'/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
-CMD ["node", "dist/index.js"]
-
 FROM runtime AS worker
 COPY --from=build --chown=node:node /out/worker /app
 CMD ["node", "dist/index.js"]
@@ -63,3 +56,11 @@ COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /repo/apps/web/dist /usr/share/nginx/html
 ENV API_ORIGIN=""
 EXPOSE 8080
+
+# Last on purpose: platforms that build the final stage without a --target (Render) get the API.
+FROM runtime AS api
+COPY --from=build --chown=node:node /out/api /app
+EXPOSE 4000
+HEALTHCHECK --interval=15s --timeout=3s --start-period=10s \
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.API_PORT||4000)+'/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
+CMD ["node", "dist/index.js"]
