@@ -355,7 +355,7 @@ function propose(tx: BankTransaction, ctx: Ctx): Proposal {
     if (RIBA_BATCH.test(text)) candidates.push(...ribaBatchCandidates(tx, ctx));
     for (const vat of vats) candidates.push(...customerCandidates(tx, vat, ev.get(vat), refs, referenced, ctx));
     if (fallback) {
-      const exact = candidates.filter((c) => c.reasons.some((r) => r.code === 'exact_amount'));
+      const exact = candidates.filter((c) => c.customerVat && c.reasons.some((r) => r.code === 'exact_amount') && !c.reasons.some((r) => r.code === 'riba_batch'));
       if (exact.length === 1) {
         exact[0]!.confidence = clamp(exact[0]!.confidence + 0.15);
         exact[0]!.reasons.push({ code: 'unique_amount', label: 'Only open item with this amount' });
@@ -368,8 +368,9 @@ function propose(tx: BankTransaction, ctx: Ctx): Proposal {
   for (const c of candidates) if (!unique.some((u) => sameAllocations(u, c))) unique.push(c);
   const [best, second] = unique;
   if (best && second && second.confidence >= best.confidence - 0.05) {
+    const rivals = unique.filter((c) => c.confidence >= best.confidence - 0.05).length;
     best.confidence = clamp(best.confidence - 0.25);
-    best.reasons.push({ code: 'ambiguous', label: `${unique.filter((c) => c.confidence >= second.confidence - 0.05).length} possible matches` });
+    best.reasons.push({ code: 'ambiguous', label: `${rivals} possible matches` });
   }
   if (!best) return { transactionId: tx.id, kind, status: 'unmatched', best: null, alternatives: [] };
   const partial = best.reasons.some((r) => r.code === 'partial');

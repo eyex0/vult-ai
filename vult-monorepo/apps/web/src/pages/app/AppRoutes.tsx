@@ -10,6 +10,7 @@ const TasksPage = lazy(() => import("@/pages/app/Tasks"));
 const NotesPage = lazy(() => import("@/pages/app/Notes"));
 const EmailsPage = lazy(() => import("@/pages/app/Emails"));
 const CallsPage = lazy(() => import("@/pages/app/Calls"));
+const MatchPage = lazy(() => import("@/pages/app/Match"));
 const ReportsPage = lazy(() => import("@/pages/app/Reports"));
 const DashboardPage = lazy(() => import("@/pages/app/Dashboard"));
 const SequencesPage = lazy(() => import("@/pages/app/Sequences"));
@@ -67,6 +68,7 @@ export default function AppRoutes() {
             <Route path="/app/notes/:id?" component={NotesPage} />
             <Route path="/app/emails" component={EmailsPage} />
             <Route path="/app/calls" component={CallsPage} />
+            <Route path="/app/match" component={MatchPage} />
             <Route path="/app/reports" component={ReportsPage} />
             <Route path="/app/reports/:id" component={DashboardPage} />
             <Route path="/app/sequences/:id?" component={SequencesPage} />

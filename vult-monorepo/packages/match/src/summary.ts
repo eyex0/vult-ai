@@ -46,7 +46,8 @@ export function summarizeCustomers(items: OpenItem[], payments: AppliedPayment[]
       const left = Math.max(0, item.amount - got);
       row.open += left;
       if (left > 0 && item.dueDate < today) row.overdue += left;
-      for (const p of applied.filter((x) => x.amount > 0)) {
+      // A Ri.Ba. that came back unpaid says nothing about punctuality: skip items whose payments were reversed.
+      for (const p of got > 0 ? applied.filter((x) => x.amount > 0) : []) {
         row.lateSum += daysBetween(item.dueDate, p.date) * p.amount;
         row.lateWeight += p.amount;
         if (!row.lastPayment || p.date > row.lastPayment) row.lastPayment = p.date;
