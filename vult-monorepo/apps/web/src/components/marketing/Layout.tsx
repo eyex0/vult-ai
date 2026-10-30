@@ -58,7 +58,7 @@ export function Footer() {
         <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="flex flex-col gap-3">
             <Logo tone="light" />
-            <p className="max-w-[240px] text-[13px] text-[#8a8d96]">The AI-native CRM for teams that move fast.</p>
+            <p className="max-w-[240px] text-[13px] text-[#8a8d96]">Know who paid. Get paid faster.</p>
           </div>
           {FOOTER_COLUMNS.map((col) => (
             <nav key={col.title} aria-label={col.title} className="flex flex-col gap-2 text-[13px]">

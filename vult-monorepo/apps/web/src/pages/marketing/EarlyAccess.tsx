@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Check, FileUp, Landmark, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { EarlyAccessForm } from "@/components/marketing/EarlyAccessForm";
+import { ProductTour, SourcesStrip, TrustSection } from "@/components/marketing/LaunchSections";
 import { FAQ, Reveal, RevealGroup, RevealItem, SectionIntro, TwoTone } from "@/components/marketing/Section";
 import { Eyebrow } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -161,6 +162,8 @@ export default function EarlyAccessPage({ lang = "en" }: { lang?: "en" | "it" })
         </div>
       </section>
 
+      <SourcesStrip lang={lang} />
+
       <section className="border-b border-line bg-soft">
         <div className="rail px-[clamp(20px,5vw,60px)] py-[clamp(56px,7vw,96px)]">
           <SectionIntro eyebrow={t.problemEyebrow} lead={t.problemLead} rest={t.problemRest} />
@@ -175,7 +178,9 @@ export default function EarlyAccessPage({ lang = "en" }: { lang?: "en" | "it" })
         </div>
       </section>
 
-      <section className="border-b border-line bg-white">
+      <ProductTour lang={lang} />
+
+      <section className="border-b border-line bg-soft">
         <div className="rail px-[clamp(20px,5vw,60px)] py-[clamp(56px,7vw,96px)]">
           <SectionIntro eyebrow={t.stepsEyebrow} lead={t.stepsLead} />
           <RevealGroup className="mt-10 grid gap-4 md:grid-cols-3">
@@ -192,6 +197,8 @@ export default function EarlyAccessPage({ lang = "en" }: { lang?: "en" | "it" })
           </RevealGroup>
         </div>
       </section>
+
+      <TrustSection lang={lang} />
 
       <section id="pilot" className="scroll-mt-24 border-b border-line bg-soft">
         <div className="rail grid gap-12 px-[clamp(20px,5vw,60px)] py-[clamp(56px,7vw,96px)] lg:grid-cols-[1fr_1.1fr]">
