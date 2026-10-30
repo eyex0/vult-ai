@@ -359,10 +359,10 @@ function Sidebar({
       {!collapsed && (
         <div className="flex shrink-0 flex-col gap-2 border-t border-app-line-soft p-2.5">
           {API_MODE ? (
-            <div className="flex flex-col gap-1 rounded-[10px] border border-[rgb(59_91_253/0.3)] bg-[linear-gradient(180deg,rgb(59_91_253/0.18),rgb(59_91_253/0.06))] px-3 py-2.5 text-[12.5px]">
+            <div className="flex flex-col gap-1 rounded-[10px] border border-[rgb(166_75_48/0.3)] bg-[linear-gradient(180deg,rgb(166_75_48/0.18),rgb(166_75_48/0.06))] px-3 py-2.5 text-[12.5px]">
               <span className="font-[550] text-white">Early access</span>
-              <span className="text-app-dim">Free while we build Vult with you. Tell us what to fix.</span>
-              <a href={`mailto:${CONTACT_EMAIL}?subject=Vult%20early%20access`} className="font-[550] text-[#9daeff] hover:text-white">
+              <span className="text-app-dim">Free while we build SILA with you. Tell us what to fix.</span>
+              <a href={`mailto:${CONTACT_EMAIL}?subject=SILA%20early%20access`} className="font-[550] text-[#f0b49c] hover:text-white">
                 Send feedback →
               </a>
             </div>
@@ -376,9 +376,9 @@ function Sidebar({
           >
             <UserPlus aria-hidden className="size-3.5" /> {tr("Invite members")}
           </button>
-          <div className="flex flex-col gap-1.5 rounded-[10px] border border-[rgb(59_91_253/0.3)] bg-[linear-gradient(180deg,rgb(59_91_253/0.18),rgb(59_91_253/0.06))] px-3 py-2.5 text-[12.5px]">
+          <div className="flex flex-col gap-1.5 rounded-[10px] border border-[rgb(166_75_48/0.3)] bg-[linear-gradient(180deg,rgb(166_75_48/0.18),rgb(166_75_48/0.06))] px-3 py-2.5 text-[12.5px]">
             <span className="font-[550] text-white">{tr("{n} days left in your Pro trial", { n: trialDays })}</span>
-            <Link href="/app/settings/billing" onClick={onNavigate} className="font-[550] text-[#9daeff] hover:text-white">
+            <Link href="/app/settings/billing" onClick={onNavigate} className="font-[550] text-[#f0b49c] hover:text-white">
               {tr("Choose a plan →")}
             </Link>
           </div>
@@ -417,7 +417,7 @@ function TopBar({ onMenu, onAsk }: { onMenu: () => void; onAsk: () => void }) {
       </Button>
       {!API_MODE && (
         <Button variant="accent" size="sm" onClick={onAsk}>
-          <Sparkles className="size-3.5" /> {tr("Ask Vult")}
+          <Sparkles className="size-3.5" /> {tr("Ask SILA")}
         </Button>
       )}
     </header>

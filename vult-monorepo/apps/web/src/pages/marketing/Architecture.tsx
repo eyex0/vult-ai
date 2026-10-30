@@ -50,15 +50,15 @@ function SystemMap() {
   const inPaths = SOURCES.flatMap((s, i) => (s.soon ? [] : [{ id: `in${i}`, d: curve(40 + NODE_W, s.y + NODE_H / 2, coreX, CORE[0]!.y + NODE_H / 2) }]));
   const outPaths = OUTPUTS.map((o, i) => ({ id: `out${i}`, d: curve(coreX + coreW, CORE[2]!.y + NODE_H / 2, 924, o.y + NODE_H / 2) }));
   return (
-    <svg viewBox="0 0 1200 470" role="img" aria-label="Vult architecture: SDI invoices and bank statements flow into ingestion, the match engine and the workspace graph, which feed the CRM, agents, reports and the API." className="h-auto w-full">
+    <svg viewBox="0 0 1200 470" role="img" aria-label="SILA architecture: SDI invoices and bank statements flow into ingestion, the match engine and the workspace graph, which feed the CRM, agents, reports and the API." className="h-auto w-full">
       <defs>
         <linearGradient id="core-glow" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#266df0" stopOpacity="0.35" />
+          <stop offset="0" stopColor="#a64b30" stopOpacity="0.35" />
           <stop offset="1" stopColor="#6e5aff" stopOpacity="0.12" />
         </linearGradient>
         <radialGradient id="dot">
           <stop offset="0" stopColor="#9fc1ff" />
-          <stop offset="1" stopColor="#266df0" stopOpacity="0" />
+          <stop offset="1" stopColor="#a64b30" stopOpacity="0" />
         </radialGradient>
       </defs>
       {[...inPaths, ...outPaths].map((p) => (
@@ -111,7 +111,7 @@ function SystemList() {
   return (
     <div className="flex flex-col gap-6">
       {col("Sources", SOURCES)}
-      {col("Vult core", CORE)}
+      {col("SILA core", CORE)}
       {col("What you get", OUTPUTS)}
     </div>
   );
@@ -477,7 +477,7 @@ export default function ArchitecturePage() {
         <div className="rail-dark relative px-[clamp(20px,5vw,60px)] pb-[clamp(48px,7vw,88px)] pt-[clamp(64px,9vw,120px)]">
           <Reveal className="flex max-w-[860px] flex-col gap-5">
             <Eyebrow dark className="self-start">Architecture</Eyebrow>
-            <TwoTone as="h1" dark lead="Built on the money, not on guesses." rest="Vult starts where every Italian B2B sale ends: the e-invoice and the bank transfer." className="text-[clamp(36px,5vw,60px)] leading-[1.04]" />
+            <TwoTone as="h1" dark lead="Built on the money, not on guesses." rest="SILA starts where every Italian B2B sale ends: the e-invoice and the bank transfer." className="text-[clamp(36px,5vw,60px)] leading-[1.04]" />
           </Reveal>
           <Reveal delay={0.15} className="mt-12 hidden sm:block">
             <SystemMap />
@@ -530,19 +530,19 @@ export default function ArchitecturePage() {
             </RevealItem>
           ))}
         </RevealGroup>
-        <p className="rail px-[clamp(20px,5vw,60px)] py-3 text-xs text-subtle">Measured in Vult's test suite.</p>
+        <p className="rail px-[clamp(20px,5vw,60px)] py-3 text-xs text-subtle">Measured in SILA's test suite.</p>
       </section>
 
       <section className="border-b border-line bg-white">
         <div className="rail px-[clamp(20px,5vw,60px)] py-[clamp(64px,8vw,112px)]">
-          <SectionIntro eyebrow="The difference" lead="A different foundation." rest="Most CRMs are built around conversations. Vult is built around the transactions underneath them." />
+          <SectionIntro eyebrow="The difference" lead="A different foundation." rest="Most CRMs are built around conversations. SILA is built around the transactions underneath them." />
           <Reveal className="mt-12 overflow-x-auto rounded-2xl border border-line">
             <table className="w-full min-w-[640px] text-left text-[14.5px]">
               <thead className="bg-soft text-sm text-subtle">
                 <tr>
                   <th className="px-5 py-3 font-medium" />
                   <th className="px-5 py-3 font-medium">A typical CRM</th>
-                  <th className="px-5 py-3 font-medium text-ink">Vult</th>
+                  <th className="px-5 py-3 font-medium text-ink">SILA</th>
                 </tr>
               </thead>
               <tbody>

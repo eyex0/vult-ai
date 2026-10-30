@@ -57,9 +57,9 @@ export const PLATFORM: Record<string, PlatformPageContent> = {
       },
     ],
     faqs: [
-      { q: "Can I import my existing data?", a: "Yes. Import CSV files or connect your previous CRM. Vult maps columns to fields and flags duplicates before anything is written." },
+      { q: "Can I import my existing data?", a: "Yes. Import CSV files or connect your previous CRM. SILA maps columns to fields and flags duplicates before anything is written." },
       { q: "Is there a limit on fields?", a: "No practical limit on paid plans. Free workspaces can create up to 3 custom objects." },
-      { q: "Can I change a field type later?", a: "Most field types convert safely, and Vult previews the result before applying the change." },
+      { q: "Can I change a field type later?", a: "Most field types convert safely, and SILA previews the result before applying the change." },
     ],
     cta: "Model your business in minutes.",
   },
@@ -143,7 +143,7 @@ export const PLATFORM: Record<string, PlatformPageContent> = {
     ],
     faqs: [
       { q: "Do I need to write code?", a: "No. Everything is built visually. Developers can add webhooks and custom code steps when they need them." },
-      { q: "What happens when a step fails?", a: "Vult retries with back-off, then alerts the workflow owner with the exact input that failed." },
+      { q: "What happens when a step fails?", a: "SILA retries with back-off, then alerts the workflow owner with the exact input that failed." },
       { q: "Can I roll back a change?", a: "Every publish creates a version. Restore any previous version in one click." },
     ],
     cta: "Automate the busywork.",
@@ -160,11 +160,11 @@ export const PLATFORM: Record<string, PlatformPageContent> = {
         mock: "chart", mockTitle: "Closed won by month", rows: [],
       },
       {
-        eyebrow: "Ask Vult", lead: "Questions in plain language.", rest: "“Which deals are at risk this month?” gets an answer with the records behind it.",
+        eyebrow: "Ask SILA", lead: "Questions in plain language.", rest: "“Which deals are at risk this month?” gets an answer with the records behind it.",
         points: ["Cites the records it used", "Turns answers into saved reports", "Respects permissions"],
-        mock: "chat", mockTitle: "Ask Vult", rows: [
+        mock: "chat", mockTitle: "Ask SILA", rows: [
           { title: "Which deals are at risk this month?", detail: "You", pill: "Q", tone: "run" },
-          { title: "3 deals: EMEA expansion, Seat true-up, Security review", detail: "Vult", pill: "A", tone: "done" },
+          { title: "3 deals: EMEA expansion, Seat true-up, Security review", detail: "SILA", pill: "A", tone: "done" },
         ],
       },
       {
@@ -188,7 +188,7 @@ export const PLATFORM: Record<string, PlatformPageContent> = {
     slug: "enrichment",
     name: "Enrichment",
     title: ["Records that", "fill themselves in."],
-    subtitle: "Add a domain or an email. Vult fills in the company, the person and the context — and keeps it fresh.",
+    subtitle: "Add a domain or an email. SILA fills in the company, the person and the context — and keeps it fresh.",
     sections: [
       {
         eyebrow: "Companies", lead: "From a domain to a full profile.", rest: "Industry, size, location, funding and tech stack, added the moment a record is created.",
@@ -222,6 +222,6 @@ export const PLATFORM: Record<string, PlatformPageContent> = {
       { q: "Will enrichment overwrite my edits?", a: "Never. Values your team entered always win; enrichment only fills empty fields unless you opt in." },
       { q: "How do credits work?", a: "One credit enriches one company or person. Unused credits roll over for one month." },
     ],
-    cta: "Stop typing what Vult already knows.",
+    cta: "Stop typing what SILA already knows.",
   },
 };

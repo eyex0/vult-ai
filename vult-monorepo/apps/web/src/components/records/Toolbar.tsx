@@ -95,9 +95,9 @@ export function FilterChips({ rules, labelFor, onRemove }: { rules: FilterRule[]
   return (
     <>
       {rules.map((r) => (
-        <span key={r.id} className="inline-flex h-8 animate-pop items-center gap-1 rounded-[7px] border border-[#2a3060] bg-[#16182a] ps-2.5 pe-1 text-[12.5px] text-[#c9d3ff]">
+        <span key={r.id} className="inline-flex h-8 animate-pop items-center gap-1 rounded-[7px] border border-[#4a2a20] bg-[#241713] ps-2.5 pe-1 text-[12.5px] text-[#f3d3c6]">
           <b className="font-[550]">{labelFor(r.key)}</b> {tr(OP_LABEL[r.op])} “{r.value}”
-          <button type="button" onClick={() => onRemove(r.id)} aria-label={`Remove filter ${labelFor(r.key)}`} className="inline-flex size-6 items-center justify-center rounded text-[#9daeff] hover:bg-white/10">
+          <button type="button" onClick={() => onRemove(r.id)} aria-label={`Remove filter ${labelFor(r.key)}`} className="inline-flex size-6 items-center justify-center rounded text-[#f0b49c] hover:bg-white/10">
             <X className="size-3" />
           </button>
         </span>

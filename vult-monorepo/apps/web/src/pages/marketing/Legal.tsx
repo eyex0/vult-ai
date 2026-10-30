@@ -12,7 +12,7 @@ interface Doc {
   sections: { id: string; title: string; body: string[] }[];
 }
 
-// The legal entity behind Vult is set at build time; brackets show what is still missing.
+// The legal entity behind SILA is set at build time; brackets show what is still missing.
 const ENTITY = LEGAL_ENTITY;
 const PRIVACY_EMAIL = CONTACT_EMAIL;
 const UPDATED = "October 24, 2026";
@@ -21,11 +21,11 @@ const DOCS: Record<string, Doc> = {
   privacy: {
     title: "Privacy Policy",
     updated: UPDATED,
-    intro: `This policy explains what personal data Vult processes during the early-access programme, why, and what you can do about it. Vult is operated by ${ENTITY}.`,
+    intro: `This policy explains what personal data SILA processes during the early-access programme, why, and what you can do about it. SILA is operated by ${ENTITY}.`,
     sections: [
       { id: "roles", title: "1. Who is responsible", body: [
         `For your account and for early-access requests sent through our website, ${ENTITY} is the data controller.`,
-        "For the invoices and bank statements you upload, your company is the controller and Vult processes them on your behalf, as your data processor under Article 28 GDPR. We sign a data processing agreement (DPA) with every company before it uploads data.",
+        "For the invoices and bank statements you upload, your company is the controller and SILA processes them on your behalf, as your data processor under Article 28 GDPR. We sign a data processing agreement (DPA) with every company before it uploads data.",
       ] },
       { id: "collect", title: "2. What we process", body: [
         "Account data: your name, work email, company name, optional Partita IVA, and a hashed password.",
@@ -44,13 +44,13 @@ const DOCS: Record<string, Doc> = {
         "We use a small number of providers to run the service (hosting, email delivery). They act as sub-processors under contracts with GDPR safeguards. The current list is available on request.",
       ] },
       { id: "retention", title: "5. How long we keep it", body: [
-        "Workspace data: while your company uses Vult. If you stop after the pilot or close your account, we delete it within 30 days, and from backups within a further 14 days.",
+        "Workspace data: while your company uses SILA. If you stop after the pilot or close your account, we delete it within 30 days, and from backups within a further 14 days.",
         "Account data: while the account exists. Early-access requests: up to 12 months if no pilot starts.",
         "Server logs: up to 30 days.",
       ] },
       { id: "rights", title: "6. Your rights", body: [
         `You can ask to access, correct, delete or export your personal data, to restrict or object to processing, by writing to ${PRIVACY_EMAIL}. We answer within 30 days.`,
-        "For data in a workspace, write to the company that uses Vult: it decides about that data, and we help it answer.",
+        "For data in a workspace, write to the company that uses SILA: it decides about that data, and we help it answer.",
         "You can also complain to the Italian data protection authority, the Garante per la protezione dei dati personali (garanteprivacy.it).",
       ] },
       { id: "security", title: "7. Security", body: [
@@ -66,12 +66,12 @@ const DOCS: Record<string, Doc> = {
   terms: {
     title: "Terms of Service",
     updated: UPDATED,
-    intro: `These terms apply to the use of Vult during the early-access programme. Vult is provided by ${ENTITY}.`,
+    intro: `These terms apply to the use of SILA during the early-access programme. SILA is provided by ${ENTITY}.`,
     sections: [
-      { id: "agreement", title: "1. Agreement", body: ["By creating a workspace or using Vult you accept these terms on behalf of the company you represent, and confirm you are allowed to do so."] },
+      { id: "agreement", title: "1. Agreement", body: ["By creating a workspace or using SILA you accept these terms on behalf of the company you represent, and confirm you are allowed to do so."] },
       { id: "service", title: "2. The service", body: [
-        "Vult reads the electronic invoices and bank statements you upload, matches payments to invoices, and shows balances and overdue amounts. It does not move money, does not access your bank account, and does not send invoices to SDI on your behalf.",
-        "Vult is in early access: features change often and the service may occasionally be unavailable. Automatic matches are suggestions you can review and undo; check important figures before acting on them.",
+        "SILA reads the electronic invoices and bank statements you upload, matches payments to invoices, and shows balances and overdue amounts. It does not move money, does not access your bank account, and does not send invoices to SDI on your behalf.",
+        "SILA is in early access: features change often and the service may occasionally be unavailable. Automatic matches are suggestions you can review and undo; check important figures before acting on them.",
       ] },
       { id: "pilot", title: "3. Free pilot and plans", body: [
         "Each workspace starts with a free 30-day pilot. No payment details are needed for the pilot.",

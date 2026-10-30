@@ -1,6 +1,6 @@
 import type { BankTransaction, OpenItem } from "@vult/match";
 
-/** Fictional demo data for Vult Match: companies, VAT numbers and IBANs are made up. Amounts are euro cents. */
+/** Fictional demo data for SILA Match: companies, VAT numbers and IBANs are made up. Amounts are euro cents. */
 export const MATCH_TODAY = "2026-10-23";
 
 export const DEMO_CUSTOMERS = [

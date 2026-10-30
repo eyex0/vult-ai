@@ -73,7 +73,7 @@ export function ProductWindow() {
             <span className="text-[#6b6e78]">·</span>
             <span className="text-app-mute">Q4 pipeline</span>
             <span className="ml-auto inline-flex h-7 items-center gap-1.5 rounded-[7px] bg-accent px-2.5 text-xs font-[550] text-white">
-              <Sparkles className="size-3" /> Ask Vult
+              <Sparkles className="size-3" /> Ask SILA
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-2 border-b border-app-line px-4 py-2.5">

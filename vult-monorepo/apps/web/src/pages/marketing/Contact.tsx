@@ -50,7 +50,7 @@ export default function ContactPage() {
       <div className="rail grid gap-12 px-[clamp(20px,5vw,60px)] py-[clamp(64px,9vw,112px)] lg:grid-cols-[1fr_1.1fr]">
         <Reveal className="flex flex-col gap-6">
           <Eyebrow className="self-start">Contact sales</Eyebrow>
-          <TwoTone as="h1" lead="Talk to our team." rest="See Vult with your own data, get pricing for your team, or plan an enterprise rollout." className="text-[clamp(32px,4vw,48px)] leading-[1.08]" />
+          <TwoTone as="h1" lead="Talk to our team." rest="See SILA with your own data, get pricing for your team, or plan an enterprise rollout." className="text-[clamp(32px,4vw,48px)] leading-[1.08]" />
           <ul className="mt-2 flex flex-col gap-4 text-ink-2">
             {[
               [MessagesSquare, "A 30-minute walkthrough tailored to your sales process"],

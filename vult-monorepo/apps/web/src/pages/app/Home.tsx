@@ -22,7 +22,7 @@ export default function AppHome() {
   const db = useDB();
   const session = useSession();
   const [prompt, setPrompt] = useState("");
-  const [model, setModel] = useState<(typeof MODELS)[number]>("Vult Deep");
+  const [model, setModel] = useState<(typeof MODELS)[number]>("SILA Deep");
   const [reply, setReply] = useState<{ q: string; a: string } | null>(null);
   const [thinking, setThinking] = useState(false);
 
@@ -72,9 +72,9 @@ export default function AppHome() {
           </h2>
         </motion.div>
 
-        <motion.form variants={listItem} onSubmit={send} className="rounded-[14px] border border-[#2a2b2e] bg-app-raise p-3 shadow-[0_12px_40px_-20px_rgb(0_0_0/0.8)] transition-colors focus-within:border-[#3a3d55]">
+        <motion.form variants={listItem} onSubmit={send} className="rounded-[14px] border border-[#2a2b2e] bg-app-raise p-3 shadow-[0_12px_40px_-20px_rgb(0_0_0/0.8)] transition-colors focus-within:border-[#5a3a2e]">
           <label htmlFor="home-ask" className="sr-only">
-            {tr("Ask Vult")}
+            {tr("Ask SILA")}
           </label>
           <textarea
             id="home-ask"
@@ -203,7 +203,7 @@ export default function AppHome() {
                         <CalendarDays aria-hidden className="size-3" /> {fmt(start)} – {fmt(end)} · {m.attendees.join(", ")}
                       </span>
                     </span>
-                    <span className="hidden self-center whitespace-nowrap text-[11.5px] text-[#9daeff] sm:inline">{tr(past ? "Recap ready" : "Brief ready")}</span>
+                    <span className="hidden self-center whitespace-nowrap text-[11.5px] text-[#f0b49c] sm:inline">{tr(past ? "Recap ready" : "Brief ready")}</span>
                   </li>
                 );
               })}

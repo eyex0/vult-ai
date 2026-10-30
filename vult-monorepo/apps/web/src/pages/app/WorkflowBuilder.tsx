@@ -156,7 +156,7 @@ export default function WorkflowBuilderPage() {
                         onClick={() => setSel(s.id)}
                         className={cn(
                           "flex w-full items-start gap-3 rounded-xl border-[1.5px] bg-app-raise px-3.5 py-3 text-start transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5",
-                          selected ? "border-app-accent shadow-[0_0_0_4px_rgb(111_135_255/0.14),0_14px_32px_-14px_rgb(59_91_253/0.6)]" : "border-[#2a2b2e]",
+                          selected ? "border-app-accent shadow-[0_0_0_4px_rgb(111_135_255/0.14),0_14px_32px_-14px_rgb(166_75_48/0.6)]" : "border-[#2a2b2e]",
                           isRunning && "border-[#3ddc84] shadow-[0_0_0_4px_rgb(61_220_132/0.15)]",
                         )}
                       >

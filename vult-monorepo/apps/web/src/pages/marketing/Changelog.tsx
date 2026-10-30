@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 type Visual = "kanban" | "agent" | "chart" | "table" | "palette";
 const ENTRIES: { date: string; version: string; title: string; tags: string[]; body: string; bullets: string[]; visual: Visual }[] = [
   { date: "Oct 14, 2026", version: "4.12", title: "Kanban swimlanes and saved board views", tags: ["Records", "Views"], body: "Group any board by owner or segment, and save the layout as a view your whole team can use.", bullets: ["Swimlanes by any select or member field", "Column totals respect filters", "Keyboard drag and drop"], visual: "kanban" },
-  { date: "Oct 2, 2026", version: "4.11", title: "Vult Agents, now generally available", tags: ["Agents", "AI"], body: "Agents can research accounts, qualify inbound leads and keep deals moving — with approvals and a full run log.", bullets: ["Approval gates on send and write", "Per-agent scopes", "Replayable runs"], visual: "agent" },
+  { date: "Oct 2, 2026", version: "4.11", title: "SILA Agents, now generally available", tags: ["Agents", "AI"], body: "Agents can research accounts, qualify inbound leads and keep deals moving — with approvals and a full run log.", bullets: ["Approval gates on send and write", "Per-agent scopes", "Replayable runs"], visual: "agent" },
   { date: "Sep 18, 2026", version: "4.10", title: "Forecast dashboards", tags: ["Reporting"], body: "A new stage-weighted forecast with week-over-week changes and rep roll-ups.", bullets: ["Commit, best case and pipeline", "Drill into any number", "Share read-only links"], visual: "chart" },
   { date: "Sep 3, 2026", version: "4.9", title: "Inline editing everywhere", tags: ["Records"], body: "Edit any cell in place, including relations and dates, with full keyboard support.", bullets: ["Enter to save, Esc to cancel", "Bulk edit selected rows", "Undo for deletes"], visual: "table" },
   { date: "Aug 20, 2026", version: "4.8", title: "Command palette", tags: ["Navigation"], body: "Press ⌘K to search every record, task and note — or jump straight to an action.", bullets: ["Fuzzy search across objects", "Quick actions", "Recent items"], visual: "palette" },
@@ -34,7 +34,7 @@ function Visual({ kind }: { kind: Visual }) {
       <div className={frame} aria-hidden>
         <div className="flex h-[140px] w-[300px] items-end gap-2 rounded-xl border border-line bg-white p-3 shadow-soft">
           {[30, 45, 38, 60, 52, 74, 88].map((h, i) => (
-            <span key={i} className="flex-1 rounded-t-[4px]" style={{ height: `${h}%`, background: i === 6 ? "#3b5bfd" : "#c9d3ff" }} />
+            <span key={i} className="flex-1 rounded-t-[4px]" style={{ height: `${h}%`, background: i === 6 ? "#a64b30" : "#f3d3c6" }} />
           ))}
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function ChangelogPage() {
   return (
     <section className="bg-white">
       <div className="rail border-b border-line px-[clamp(20px,5vw,60px)] pb-12 pt-[clamp(64px,9vw,112px)]">
-        <SectionIntro eyebrow="Changelog" lead="What’s new in Vult." rest="Product updates, shipped every week." />
+        <SectionIntro eyebrow="Changelog" lead="What’s new in SILA." rest="Product updates, shipped every week." />
       </div>
       <ol className="rail px-[clamp(20px,5vw,60px)] py-12">
         {ENTRIES.map((e, i) => (

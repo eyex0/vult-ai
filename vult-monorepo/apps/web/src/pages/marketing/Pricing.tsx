@@ -65,7 +65,7 @@ export default function PricingPage() {
             Pay for invoices, not seats.
           </motion.h1>
           <p className="max-w-[560px] text-lg leading-[1.45] text-subtle">
-            Your whole team uses Vult. You pay by how many invoices you issue. Every plan starts with a free {TRIAL_DAYS}-day pilot on your real data.
+            Your whole team uses SILA. You pay by how many invoices you issue. Every plan starts with a free {TRIAL_DAYS}-day pilot on your real data.
           </p>
           <div role="group" aria-label="Billing period" className="mt-2.5 inline-flex items-center gap-1 rounded-[10px] border border-line bg-soft-2 p-1">
             {[
@@ -109,7 +109,7 @@ export default function PricingPage() {
                 <ul className={cn("flex flex-col gap-2.5 border-t pt-[18px] text-sm", dark ? "border-[#26272b]" : "border-line")}>
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5">
-                      <Check aria-hidden className={cn("mt-0.5 size-4 shrink-0", dark ? "text-[#8ea2ff]" : "text-accent")} strokeWidth={2.4} />
+                      <Check aria-hidden className={cn("mt-0.5 size-4 shrink-0", dark ? "text-[#eba58a]" : "text-accent")} strokeWidth={2.4} />
                       {f}
                     </li>
                   ))}
@@ -132,7 +132,7 @@ export default function PricingPage() {
                 <tr>
                   <th scope="col" className="w-[40%] border-b border-line bg-white px-5 py-4 text-left font-medium text-subtle">Features</th>
                   {PLANS.map((p) => (
-                    <th key={p.id} scope="col" className={cn("border-b border-line px-3 py-4 text-center", p.id === "GROWTH" ? "bg-[#f7f8ff]" : "bg-white")}>
+                    <th key={p.id} scope="col" className={cn("border-b border-line px-3 py-4 text-center", p.id === "GROWTH" ? "bg-[#fbf5f1]" : "bg-white")}>
                       <span className="block font-semibold">{p.name}</span>
                       <span className="block text-[12.5px] font-normal text-subtle">€{yearly ? yearlyMonthly(p.monthly) : p.monthly} / month</span>
                     </th>
@@ -144,7 +144,7 @@ export default function PricingPage() {
                   <tr key={label}>
                     <th scope="row" className="border-b border-line px-5 py-3.5 text-left font-normal text-ink-2">{label}</th>
                     {cells.map((c, i) => (
-                      <td key={i} className={cn("border-b border-line px-3 py-3.5 text-center", i === 1 && "bg-[#f7f8ff]")}>
+                      <td key={i} className={cn("border-b border-line px-3 py-3.5 text-center", i === 1 && "bg-[#fbf5f1]")}>
                         <CellView v={c} />
                       </td>
                     ))}

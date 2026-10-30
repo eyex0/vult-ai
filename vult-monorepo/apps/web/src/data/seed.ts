@@ -205,7 +205,7 @@ export function createSeed(now = Date.now()): DB {
     },
     {
       id: "n5", title: "Solvane — new RevOps lead", record: ref("companies", "c5"), authorId: "m5",
-      body: "Agent research flagged a new Head of RevOps who previously ran a Vult rollout elsewhere. Good warm intro angle.",
+      body: "Agent research flagged a new Head of RevOps who previously ran a SILA rollout elsewhere. Good warm intro angle.",
       createdAt: iso(now, -1), updatedAt: iso(now, -1),
     },
     {
@@ -311,7 +311,7 @@ export function createSeed(now = Date.now()): DB {
     {
       id: "sq1", name: "Inbound follow-up", status: "Active", enrolled: 48, replyRate: 0.31, updatedAt: iso(now, -3),
       steps: [
-        { id: "q1", type: "email", title: "Thanks for reaching out", delayDays: 0, body: "Hi {{first_name}}, thanks for your interest in Vult…" },
+        { id: "q1", type: "email", title: "Thanks for reaching out", delayDays: 0, body: "Hi {{first_name}}, thanks for your interest in SILA…" },
         { id: "q2", type: "wait", title: "Wait", delayDays: 2, body: "" },
         { id: "q3", type: "email", title: "Quick resources", delayDays: 0, body: "Here are two short guides teams find useful…" },
         { id: "q4", type: "task", title: "Call if no reply", delayDays: 3, body: "Call the lead and log the outcome." },

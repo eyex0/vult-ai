@@ -265,7 +265,7 @@ export default function MatchPage() {
               )}
               {model.loading && <Spinner />}
             </div>
-            <p className="mt-1 max-w-xl text-sm text-app-dim">Vult reads your SDI invoices and bank movements and matches them by itself. Confirm the few it is unsure about and it learns for next time.</p>
+            <p className="mt-1 max-w-xl text-sm text-app-dim">SILA reads your SDI invoices and bank movements and matches them by itself. Confirm the few it is unsure about and it learns for next time.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <input ref={statementRef} type="file" accept={model.mode === "live" ? ".csv,.xml,text/csv,application/xml" : ".csv,text/csv"} className="hidden" onChange={pickFile(model.uploadStatement)} />
@@ -333,7 +333,7 @@ export default function MatchPage() {
 
         {model.mode === "live" && !model.loading && !rows.length && !model.error && (
           <EmptyState icon={FileUp} title="Start with your own data">
-            Upload your invoices (XML, .p7m, or the ZIP from the Agenzia delle Entrate portal), then a bank statement (camt.053 or CSV). Vult matches them right away.
+            Upload your invoices (XML, .p7m, or the ZIP from the Agenzia delle Entrate portal), then a bank statement (camt.053 or CSV). SILA matches them right away.
           </EmptyState>
         )}
 
@@ -347,7 +347,7 @@ export default function MatchPage() {
               </AnimatePresence>
             </ul>
           ) : (
-            <EmptyState icon={Check} title="Nothing to review">Every payment is matched. New bank movements will show up here when Vult is unsure.</EmptyState>
+            <EmptyState icon={Check} title="Nothing to review">Every payment is matched. New bank movements will show up here when SILA is unsure.</EmptyState>
           )
         )}
 

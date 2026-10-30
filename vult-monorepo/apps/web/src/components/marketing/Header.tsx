@@ -85,7 +85,7 @@ export function Header() {
                       <Link href="/platform/agents" className="group relative flex h-full min-h-[220px] flex-col justify-end overflow-hidden rounded-xl bg-night p-4 text-white">
                         <span aria-hidden className="vlines-dark absolute inset-0" />
                         <span aria-hidden className="absolute -right-12 -top-12 size-48 rounded-full bg-[radial-gradient(circle,rgb(38_109_240/0.55),transparent_70%)] transition-transform duration-500 group-hover:scale-125" />
-                        <span className="relative text-[15px] font-semibold">Vult Agents</span>
+                        <span className="relative text-[15px] font-semibold">SILA Agents</span>
                         <span className="relative mt-1 text-[13px] text-[#b4b8c2]">Research, qualify and follow up while you sell.</span>
                         <span className="relative mt-3 inline-flex items-center gap-1 text-[13px]">
                           Explore <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -137,7 +137,7 @@ export function Header() {
           <div className="ml-auto flex items-center gap-2.5">
             {session ? (
               <Button href="/app/home" size="md">
-                Open Vult
+                Open SILA
               </Button>
             ) : (
               <>

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 const control =
   "w-full rounded-btn border border-border-strong bg-input px-3 text-sm text-fg placeholder:text-fg-3 " +
-  "transition-[border-color,box-shadow] duration-150 outline-none focus:border-ring focus:shadow-[0_0_0_3px_rgb(59_91_253/0.18)] " +
+  "transition-[border-color,box-shadow] duration-150 outline-none focus:border-ring focus:shadow-[0_0_0_3px_rgb(166_75_48/0.18)] " +
   "aria-[invalid=true]:border-danger aria-[invalid=true]:focus:shadow-[0_0_0_3px_rgb(201_42_42/0.15)]";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...rest }, ref) {

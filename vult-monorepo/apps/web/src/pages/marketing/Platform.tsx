@@ -27,7 +27,7 @@ function Mock({ s }: { s: PlatformSection }) {
             <motion.span
               key={i}
               className="flex-1 origin-bottom rounded-t-[4px]"
-              style={{ height: `${v}%`, background: i === vals.length - 1 ? "#3b5bfd" : "#c9d3ff" }}
+              style={{ height: `${v}%`, background: i === vals.length - 1 ? "#a64b30" : "#f3d3c6" }}
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true }}
@@ -59,7 +59,7 @@ function Mock({ s }: { s: PlatformSection }) {
           ) : (
             <RevealItem key={r.title} className="flex items-start gap-3 border-b border-[#f0f1f3] px-4 py-3 text-[13px] last:border-b-0">
               {s.mock === "chat" ? (
-                r.detail === "Vult" ? (
+                r.detail === "SILA" ? (
                   <span className="flex size-[26px] shrink-0 items-center justify-center rounded-[7px] bg-accent">
                     <Sparkles className="size-3.5 text-white" />
                   </span>
@@ -92,7 +92,7 @@ export default function PlatformPage({ slug }: { slug: string }) {
       <section className="relative overflow-hidden bg-night text-white">
         <motion.div
           aria-hidden
-          className="absolute left-1/2 top-[30%] h-[700px] w-[1100px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgb(59_91_253/0.32),transparent_62%)]"
+          className="absolute left-1/2 top-[30%] h-[700px] w-[1100px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgb(166_75_48/0.32),transparent_62%)]"
           animate={{ scale: [1, 1.1, 1], opacity: [1, 0.8, 1] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -135,7 +135,7 @@ export default function PlatformPage({ slug }: { slug: string }) {
               <RevealGroup className="flex flex-col gap-2.5 text-ink-2">
                 {s.points.map((p) => (
                   <RevealItem key={p} className="flex items-center gap-2.5">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b5bfd" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a64b30" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d="M5 12l5 5L20 7" />
                     </svg>
                     {p}

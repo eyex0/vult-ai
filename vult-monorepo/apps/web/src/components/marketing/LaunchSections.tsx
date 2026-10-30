@@ -17,7 +17,7 @@ const COPY = {
     tabs: [
       { id: "match", label: "Match", title: "Every transfer finds its invoice", body: "Partial payments, one transfer for several invoices, credit notes, bank fees and Ri.Ba. batches. You confirm only what the engine is unsure about." },
       { id: "customers", label: "Customers", title: "Who owes you, and how they pay", body: "Open balance, overdue amount and the average delay of every customer, built from the payments themselves, not from guesses." },
-      { id: "learns", label: "Learns", title: "It learns how your customers pay", body: "Confirm a match once and Vult remembers it: the next payment from that customer is matched by itself." },
+      { id: "learns", label: "Learns", title: "It learns how your customers pay", body: "Confirm a match once and SILA remembers it: the next payment from that customer is matched by itself." },
     ],
     trustEyebrow: "Your data",
     trustLead: "Built for financial data.",
@@ -25,7 +25,7 @@ const COPY = {
     trust: [
       [Database, "Stored in the EU", "Servers in the European Union, under GDPR."],
       [ShieldCheck, "Isolated by the database", "Each company's data is separated by row-level security, not only by application code."],
-      [KeyRound, "Read-only by design", "Vult reads statement files. It cannot move money and needs no bank login."],
+      [KeyRound, "Read-only by design", "SILA reads statement files. It cannot move money and needs no bank login."],
       [Trash2, "Yours to delete", "Stop at any time and we delete your workspace and files."],
     ],
     cols: { bank: "Bank movement", invoice: "Invoice", status: "Status", customer: "Customer", balance: "Open", overdue: "Overdue", delay: "Avg. delay" },
@@ -44,7 +44,7 @@ const COPY = {
     tabs: [
       { id: "match", label: "Abbinamenti", title: "Ogni bonifico trova la sua fattura", body: "Pagamenti parziali, un bonifico per più fatture, note di credito, commissioni e distinte Ri.Ba. Confermi solo i casi dubbi." },
       { id: "customers", label: "Clienti", title: "Chi ti deve soldi, e come paga", body: "Saldo aperto, scaduto e ritardo medio di ogni cliente, calcolati dai pagamenti reali, non da stime." },
-      { id: "learns", label: "Impara", title: "Impara come pagano i tuoi clienti", body: "Confermi un abbinamento una volta e Vult lo ricorda: il pagamento successivo di quel cliente si abbina da solo." },
+      { id: "learns", label: "Impara", title: "Impara come pagano i tuoi clienti", body: "Confermi un abbinamento una volta e SILA lo ricorda: il pagamento successivo di quel cliente si abbina da solo." },
     ],
     trustEyebrow: "I tuoi dati",
     trustLead: "Pensato per dati finanziari.",
@@ -52,7 +52,7 @@ const COPY = {
     trust: [
       [Database, "Conservati nell'UE", "Server nell'Unione Europea, nel rispetto del GDPR."],
       [ShieldCheck, "Isolati dal database", "I dati di ogni azienda sono separati dalla sicurezza a livello di riga, non solo dal codice."],
-      [KeyRound, "Solo lettura", "Vult legge gli estratti conto. Non può muovere denaro e non chiede l'accesso alla banca."],
+      [KeyRound, "Solo lettura", "SILA legge gli estratti conto. Non può muovere denaro e non chiede l'accesso alla banca."],
       [Trash2, "Li cancelli quando vuoi", "Ti fermi quando vuoi e cancelliamo spazio di lavoro e file."],
     ],
     cols: { bank: "Movimento bancario", invoice: "Fattura", status: "Stato", customer: "Cliente", balance: "Aperto", overdue: "Scaduto", delay: "Ritardo medio" },
@@ -64,7 +64,7 @@ const COPY = {
   },
 } as const;
 
-/** Honest trust strip: the formats Vult reads, instead of customer logos we do not have yet. */
+/** Honest trust strip: the formats SILA reads, instead of customer logos we do not have yet. */
 export function SourcesStrip({ lang }: { lang: Lang }) {
   const t = COPY[lang];
   return (
@@ -194,7 +194,7 @@ function LearnsPanel({ lang }: { lang: Lang }) {
   );
 }
 
-/** Tabbed product tour: each tab is a small, live-looking view of a real Vult screen. */
+/** Tabbed product tour: each tab is a small, live-looking view of a real SILA screen. */
 export function ProductTour({ lang }: { lang: Lang }) {
   const t = COPY[lang];
   const [tab, setTab] = useState<(typeof t.tabs)[number]["id"]>("match");
@@ -261,7 +261,7 @@ export function TrustSection({ lang }: { lang: Lang }) {
         <RevealGroup className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-night-line bg-night-line sm:grid-cols-2 lg:grid-cols-4">
           {t.trust.map(([Icon, title, body]) => (
             <RevealItem key={title} className="flex flex-col gap-3 bg-night-2 p-6">
-              <Icon aria-hidden className="size-5 text-[#8ea2ff]" />
+              <Icon aria-hidden className="size-5 text-[#eba58a]" />
               <p className="text-[16px] font-semibold">{title}</p>
               <p className="text-sm leading-[1.5] text-[#a9acb6]">{body}</p>
             </RevealItem>

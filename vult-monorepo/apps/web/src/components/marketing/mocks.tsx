@@ -66,7 +66,7 @@ function Pill({ children, tone = "gray", className }: { children: ReactNode; ton
   const t = {
     gray: "bg-[#f1f2f4] text-[#4b4f5c]",
     green: "bg-[#e3f7ec] text-[#16753f]",
-    blue: "bg-[#e5eeff] text-[#1d56c4]",
+    blue: "bg-[#f6e7e0] text-[#8a3b24]",
     amber: "bg-[#fff3d6] text-[#8a5a00]",
     violet: "bg-[#efe8ff] text-[#5b3cc4]",
     red: "bg-[#fdecec] text-[#b42323]",
@@ -102,7 +102,7 @@ export function CompaniesTable({ rows = 8, compact }: { rows?: number; compact?:
         </span>
         {!compact && (
           <span className="ml-2 inline-flex h-7 items-center gap-1 rounded-lg border border-[#e6e8ec] px-2 text-[12px]">
-            <Sparkles className="size-3" /> Ask Vult
+            <Sparkles className="size-3" /> Ask SILA
           </span>
         )}
       </div>
@@ -189,7 +189,7 @@ export function ChatWindow() {
               <b className="font-semibold">Marcus</b> <span className="text-[11px] text-subtle">10:24</span>
             </p>
             <p>
-              <span className="rounded bg-accent-soft px-0.5 text-accent-ink">@Vult</span>{" "}
+              <span className="rounded bg-accent-soft px-0.5 text-accent-ink">@SILA</span>{" "}
               <Typewriter text="which deals should I push today?" delay={900} onDone={() => setReplied(true)} />
             </p>
           </div>
@@ -200,7 +200,7 @@ export function ChatWindow() {
           </span>
           <div>
             <p>
-              <b className="font-semibold">Vult</b> <span className="rounded bg-[#f1f2f4] px-1 text-[10px] font-semibold text-subtle">APP</span>{" "}
+              <b className="font-semibold">SILA</b> <span className="rounded bg-[#f1f2f4] px-1 text-[10px] font-semibold text-subtle">APP</span>{" "}
               <span className="text-[11px] text-subtle">10:24</span>
             </p>
             <p className="leading-snug">
@@ -261,7 +261,7 @@ export function TerminalWindow() {
           &gt; <span className="inline-block h-3 w-1.5 translate-y-0.5 animate-pulse-soft bg-[#c9cbd2]" />
         </div>
         <p className="text-[10.5px] text-[#8a8d96]">
-          <span className="text-[#f59e5b]">▶▶ auto</span> · Vult Deep · workspace context
+          <span className="text-[#f59e5b]">▶▶ auto</span> · SILA Deep · workspace context
         </p>
       </div>
     </Window>
@@ -293,7 +293,7 @@ function AgentRunScene() {
             <motion.span
               className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px]"
               initial={{ backgroundColor: "#ffffff", borderColor: "#d6d8de" }}
-              animate={{ backgroundColor: "#266df0", borderColor: "#266df0" }}
+              animate={{ backgroundColor: "#a64b30", borderColor: "#a64b30" }}
               transition={{ delay: 0.25 + i * 0.55, duration: 0.25 }}
             >
               <Check className="size-2.5 text-white" strokeWidth={3.5} />
@@ -321,7 +321,7 @@ function ForecastScene() {
           <motion.span
             key={i}
             className="flex-1 origin-bottom rounded-t-[4px]"
-            style={{ height: `${h}%`, background: i === bars.length - 1 ? "#266df0" : "#c9d8ff" }}
+            style={{ height: `${h}%`, background: i === bars.length - 1 ? "#a64b30" : "#c9d8ff" }}
             initial={{ scaleY: 0 }}
             animate={{ scaleY: 1 }}
             transition={{ delay: 0.15 + i * 0.06, duration: 0.7, ease }}
@@ -498,13 +498,13 @@ export function FlowGraph() {
         />
         {!reduce &&
           [0, 1.2, 2.4].map((begin) => (
-            <circle key={begin} r="3.5" fill="#266df0">
+            <circle key={begin} r="3.5" fill="#a64b30">
               <animateMotion dur="3.6s" begin={`${begin}s`} repeatCount="indefinite" path={FLOW_PATH} />
             </circle>
           ))}
       </svg>
       <span className="spin-border absolute left-[10px] top-[22px] h-[56px] w-[176px] rounded-[13px] opacity-70 blur-[1px]" aria-hidden />
-      <FlowNode icon={Zap} title="Record created" sub="New inbound lead" color="#266df0" className="absolute left-3 top-6" />
+      <FlowNode icon={Zap} title="Record created" sub="New inbound lead" color="#a64b30" className="absolute left-3 top-6" />
       <FlowNode icon={Globe} title="Web agent" sub="Research the company" color="#7048e8" className="absolute left-[215px] top-6" />
       <FlowNode icon={Bot} title="Custom agent" sub="Score for ICP fit" color="#16a34a" className="absolute left-3 top-[150px]" />
       <FlowNode icon={GitBranch} title="If" sub="Route by segment" color="#e8780e" className="absolute left-[205px] top-[150px] w-[115px]" />
@@ -517,7 +517,7 @@ export function FlowGraph() {
 type BoardCard = { name: string; value: string; owner: string; stage: number };
 const STAGES: [string, string][] = [
   ["Discovery", "#e8780e"],
-  ["Demo", "#266df0"],
+  ["Demo", "#a64b30"],
   ["Proposal", "#7048e8"],
   ["Negotiation", "#16a34a"],
 ];
@@ -597,7 +597,7 @@ export function StackedBars() {
         {[
           ["Stalled", "#e5484d"],
           ["At risk", "#f5a524"],
-          ["Advancing", "#266df0"],
+          ["Advancing", "#a64b30"],
         ].map(([l, c]) => (
           <span key={l} className="inline-flex items-center gap-1">
             <span className="size-2 rounded-sm" style={{ background: c }} /> {l}
@@ -608,7 +608,7 @@ export function StackedBars() {
         {data.map((d, i) => (
           <motion.div key={i} className="flex flex-1 origin-bottom flex-col-reverse gap-[2px]" initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.8, ease }}>
             {d.map((v, j) => (
-              <span key={j} className={cn(j === 2 && "rounded-t-[4px]")} style={{ height: v * 3.2, background: ["#e5484d", "#f5a524", "#266df0"][j] }} />
+              <span key={j} className={cn(j === 2 && "rounded-t-[4px]")} style={{ height: v * 3.2, background: ["#e5484d", "#f5a524", "#a64b30"][j] }} />
             ))}
           </motion.div>
         ))}
@@ -710,7 +710,7 @@ export function LineChart({ title = "Book size · ARR", series = [[20, 24, 23, 3
       </div>
       <svg role="img" aria-label="Two lines trending upward" viewBox={`0 0 ${w} ${h}`} className="mt-3 h-[110px] w-full overflow-visible">
         {series.map((s, i) => (
-          <motion.path key={i} d={path(s)} fill="none" stroke={i ? "#16a34a" : "#266df0"} strokeWidth="2" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.4, ease, delay: i * 0.2 }} />
+          <motion.path key={i} d={path(s)} fill="none" stroke={i ? "#16a34a" : "#a64b30"} strokeWidth="2" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.4, ease, delay: i * 0.2 }} />
         ))}
       </svg>
     </Card>

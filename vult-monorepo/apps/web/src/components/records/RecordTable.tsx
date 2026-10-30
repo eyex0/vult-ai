@@ -184,7 +184,7 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
             </td>
             {columns.map((c) => (
               <td key={c.key} className={cn("sticky bottom-0 border-e border-t border-app-line bg-app px-3 text-xs text-app-mute last:border-e-0", c.align === "end" && "text-end")}>
-                {c.key === "value" && total != null ? <span className="tabular text-app-dim">Sum {formatMoney(total)}</span> : null}
+                {c.key === "value" && total != null ? <span className="tabular text-app-dim">{tr("Sum")} {formatMoney(total)}</span> : null}
               </td>
             ))}
           </tr>

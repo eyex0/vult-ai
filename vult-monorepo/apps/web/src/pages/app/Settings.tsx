@@ -157,7 +157,7 @@ function Members() {
 
 const PLANS = [
   { name: "Plus", price: 23, features: ["Unlimited objects", "Sequences", "1,000 enrichment credits"] },
-  { name: "Pro", price: 55, features: ["Vult Agents", "Advanced workflows", "Custom dashboards"] },
+  { name: "Pro", price: 55, features: ["SILA Agents", "Advanced workflows", "Custom dashboards"] },
   { name: "Enterprise", price: 0, features: ["SSO & SCIM", "Audit logs", "Data residency"] },
 ] as const;
 
@@ -196,7 +196,7 @@ function Billing() {
             );
           })}
         </div>
-        <Link href="/pricing" className="text-[13px] text-[#9daeff] hover:text-white">
+        <Link href="/pricing" className="text-[13px] text-[#f0b49c] hover:text-white">
           Compare all plans →
         </Link>
       </Section>

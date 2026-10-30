@@ -84,7 +84,7 @@ function AuthCard({ mode }: { mode: "signin" | "signup" }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-soft px-4 py-6 [background-image:repeating-linear-gradient(90deg,rgb(59_91_253/0.1)_0_1px,transparent_1px_7px)]">
+    <div className="flex min-h-screen flex-col items-center bg-soft px-4 py-6 [background-image:repeating-linear-gradient(90deg,rgb(166_75_48/0.1)_0_1px,transparent_1px_7px)]">
       <div className="mt-8">
         <Logo size={30} />
       </div>
@@ -97,7 +97,7 @@ function AuthCard({ mode }: { mode: "signin" | "signup" }) {
       >
         <h1 className="text-center text-[26px] font-semibold tracking-[-0.035em]">{signup ? "Create your workspace" : "Welcome back"}</h1>
         <p className="mb-7 mt-1.5 text-center text-[14.5px] text-subtle">
-          {signup ? "Free for up to 3 seats. No credit card." : "Sign in to your Vult workspace."}
+          {signup ? "Free for up to 3 seats. No credit card." : "Sign in to your SILA workspace."}
         </p>
         {/* Google and Microsoft sign-in only exist in the demo for now. */}
         {!API_MODE && (
@@ -166,7 +166,7 @@ function AuthCard({ mode }: { mode: "signin" | "signup" }) {
           </Button>
         </form>
         <p className="mt-[22px] text-center text-sm text-ink-2">
-          {signup ? "Already have an account? " : "New to Vult? "}
+          {signup ? "Already have an account? " : "New to SILA? "}
           <Link href={signup ? "/signin" : "/signup"} className="font-[550] text-accent hover:underline">
             {signup ? "Sign in" : "Create an account"}
           </Link>

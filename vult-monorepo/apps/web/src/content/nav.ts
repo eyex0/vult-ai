@@ -37,9 +37,9 @@ export const PLATFORM_GROUPS: NavGroup[] = [
     title: "Ecosystem",
     items: [
       { title: "Integrations", desc: "Inbox, calendar, chat and billing", href: "/platform/automations", icon: Plug },
-      { title: "Architecture", desc: "How Vult turns invoices into revenue", href: "/architecture", icon: Layers },
+      { title: "Architecture", desc: "How SILA turns invoices into revenue", href: "/architecture", icon: Layers },
       { title: "Developer platform", desc: "REST API, webhooks and SDKs", href: "/about", icon: Code2 },
-      { title: "Ask Vult", desc: "Answers from your workspace", href: "/platform/reporting", icon: MessageSquare },
+      { title: "Ask SILA", desc: "Answers from your workspace", href: "/platform/reporting", icon: MessageSquare },
     ],
   },
 ];
@@ -56,7 +56,7 @@ export const RESOURCES_GROUPS: NavGroup[] = [
   {
     title: "Company",
     items: [
-      { title: "Customers", desc: "How teams run on Vult", href: "/customers", icon: Users2 },
+      { title: "Customers", desc: "How teams run on SILA", href: "/customers", icon: Users2 },
       { title: "Changelog", desc: "What shipped this week", href: "/changelog", icon: FileClock },
       { title: "Careers", desc: "Build the CRM teams love", href: "/careers", icon: Newspaper },
     ],

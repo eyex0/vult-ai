@@ -21,7 +21,7 @@ const COPY = {
     sending: "Sending…",
     done: "Thank you. We'll write to you within one working day to set up your free pilot.",
     errors: { name: "Enter your name.", email: "Enter a valid work email.", company: "Enter your company." },
-    privacy: "We use these details only to contact you about Vult.",
+    privacy: "We use these details only to contact you about SILA.",
   },
   it: {
     name: "Nome e cognome",
@@ -36,7 +36,7 @@ const COPY = {
     sending: "Invio in corso…",
     done: "Grazie. Ti scriviamo entro un giorno lavorativo per attivare la prova gratuita.",
     errors: { name: "Inserisci il tuo nome.", email: "Inserisci un'email di lavoro valida.", company: "Inserisci l'azienda." },
-    privacy: "Usiamo questi dati solo per contattarti riguardo a Vult.",
+    privacy: "Usiamo questi dati solo per contattarti riguardo a SILA.",
   },
 } as const;
 
@@ -65,7 +65,7 @@ export function EarlyAccessForm({ lang = "en", source }: { lang?: "en" | "it"; s
       } else {
         // Static preview: hand the request to the visitor's mail app.
         const body = `${form.name}\n${form.company}\n${form.role}\n${t.invoices}: ${form.invoicesPerMonth}\n\n${form.message}`;
-        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Vult early access")}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("SILA early access")}&body=${encodeURIComponent(body)}`;
       }
       setState("done");
     } catch (err) {

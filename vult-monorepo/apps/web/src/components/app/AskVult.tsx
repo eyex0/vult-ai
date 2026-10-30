@@ -7,7 +7,7 @@ import { getDB } from "@/data/store";
 import { formatMoney } from "@/lib/format";
 import { spring } from "@/lib/motion";
 
-export const MODELS = ["Vult Fast", "Vult Deep", "Vult Research"] as const;
+export const MODELS = ["SILA Fast", "SILA Deep", "SILA Research"] as const;
 
 /** Local, deterministic "assistant": answers from the demo data. There is no model behind it. */
 export function answer(question: string): string {
@@ -82,7 +82,7 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
       {open && (
         <motion.aside
           role="dialog"
-          aria-label="Ask Vult"
+          aria-label="Ask SILA"
           className="fixed inset-y-0 end-0 z-[70] flex w-full max-w-[420px] flex-col border-s border-[#2a2b2e] bg-app-panel shadow-[-24px_0_60px_-20px_rgb(0_0_0/0.7)]"
           initial={{ x: 48, opacity: 0 }}
           animate={{ x: 0, opacity: 1, transition: spring }}
@@ -92,8 +92,8 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
             <span className="flex size-6 items-center justify-center rounded-md bg-accent">
               <Sparkles className="size-3.5 text-white" />
             </span>
-            <h2 className="text-sm font-semibold text-white">Ask Vult</h2>
-            <button type="button" autoFocus onClick={onClose} aria-label="Close Ask Vult" className="ms-auto inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
+            <h2 className="text-sm font-semibold text-white">Ask SILA</h2>
+            <button type="button" autoFocus onClick={onClose} aria-label="Close Ask SILA" className="ms-auto inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
               <X className="size-4" />
             </button>
           </div>
@@ -154,7 +154,7 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
                     send(text);
                   }
                 }}
-                placeholder="Ask Vult…"
+                placeholder="Ask SILA…"
                 className="flex-1 resize-none bg-transparent px-1 text-sm text-white outline-none placeholder:text-app-mute"
               />
               <button type="submit" aria-label="Send" disabled={!text.trim()} className="inline-flex size-8 items-center justify-center rounded-lg bg-accent text-white transition-opacity disabled:opacity-40">

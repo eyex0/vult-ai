@@ -166,7 +166,7 @@ function Editor({ note }: { note: Note }) {
                 />
               </>
             ) : (
-              <div className="prose-note min-h-[50vh] text-[15px] leading-[1.7] text-app-text [&_a]:text-[#9daeff] [&_blockquote]:border-s-2 [&_blockquote]:border-[#3a3c40] [&_blockquote]:ps-3 [&_blockquote]:text-app-dim [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_ol]:ms-5 [&_ol]:list-decimal [&_p]:my-2 [&_strong]:text-white [&_ul]:ms-5 [&_ul]:list-disc">
+              <div className="prose-note min-h-[50vh] text-[15px] leading-[1.7] text-app-text [&_a]:text-[#f0b49c] [&_blockquote]:border-s-2 [&_blockquote]:border-[#3a3c40] [&_blockquote]:ps-3 [&_blockquote]:text-app-dim [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_ol]:ms-5 [&_ol]:list-decimal [&_p]:my-2 [&_strong]:text-white [&_ul]:ms-5 [&_ul]:list-disc">
                 <Markdown>{body || "_Nothing to preview yet._"}</Markdown>
               </div>
             )}

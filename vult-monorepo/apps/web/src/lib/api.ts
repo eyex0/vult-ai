@@ -1,7 +1,7 @@
 import { readJSON, removeKey, writeJSON } from "./storage";
 
 /**
- * Where the Vult API lives. With a token (pasted by an admin) requests use Authorization: Bearer;
+ * Where the SILA API lives. With a token (pasted by an admin) requests use Authorization: Bearer;
  * without one they use the signed-in session cookie.
  */
 export interface ApiConnection {

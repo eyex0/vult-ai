@@ -1,37 +1,38 @@
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
-import logoBlack from "@/assets/brand/vult-logo-black.png";
-import logoWhite from "@/assets/brand/vult-logo-white.png";
 
+/** The SILA mark, drawn from the brand file (brand/sila-icon-ivory.svg). */
+const MARK = "M228 509C185 480 176 465 175 415C174 374 170 363 156 353C145 346 146 346 99 345C65 344 55 344 49 343C-18 327 -17 219 51 202C62 199 62 199 72 208C87 223 91 223 108 208C117 199 117 199 132 199C158 199 171 193 179 180C185 169 185 169 186 119C186 94 187 73 187 72C190 69 209 85 215 95C225 113 226 118 226 172C226 222 226 225 219 239C199 280 120 296 120 259C120 230 70 222 44 247C23 268 32 292 64 301C74 304 116 305 136 303C180 299 213 284 231 260C235 254 235 254 235 278C235 304 235 306 228 335C213 392 226 416 285 447C319 464 317 470 271 505C246 524 250 524 228 509ZM300 424C258 396 245 376 247 342C249 310 256 299 282 285C305 272 314 266 347 238C358 228 370 219 374 216C402 199 442 199 468 217C502 240 506 298 476 326C459 342 451 344 396 345C351 346 352 346 341 351C336 354 326 362 323 367C318 377 318 379 317 408L316 436L300 424ZM283 314C302 308 301 308 363 307C426 306 425 306 438 299C458 289 459 273 440 261C416 245 394 251 352 284C337 297 339 296 309 296C276 296 273 297 273 308C273 318 273 318 283 314ZM269 264C252 259 252 257 252 184C252 115 252 112 242 92C233 73 213 56 195 51C189 49 189 49 194 41C199 33 213 22 236 7C253 -4 249 -5 280 23C312 53 309 46 310 121C311 195 312 200 328 217L334 224L324 233C294 261 282 268 269 264Z";
+const ACCENT = "M75 191C60 177 59 176 61 173C63 169 89 146 91 146C94 146 120 172 120 174C120 178 93 204 89 204C88 204 82 198 75 191Z";
+
+export const BRAND = { ink: "#111111", ivory: "#F6F2EA", terracotta: "#A64B30" } as const;
+
+/** `tone="light"` draws the mark in ivory for dark backgrounds. */
 export function LogoMark({ tone = "dark", size = 26, className }: { tone?: "dark" | "light"; size?: number; className?: string }) {
   return (
-    <img
-      src={tone === "dark" ? logoBlack : logoWhite}
-      alt=""
-      width={size}
-      height={size}
-      className={cn("shrink-0 select-none", className)}
-      draggable={false}
-    />
+    <svg viewBox="-30 -15 550 550" width={size} height={size} aria-hidden className={cn("shrink-0 select-none", className)}>
+      <path d={MARK} fill={tone === "dark" ? BRAND.ink : BRAND.ivory} fillRule="evenodd" />
+      <path d={ACCENT} fill={BRAND.terracotta} />
+    </svg>
   );
 }
 
-/** Mark + lowercase "vult" wordmark. `tone="light"` is for dark backgrounds. */
+/** Mark + "SILA" wordmark. `tone="light"` is for dark backgrounds. */
 export function Logo({ tone = "dark", href = "/", size = 26, className }: { tone?: "dark" | "light"; href?: string | null; size?: number; className?: string }) {
   const content = (
     <>
       <LogoMark tone={tone} size={size} />
       <span
-        className={cn("font-bold leading-none tracking-[var(--tracking-tightest)]", tone === "dark" ? "text-ink" : "text-white")}
-        style={{ fontSize: Math.round(size * 0.82) }}
+        className={cn("font-semibold leading-none tracking-[0.08em]", tone === "dark" ? "text-ink" : "text-white")}
+        style={{ fontSize: Math.round(size * 0.66) }}
       >
-        vult
+        SILA
       </span>
     </>
   );
-  const cls = cn("inline-flex items-center gap-[7px]", className);
+  const cls = cn("inline-flex items-center gap-2", className);
   return href ? (
-    <Link href={href} aria-label="Vult home" className={cls}>
+    <Link href={href} aria-label="SILA home" className={cls}>
       {content}
     </Link>
   ) : (

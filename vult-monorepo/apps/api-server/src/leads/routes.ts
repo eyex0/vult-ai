@@ -36,7 +36,7 @@ export function leadsRouter(): Router {
       void fetch(hook, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text: `New Vult early access request: ${data.name} (${data.company}) <${data.email}>, invoices/month ${data.invoicesPerMonth ?? 'n/a'}`, lead: { ...data, id: lead.id } }),
+        body: JSON.stringify({ text: `New SILA early access request: ${data.name} (${data.company}) <${data.email}>, invoices/month ${data.invoicesPerMonth ?? 'n/a'}`, lead: { ...data, id: lead.id } }),
         signal: AbortSignal.timeout(5_000),
       }).catch((error: unknown) => log('warn', 'lead webhook failed', errorFields(error)));
     }

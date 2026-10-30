@@ -17,7 +17,7 @@ const STORIES = [
   { company: "Maplewing", industry: "Retail", metric: "+18%", metricLabel: "win rate year over year", quote: "Stalled deals get a nudge before they go cold.", person: "Grace Okonkwo", role: "Head of Partnerships" },
   { company: "Fernhollow", industry: "Media", metric: "60%", metricLabel: "less manual data entry", quote: "Enrichment fills in the boring parts so producers can focus on clients.", person: "Ilse Marten", role: "Managing Director" },
   { company: "Gridmark", industry: "Software", metric: "99.9%", metricLabel: "workflow success rate", quote: "Routing used to break weekly. Now we just look at the run history.", person: "Dev Raman", role: "RevOps Lead" },
-  { company: "Pelican Ledger", industry: "Fintech", metric: "5 min", metricLabel: "from import to first report", quote: "We imported our spreadsheet on Monday and presented from Vult on Tuesday.", person: "Hannah Lowe", role: "CFO" },
+  { company: "Pelican Ledger", industry: "Fintech", metric: "5 min", metricLabel: "from import to first report", quote: "We imported our spreadsheet on Monday and presented from SILA on Tuesday.", person: "Hannah Lowe", role: "CFO" },
 ];
 
 export default function CustomersPage() {
@@ -28,7 +28,7 @@ export default function CustomersPage() {
     <>
       <section className="border-b border-line bg-white">
         <div className="rail px-[clamp(20px,5vw,60px)] pb-12 pt-[clamp(64px,9vw,112px)]">
-          <SectionIntro eyebrow="Customers" lead="Teams that run on Vult." rest="How revenue teams model, automate and close with an AI-native CRM." />
+          <SectionIntro eyebrow="Customers" lead="Teams that run on SILA." rest="How revenue teams model, automate and close with an AI-native CRM." />
           <Reveal delay={0.1} className="mt-8">
             <div role="group" aria-label="Filter by industry" className="flex flex-wrap gap-1.5">
               {INDUSTRIES.map((i) => (

@@ -176,15 +176,15 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-b border-[#2a3060] bg-[#16182a]"
+            className="overflow-hidden border-b border-[#4a2a20] bg-[#241713]"
           >
-            <div className="flex flex-wrap items-center gap-2 px-4 py-2 text-[#c9d3ff]">
+            <div className="flex flex-wrap items-center gap-2 px-4 py-2 text-[#f3d3c6]">
               <span className="font-[550]">{tr("{n} selected", { n: selIds.length })}</span>
               {kind === "deals" && (
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="border border-[#2a3060] text-app-text"
+                  className="border border-[#4a2a20] text-app-text"
                   onClick={() => {
                     selIds.forEach((sid) => store.update("deals", sid, { stage: "Won" } as Partial<Deal>));
                     setSelected(new Set());
@@ -193,7 +193,7 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
                   <Trophy className="size-3.5" /> {tr("Mark as Won")}
                 </Button>
               )}
-              <Button size="sm" variant="ghost" className="border border-[#2a3060] text-app-text" onClick={exportCSV}>
+              <Button size="sm" variant="ghost" className="border border-[#4a2a20] text-app-text" onClick={exportCSV}>
                 <Download className="size-3.5" /> {tr("Export")}
               </Button>
               <Button

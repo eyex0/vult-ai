@@ -46,9 +46,9 @@ function AnnouncementBar() {
 }
 
 const SOCIAL = [
-  { label: "Vult on LinkedIn", path: "M4 4h16v16H4zM8 10v6M8 7.5v.01M12 16v-3.5a2 2 0 0 1 4 0V16M12 10v6" },
-  { label: "Vult on X", path: "M5 5l14 14M19 5L5 19" },
-  { label: "Vult on YouTube", path: "M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z" },
+  { label: "SILA on LinkedIn", path: "M4 4h16v16H4zM8 10v6M8 7.5v.01M12 16v-3.5a2 2 0 0 1 4 0V16M12 10v6" },
+  { label: "SILA on X", path: "M5 5l14 14M19 5L5 19" },
+  { label: "SILA on YouTube", path: "M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z" },
 ];
 
 export function Footer() {
@@ -82,7 +82,7 @@ export function Footer() {
             ))}
           </span>
           <span className="flex flex-wrap items-center gap-5">
-            <span>© 2026 Vult, Inc. All rights reserved.</span>
+            <span>© 2026 SILA. All rights reserved.</span>
             <Link href="/legal/terms" className="hover:text-white">
               Terms
             </Link>

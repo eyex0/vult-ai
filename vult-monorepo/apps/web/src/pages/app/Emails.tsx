@@ -182,7 +182,7 @@ export default function EmailsPage() {
               <EmailList items={drafts} onOpen={openEmail} />
             ) : (
               <EmptyState icon={Mail} title="No drafts" action={<Button size="sm" variant="accent" onClick={() => setOpen(true)}>Compose email</Button>}>
-                Write emails without leaving Vult. Drafts are saved here.
+                Write emails without leaving SILA. Drafts are saved here.
               </EmptyState>
             )}
           </TabPanel>
