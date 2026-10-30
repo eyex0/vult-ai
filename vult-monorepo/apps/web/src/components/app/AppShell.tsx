@@ -128,7 +128,7 @@ export function InviteModal({ open, onOpenChange }: { open: boolean; onOpenChang
   const [error, setError] = useState("");
   const session = useSession();
   const db = useDB();
-  const workspaceName = session?.workspace ?? db.workspace.name;
+  const workspaceName = (API_MODE ? session?.workspace : undefined) ?? db.workspace.name;
   const submit = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Enter a valid email address.");
     if (API_MODE) {
@@ -237,7 +237,7 @@ function Sidebar({
             </span>
             {!collapsed && (
               <>
-                <span className="truncate text-[13.5px] font-semibold">{session?.workspace ?? db.workspace.name}</span>
+                <span className="truncate text-[13.5px] font-semibold">{(API_MODE ? session?.workspace : undefined) ?? db.workspace.name}</span>
                 <ChevronDown aria-hidden className="size-3 shrink-0 text-app-mute" />
               </>
             )}

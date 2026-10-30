@@ -180,7 +180,7 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
           <tr>
             <td className="sticky bottom-0 start-0 z-10 h-9 border-t border-app-line bg-app" />
             <td className="sticky bottom-0 start-11 z-10 border-e border-t border-app-line bg-app px-3 text-xs text-app-mute">
-              {rows.length} {rows.length === 1 ? "record" : "records"}
+              {tr(rows.length === 1 ? "1 record" : "{n} records", { n: rows.length })}
             </td>
             {columns.map((c) => (
               <td key={c.key} className={cn("sticky bottom-0 border-e border-t border-app-line bg-app px-3 text-xs text-app-mute last:border-e-0", c.align === "end" && "text-end")}>

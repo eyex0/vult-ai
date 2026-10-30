@@ -198,7 +198,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                 <li key={d.id}>
                   <Link href={`/app/deals/${d.id}`} className="flex h-8 items-center gap-2 rounded-md px-1.5 hover:bg-app-hover">
                     <Badge dark dot tone={STAGE_TONE[d.stage]}>
-                      {d.stage}
+                      {tr(d.stage)}
                     </Badge>
                     <span className="truncate">{d.name}</span>
                     <span className="tabular ms-auto text-xs text-app-mute">{formatMoney(d.value)}</span>

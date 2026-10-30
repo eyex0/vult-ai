@@ -81,6 +81,8 @@ export const AR: Record<string, string> = {
   "Nothing matches these filters.": "لا توجد نتائج تطابق هذه الفلاتر.",
   "Clear filters": "مسح الفلاتر",
   "Select all": "تحديد الكل",
+  "1 record": "سجل واحد",
+  "{n} records": "{n} سجلات",
   Filter: "فلترة",
   "Add a filter": "إضافة فلتر",
   "Add filter": "إضافة الفلتر",
