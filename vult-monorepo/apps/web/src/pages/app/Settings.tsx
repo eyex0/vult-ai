@@ -181,7 +181,7 @@ function Billing() {
                   store.setWorkspace({ plan: p.name });
                   toast.success(`Switched to ${p.name} (demo — no payment taken)`);
                 }}
-                className={cn("flex flex-col gap-2 rounded-xl border p-4 text-left transition-colors", current ? "border-app-accent bg-[#151830]" : "border-app-line bg-app-panel hover:border-[#34363c]")}
+                className={cn("flex flex-col gap-2 rounded-xl border p-4 text-start transition-colors", current ? "border-app-accent bg-[#151830]" : "border-app-line bg-app-panel hover:border-[#34363c]")}
               >
                 <span className="flex items-center justify-between font-semibold text-white">
                   {p.name} {current && <Check className="size-4 text-app-accent" />}
@@ -213,7 +213,7 @@ function Billing() {
         <div className="overflow-x-auto rounded-xl border border-app-line">
           <table className="w-full min-w-[420px] text-[13px]">
             <thead>
-              <tr className="text-left text-app-mute">
+              <tr className="text-start text-app-mute">
                 {["Date", "Description", "Amount", ""].map((h, i) => (
                   <th key={i} scope="col" className="border-b border-app-line px-4 py-2 font-medium">
                     {h || <span className="sr-only">Download</span>}
@@ -231,7 +231,7 @@ function Billing() {
                   <td className="border-b border-app-line-soft px-4 py-2.5 text-app-dim">{d}</td>
                   <td className="border-b border-app-line-soft px-4 py-2.5">{desc}</td>
                   <td className="tabular border-b border-app-line-soft px-4 py-2.5">{amt}</td>
-                  <td className="border-b border-app-line-soft px-4 py-2.5 text-right">
+                  <td className="border-b border-app-line-soft px-4 py-2.5 text-end">
                     <button type="button" aria-label={`Download invoice ${d}`} onClick={() => toast("Sample invoice — nothing to download")} className="inline-flex size-7 items-center justify-center rounded-md text-app-mute hover:bg-app-hover hover:text-white">
                       <Download className="size-3.5" />
                     </button>

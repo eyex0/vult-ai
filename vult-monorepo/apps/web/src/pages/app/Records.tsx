@@ -17,6 +17,8 @@ import type { Deal, RecordKind } from "@/data/types";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { matchesSearch } from "@vult/arabic";
+import { getLocale, tr } from "@/lib/i18n";
 
 const KINDS: RecordKind[] = ["companies", "people", "deals"];
 
@@ -44,7 +46,7 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
   const db = useDB();
   const meta = OBJECT_META[kind];
   const nav = RECORD_NAV.find((n) => n.href === meta.href)!;
-  usePage({ title: meta.plural, icon: nav.icon, iconColor: nav.color });
+  usePage({ title: tr(meta.plural), icon: nav.icon, iconColor: nav.color });
 
   const [, navigate] = useLocation();
   const search = useSearch();
@@ -92,21 +94,21 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
   };
 
   const rows = useMemo(() => {
-    const s = q.trim().toLowerCase();
+    const s = q.trim();
     let list = rowsFor(db, kind).filter((r) => {
-      if (s && !`${(r as { name: string }).name} ${allCols.map((c) => cellText(c, r, db)).join(" ")}`.toLowerCase().includes(s)) return false;
+      if (s && !matchesSearch(`${(r as { name: string }).name} ${allCols.map((c) => cellText(c, r, db)).join(" ")}`, s)) return false;
       return filters.every((f) => applyFilter(textOf(r, f.key), f));
     });
     list = [...list].sort((a, b) => {
       const va = valueOf(a, sort.key);
       const vb = valueOf(b, sort.key);
-      return (typeof va === "number" && typeof vb === "number" ? va - vb : String(va).localeCompare(String(vb))) * sort.dir;
+      return (typeof va === "number" && typeof vb === "number" ? va - vb : String(va).localeCompare(String(vb), getLocale())) * sort.dir;
     });
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, kind, q, filters, sort]);
 
-  const labelFor = (key: string) => (key === "name" ? KIND_CONFIG[kind].nameLabel : (allCols.find((c) => c.key === key)?.label ?? key));
+  const labelFor = (key: string) => tr(key === "name" ? KIND_CONFIG[kind].nameLabel : (allCols.find((c) => c.key === key)?.label ?? key));
   const selIds = [...selected].filter((sid) => rows.some((r) => r.id === sid));
 
   const exportCSV = () => {
@@ -123,11 +125,11 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
     <div className="flex h-full flex-col">
       <div className="flex flex-wrap items-center gap-2 border-b border-app-line px-4 py-2.5">
         {kind === "deals" && (
-          <div role="group" aria-label="Layout" className="relative flex rounded-lg border border-app-line bg-[#0d0e0f] p-0.5">
+          <div role="group" aria-label={tr("Layout")} className="relative flex rounded-lg border border-app-line bg-[#0d0e0f] p-0.5">
             {(
               [
-                ["table", "Table", Table2],
-                ["board", "Board", KanbanSquare],
+                ["table", tr("Table"), Table2],
+                ["board", tr("Board"), KanbanSquare],
               ] as const
             ).map(([v, label, Icon]) => (
               <button
@@ -146,23 +148,23 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
         )}
         <label className="flex h-8 w-[220px] max-w-full items-center gap-1.5 rounded-[7px] border border-[#2e3033] bg-[#141517] px-2.5 focus-within:border-app-accent">
           <Search aria-hidden className="size-[13px] text-app-mute" />
-          <span className="sr-only">Search {meta.plural.toLowerCase()}</span>
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${meta.plural.toLowerCase()}…`} className="w-full bg-transparent text-[13px] text-app-text outline-none placeholder:text-app-mute" />
+          <span className="sr-only">{tr("Search")}</span>
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={tr(`Search ${meta.plural.toLowerCase()}…`)} className="w-full bg-transparent text-[13px] text-app-text outline-none placeholder:text-app-mute" />
         </label>
         <FilterButton columns={allCols} nameLabel={KIND_CONFIG[kind].nameLabel} onAdd={(r) => setFilters((f) => [...f, r])} />
         <FilterChips rules={filters} labelFor={labelFor} onRemove={(rid) => setFilters((f) => f.filter((x) => x.id !== rid))} />
-        <span className="ml-auto" />
+        <span className="ms-auto" />
         {layout === "table" && <ViewSettings columns={allCols} view={view} onChange={setView} />}
         {kind === "companies" && (
           <Button variant="ghost" size="sm" className="border border-[#2e3033] text-app-dim" onClick={() => setImportOpen(true)}>
-            <Upload className="size-3.5" /> <span className="hidden sm:inline">Import</span>
+            <Upload className="size-3.5" /> <span className="hidden sm:inline">{tr("Import")}</span>
           </Button>
         )}
-        <Button variant="ghost" size="sm" className="border border-[#2e3033] text-app-dim" onClick={exportCSV} aria-label="Export CSV">
-          <Download className="size-3.5" /> <span className="hidden sm:inline">Export</span>
+        <Button variant="ghost" size="sm" className="border border-[#2e3033] text-app-dim" onClick={exportCSV} aria-label={tr("Export CSV")}>
+          <Download className="size-3.5" /> <span className="hidden sm:inline">{tr("Export")}</span>
         </Button>
         <Button variant="primary" size="sm" onClick={() => setNewOpen(true)}>
-          <Plus className="size-3.5" /> New {meta.singular.toLowerCase()}
+          <Plus className="size-3.5" /> {tr(`New ${meta.singular.toLowerCase()}`)}
         </Button>
       </div>
 
@@ -170,14 +172,14 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
         {selIds.length > 0 && (
           <motion.div
             role="region"
-            aria-label="Bulk actions"
+            aria-label={tr("Bulk actions")}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden border-b border-[#2a3060] bg-[#16182a]"
           >
             <div className="flex flex-wrap items-center gap-2 px-4 py-2 text-[#c9d3ff]">
-              <span className="font-[550]">{selIds.length} selected</span>
+              <span className="font-[550]">{tr("{n} selected", { n: selIds.length })}</span>
               {kind === "deals" && (
                 <Button
                   size="sm"
@@ -188,11 +190,11 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
                     setSelected(new Set());
                   }}
                 >
-                  <Trophy className="size-3.5" /> Mark as Won
+                  <Trophy className="size-3.5" /> {tr("Mark as Won")}
                 </Button>
               )}
               <Button size="sm" variant="ghost" className="border border-[#2a3060] text-app-text" onClick={exportCSV}>
-                <Download className="size-3.5" /> Export
+                <Download className="size-3.5" /> {tr("Export")}
               </Button>
               <Button
                 size="sm"
@@ -202,10 +204,10 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
                   setSelected(new Set());
                 }}
               >
-                <Trash2 className="size-3.5" /> Delete
+                <Trash2 className="size-3.5" /> {tr("Delete")}
               </Button>
-              <Button size="sm" variant="ghost" className="ml-auto text-app-dim" onClick={() => setSelected(new Set())}>
-                <X className="size-3.5" /> Clear
+              <Button size="sm" variant="ghost" className="ms-auto text-app-dim" onClick={() => setSelected(new Set())}>
+                <X className="size-3.5" /> {tr("Clear")}
               </Button>
             </div>
           </motion.div>
@@ -231,7 +233,7 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-            <p className="text-sm text-app-dim">No {meta.plural.toLowerCase()} match these filters.</p>
+            <p className="text-sm text-app-dim">{tr("Nothing matches these filters.")}</p>
             <Button
               variant="secondary"
               size="sm"
@@ -240,7 +242,7 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
                 setFilters([]);
               }}
             >
-              Clear filters
+              {tr("Clear filters")}
             </Button>
           </div>
         )}

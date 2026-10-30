@@ -74,7 +74,7 @@ export function TaskModal({ task, open, onOpenChange }: { task: Task | null; ope
           {task && (
             <Button
               variant="danger"
-              className="mr-auto"
+              className="me-auto"
               onClick={() => {
                 onOpenChange(false);
                 store.remove("tasks", [task.id], "task");
@@ -199,7 +199,7 @@ export default function TasksPage() {
         </label>
         <Button
           size="sm"
-          className="ml-auto"
+          className="ms-auto"
           onClick={() => {
             setEditing(null);
             setOpen(true);
@@ -263,7 +263,7 @@ export default function TasksPage() {
                                 setEditing(t);
                                 setOpen(true);
                               }}
-                              className="flex min-w-0 flex-1 flex-col text-left"
+                              className="flex min-w-0 flex-1 flex-col text-start"
                             >
                               <span className={cn("truncate", t.done ? "text-app-mute line-through" : "text-app-text")}>{t.title}</span>
                             </button>
@@ -273,7 +273,7 @@ export default function TasksPage() {
                               </Link>
                             )}
                             <Flag aria-label={`${t.priority} priority`} className="size-3.5 shrink-0" style={{ color: PRIORITY_COLOR[t.priority] }} />
-                            <span className={cn("w-[72px] shrink-0 text-right text-xs", g === "Overdue" ? "text-[#f59090]" : "text-app-mute")}>{relativeDay(t.due)}</span>
+                            <span className={cn("w-[72px] shrink-0 text-end text-xs", g === "Overdue" ? "text-[#f59090]" : "text-app-mute")}>{relativeDay(t.due)}</span>
                             <span title={memberName(db, t.assigneeId)}>
                               <Avatar name={memberName(db, t.assigneeId)} size={22} />
                             </span>

@@ -13,10 +13,13 @@ import { store, useDB } from "@/data/store";
 import { DEAL_STAGES, type Deal, type DealStage } from "@/data/types";
 import { formatDate, formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { getLocale, tr } from "@/lib/i18n";
 
 /** Arrow keys jump between stage columns instead of nudging the card a few pixels. */
 const columnCoordinates: KeyboardCoordinateGetter = (event, { context, currentCoordinates }) => {
-  const dir = event.code === "ArrowRight" ? 1 : event.code === "ArrowLeft" ? -1 : 0;
+  // Arrow keys follow reading direction: in Arabic the next stage is to the left.
+  const forward = getLocale() === "ar" ? -1 : 1;
+  const dir = event.code === "ArrowRight" ? forward : event.code === "ArrowLeft" ? -forward : 0;
   if (!dir) return undefined;
   event.preventDefault();
   const rects = [...context.droppableRects.values()].sort((a, b) => a.left - b.left);
@@ -38,14 +41,14 @@ function Card({ deal, onOpen, overlay, dragging }: { deal: Deal; onOpen?: () => 
         dragging && "opacity-30",
       )}
     >
-      <button type="button" onClick={onOpen} className="text-left font-semibold text-white hover:underline" tabIndex={overlay ? -1 : 0}>
+      <button type="button" onClick={onOpen} className="text-start font-semibold text-white hover:underline" tabIndex={overlay ? -1 : 0}>
         {deal.name}
       </button>
       <span className="flex items-center gap-1.5 text-app-dim">
         <Avatar name={company} square size={16} /> {company}
       </span>
       <span className="flex items-center justify-between">
-        <span className="tabular text-app-text">{formatMoney(deal.value)}</span>
+        <span className="tabular text-app-text">{formatMoney(deal.value, deal.currency)}</span>
         <span className="flex items-center gap-1.5 text-xs text-app-mute">
           <CalendarDays aria-hidden className="size-3" />
           {formatDate(deal.closeDate)}
@@ -59,7 +62,7 @@ function Card({ deal, onOpen, overlay, dragging }: { deal: Deal; onOpen?: () => 
 function Draggable({ deal, onOpen }: { deal: Deal; onOpen: () => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: deal.id, data: { stage: deal.stage } });
   return (
-    <motion.div layout="position" transition={{ type: "spring", stiffness: 500, damping: 40 }} ref={setNodeRef} {...listeners} {...attributes} aria-roledescription="Draggable deal" aria-label={`${deal.name}, ${deal.stage}. Press space to pick up.`} className="cursor-grab touch-none rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-app-accent active:cursor-grabbing">
+    <motion.div layout="position" transition={{ type: "spring", stiffness: 500, damping: 40 }} ref={setNodeRef} {...listeners} {...attributes} aria-roledescription="Draggable deal" aria-label={`${deal.name}, ${tr(deal.stage)}. ${tr("Press space to pick up.")}`} className="cursor-grab touch-none rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-app-accent active:cursor-grabbing">
       <Card deal={deal} onOpen={onOpen} dragging={isDragging} />
     </motion.div>
   );
@@ -71,7 +74,7 @@ function Column({ stage, deals, onOpen }: { stage: DealStage; deals: Deal[]; onO
   return (
     <section
       ref={setNodeRef}
-      aria-label={`${stage}, ${deals.length} deals`}
+      aria-label={`${tr(stage)}, ${tr("{n} deals", { n: deals.length })}`}
       className={cn(
         "flex max-h-full w-[272px] shrink-0 flex-col rounded-xl border transition-colors duration-150",
         isOver ? "border-accent bg-[#151830]" : "border-[#1e1f22] bg-[#0d0e0f]",
@@ -79,15 +82,15 @@ function Column({ stage, deals, onOpen }: { stage: DealStage; deals: Deal[]; onO
     >
       <div className="flex items-center gap-2 px-3 py-2.5">
         <span className="size-2 rounded-full" style={{ background: badgeDot(STAGE_TONE[stage]) }} />
-        <h2 className="text-[13px] font-semibold text-white">{stage}</h2>
+        <h2 className="text-[13px] font-semibold text-white">{tr(stage)}</h2>
         <span className="rounded-[5px] bg-[#1e1f22] px-1.5 text-[11.5px] text-app-dim">{deals.length}</span>
-        <span className="tabular ml-auto text-xs text-app-mute">{formatMoney(total)}</span>
+        <span className="tabular ms-auto text-xs text-app-mute">{formatMoney(total)}</span>
       </div>
       <div className="scrollbar-thin flex min-h-[80px] flex-col gap-2 overflow-y-auto px-2 pb-2.5">
         {deals.map((d) => (
           <Draggable key={d.id} deal={d} onOpen={() => onOpen(d.id)} />
         ))}
-        {deals.length === 0 && <p className="rounded-lg border border-dashed border-[#2a2b2e] py-6 text-center text-xs text-app-mute">Drop deals here</p>}
+        {deals.length === 0 && <p className="rounded-lg border border-dashed border-[#2a2b2e] py-6 text-center text-xs text-app-mute">{tr("Drop deals here")}</p>}
       </div>
     </section>
   );
@@ -107,7 +110,7 @@ export function KanbanBoard({ deals, onOpen }: { deals: Deal[]; onOpen: (id: str
     if (!to || !deal || deal.stage === to) return;
     store.update("deals", deal.id, { stage: to });
     store.log({ kind: "deals", id: deal.id }, "stage", `Stage changed to ${to}`);
-    if (to === "Won") toast.success(`${deal.name} won — ${formatMoney(deal.value)}`);
+    if (to === "Won") toast.success(tr("{name} won — {value}", { name: deal.name, value: formatMoney(deal.value, deal.currency) }));
     else toast(`Moved ${deal.name} to ${to}`);
   };
 

@@ -52,7 +52,7 @@ export default function ReportsPage() {
                       ))}
                     </span>
                     <span className="flex items-center gap-2 font-semibold text-white">
-                      {d.name} <Star aria-label="Favorite" className="ml-auto size-3.5 fill-[#f6b67a] text-[#f6b67a]" />
+                      {d.name} <Star aria-label="Favorite" className="ms-auto size-3.5 fill-[#f6b67a] text-[#f6b67a]" />
                     </span>
                     <span className="text-xs text-app-mute">{d.reports.length} reports</span>
                   </Link>
@@ -70,7 +70,7 @@ export default function ReportsPage() {
           <div className="overflow-x-auto rounded-xl border border-app-line">
             <table className="w-full min-w-[560px] text-[13px]">
               <thead>
-                <tr className="text-left text-app-mute">
+                <tr className="text-start text-app-mute">
                   <th scope="col" className="border-b border-app-line px-4 py-2.5 font-medium">
                     Dashboard
                   </th>

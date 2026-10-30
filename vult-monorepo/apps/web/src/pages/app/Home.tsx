@@ -13,6 +13,7 @@ import { listItem, stagger } from "@/lib/motion";
 import { API_MODE } from "@/lib/api";
 import { useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
+import { getLocale, tr } from "@/lib/i18n";
 
 const SUGGESTIONS = ["What’s closing this month?", "Which deals are at risk?", "Summarise my week"];
 
@@ -37,7 +38,11 @@ export default function AppHome() {
   );
   const tasks = useMemo(() => taskIds.map((tid) => db.tasks.find((t) => t.id === tid)).filter((t): t is NonNullable<typeof t> => !!t), [db.tasks, taskIds]);
   const firstName = session?.name.split(" ")[0] ?? "there";
-  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  // In Arabic both calendars, as people across the Gulf read dates: "الخميس 12 مارس · 23 رمضان 1447 هـ".
+  const today =
+    getLocale() === "ar"
+      ? `${new Date().toLocaleDateString("ar-u-nu-latn", { weekday: "long", month: "long", day: "numeric" })} · ${new Date().toLocaleDateString("ar-u-ca-islamic-umalqura-nu-latn", { day: "numeric", month: "long", year: "numeric" })}`
+      : new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   const send = (e?: FormEvent, value = prompt) => {
     e?.preventDefault();
@@ -56,20 +61,20 @@ export default function AppHome() {
       <motion.div variants={stagger(0.06)} initial="hidden" animate="show" className="mx-auto flex max-w-[820px] flex-col gap-7 px-4 py-[clamp(24px,5vw,56px)] sm:px-8">
         {API_MODE && (
           <motion.p variants={listItem} className="rounded-xl border border-app-line bg-app-panel px-4 py-3 text-[13px] text-app-dim">
-            <span className="font-medium text-app-text">Early access.</span> Companies, people, deals and tasks still show sample data kept in this browser.{" "}
-            <Link href="/app/match" className="text-app-accent hover:underline">Match</Link> works on your real invoices and bank movements.
+            <span className="font-medium text-app-text">{tr("Early access.")}</span> {tr("Companies, people, deals and tasks still show sample data kept in this browser.")}{" "}
+            <Link href="/app/match" className="text-app-accent hover:underline">{tr("Match")}</Link> {tr("works on your real invoices and bank movements.")}
           </motion.p>
         )}
         <motion.div variants={listItem}>
           <p className="text-[13px] text-app-mute">{today}</p>
           <h2 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-white">
-            {greeting()}, {firstName}
+            {greeting()}{tr(", ")}{firstName}
           </h2>
         </motion.div>
 
         <motion.form variants={listItem} onSubmit={send} className="rounded-[14px] border border-[#2a2b2e] bg-app-raise p-3 shadow-[0_12px_40px_-20px_rgb(0_0_0/0.8)] transition-colors focus-within:border-[#3a3d55]">
           <label htmlFor="home-ask" className="sr-only">
-            Ask Vult
+            {tr("Ask Vult")}
           </label>
           <textarea
             id="home-ask"
@@ -79,11 +84,11 @@ export default function AppHome() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send(undefined);
             }}
-            placeholder="Ask about your pipeline, or tell an agent what to do…"
+            placeholder={tr("Ask about your pipeline, or tell an agent what to do…")}
             className="w-full resize-none bg-transparent px-1.5 py-1 text-[15px] leading-relaxed text-white outline-none placeholder:text-app-mute"
           />
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" aria-label="Attach context" className="inline-flex size-[30px] items-center justify-center rounded-[7px] border border-[#2e3033] text-app-dim transition-colors hover:bg-app-hover hover:text-white">
+            <button type="button" aria-label={tr("Attach context")} className="inline-flex size-[30px] items-center justify-center rounded-[7px] border border-[#2e3033] text-app-dim transition-colors hover:bg-app-hover hover:text-white">
               <Paperclip className="size-3.5" />
             </button>
             <DropdownRoot>
@@ -94,15 +99,15 @@ export default function AppHome() {
                 {MODELS.map((m) => (
                   <DropdownItem key={m} onSelect={() => setModel(m)}>
                     {m}
-                    {m === model && <span className="ml-auto text-xs text-fg-3">Selected</span>}
+                    {m === model && <span className="ms-auto text-xs text-fg-3">{tr("Selected")}</span>}
                   </DropdownItem>
                 ))}
               </DropdownContent>
             </DropdownRoot>
-            <span className="ml-auto hidden text-xs text-app-mute sm:inline">⌘↵ to send</span>
+            <span className="ms-auto hidden text-xs text-app-mute sm:inline">⌘↵ {tr("to send")}</span>
             <button
               type="submit"
-              aria-label="Send"
+              aria-label={tr("Send")}
               disabled={!prompt.trim() || thinking}
               className="inline-flex size-8 items-center justify-center rounded-lg bg-accent text-white transition-[opacity,transform] hover:scale-105 active:scale-95 disabled:opacity-40"
             >
@@ -126,7 +131,7 @@ export default function AppHome() {
               </span>
               {thinking ? (
                 <span className="flex items-center gap-1 text-app-mute">
-                  Thinking
+                  {tr("Thinking")}
                   {[0, 1, 2].map((i) => (
                     <motion.span key={i} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}>
                       .
@@ -134,7 +139,7 @@ export default function AppHome() {
                   ))}
                 </span>
               ) : (
-                <div className="min-w-0 text-[13.5px] text-app-text [&_li]:ml-4 [&_li]:list-disc [&_p]:my-1 [&_strong]:text-white">
+                <div className="min-w-0 text-[13.5px] text-app-text [&_li]:ms-4 [&_li]:list-disc [&_p]:my-1 [&_strong]:text-white">
                   <p className="mb-1 text-xs text-app-mute">
                     {model} · “{reply!.q}”
                   </p>
@@ -148,16 +153,16 @@ export default function AppHome() {
         <motion.div variants={listItem} className="-mt-2 flex flex-wrap gap-2">
           {SUGGESTIONS.map((s) => (
             <button key={s} type="button" onClick={() => send(undefined, s)} className="h-[30px] rounded-full border border-app-line px-3 text-[12.5px] text-[#c9cbd2] transition-colors hover:bg-app-hover hover:text-white">
-              {s}
+              {tr(s)}
             </button>
           ))}
         </motion.div>
 
         <motion.div variants={listItem} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {[
-            { label: "Open pipeline", value: formatMoney(totals.openValue), sub: `${totals.openCount} deals`, Icon: Wallet },
-            { label: "Closed won", value: formatMoney(totals.wonValue), sub: `${totals.wonCount} deals`, Icon: Trophy },
-            { label: "Win rate", value: `${Math.round(totals.winRate * 100)}%`, sub: "Won vs. lost", Icon: TrendingUp },
+            { label: tr("Open pipeline"), value: formatMoney(totals.openValue), sub: tr("{n} deals", { n: totals.openCount }), Icon: Wallet },
+            { label: tr("Closed won"), value: formatMoney(totals.wonValue), sub: tr("{n} deals", { n: totals.wonCount }), Icon: Trophy },
+            { label: tr("Win rate"), value: `${Math.round(totals.winRate * 100)}%`, sub: tr("Won vs. lost"), Icon: TrendingUp },
           ].map(({ label, value, sub, Icon }) => (
             <Link key={label} href="/app/reports/db1" className="group rounded-xl border border-app-line bg-app-panel px-4 py-3.5 transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-[#34363c]">
               <span className="flex items-center gap-1.5 text-[12.5px] text-app-dim">
@@ -173,7 +178,7 @@ export default function AppHome() {
           <section aria-labelledby="mtg-h" className="overflow-hidden rounded-card border border-app-line bg-app-panel">
             <div className="flex items-center justify-between border-b border-[#1e1f22] px-4 py-3.5">
               <h3 id="mtg-h" className="text-[13.5px] font-semibold text-white">
-                Today’s meetings
+                {tr("Today’s meetings")}
               </h3>
               <span className="text-xs text-app-mute">{meetings.length}</span>
             </div>
@@ -181,7 +186,7 @@ export default function AppHome() {
               {meetings.map((m) => {
                 const start = new Date(m.start);
                 const end = new Date(m.end);
-                const fmt = (d: Date) => d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+                const fmt = (d: Date) => d.toLocaleTimeString(getLocale() === "ar" ? "ar-u-nu-latn" : "en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
                 const past = end.getTime() < Date.now();
                 return (
                   <li key={m.id} className={cn("flex gap-3 border-b border-[#1a1b1d] px-4 py-3 last:border-b-0", past && "opacity-60")}>
@@ -198,7 +203,7 @@ export default function AppHome() {
                         <CalendarDays aria-hidden className="size-3" /> {fmt(start)} – {fmt(end)} · {m.attendees.join(", ")}
                       </span>
                     </span>
-                    <span className="hidden self-center whitespace-nowrap text-[11.5px] text-[#9daeff] sm:inline">{past ? "Recap ready" : "Brief ready"}</span>
+                    <span className="hidden self-center whitespace-nowrap text-[11.5px] text-[#9daeff] sm:inline">{tr(past ? "Recap ready" : "Brief ready")}</span>
                   </li>
                 );
               })}
@@ -208,10 +213,10 @@ export default function AppHome() {
           <section aria-labelledby="task-h" className="overflow-hidden rounded-card border border-app-line bg-app-panel">
             <div className="flex items-center justify-between border-b border-[#1e1f22] px-4 py-3.5">
               <h3 id="task-h" className="text-[13.5px] font-semibold text-white">
-                My tasks
+                {tr("My tasks")}
               </h3>
               <Link href="/app/tasks" className="text-xs text-app-mute hover:text-white">
-                View all
+                {tr("View all")}
               </Link>
             </div>
             <ul>
@@ -224,7 +229,7 @@ export default function AppHome() {
                         type="button"
                         role="checkbox"
                         aria-checked={t.done}
-                        aria-label={`${t.done ? "Mark incomplete" : "Complete"}: ${t.title}`}
+                        aria-label={`${tr(t.done ? "Mark incomplete" : "Complete")}: ${t.title}`}
                         onClick={() => store.update("tasks", t.id, { done: !t.done })}
                         className={cn(
                           "flex size-[18px] shrink-0 items-center justify-center rounded-[5px] border-[1.5px] transition-colors",

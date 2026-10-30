@@ -89,7 +89,7 @@ function TxHeader({ tx }: { tx: BankTransaction }) {
         <p className="truncate font-mono text-[12px] text-app-mute">{tx.description || "—"}</p>
         <p className="mt-0.5 text-xs text-app-mute">{formatDate(tx.date, { day: "numeric", month: "short", year: "numeric" })}</p>
       </div>
-      <span className={cn("tabular ml-auto shrink-0 text-[15px] font-semibold", tx.amount < 0 ? "text-[#f59090]" : "text-[#6fe3a5]")}>
+      <span className={cn("tabular ms-auto shrink-0 text-[15px] font-semibold", tx.amount < 0 ? "text-[#f59090]" : "text-[#6fe3a5]")}>
         {tx.amount > 0 ? "+" : ""}
         {formatEuro(tx.amount)}
       </span>
@@ -142,7 +142,7 @@ function ReviewCard({ row, items, onConfirm, onIgnore }: { row: MatchRow; items:
             <ArrowLeftRight className="size-3.5" /> Other option
           </Button>
         )}
-        <Button size="sm" variant="ghost" className="ml-auto" disabled={busy} onClick={act(onIgnore)}>
+        <Button size="sm" variant="ghost" className="ms-auto" disabled={busy} onClick={act(onIgnore)}>
           <X className="size-3.5" /> Not a customer payment
         </Button>
       </div>
@@ -365,7 +365,7 @@ export default function MatchPage() {
                   )}
                   {r.status === "auto" && r.proposal?.best && <Reasons candidate={r.proposal.best} />}
                   {(r.status === "confirmed" || model.mode === "live") && (
-                    <Button size="sm" variant="ghost" className="ml-auto" onClick={async () => notify(await model.undo(r))}>
+                    <Button size="sm" variant="ghost" className="ms-auto" onClick={async () => notify(await model.undo(r))}>
                       <Undo2 className="size-3.5" /> Undo
                     </Button>
                   )}
@@ -392,17 +392,17 @@ export default function MatchPage() {
         {tab === "customers" && (
           <div className="overflow-x-auto rounded-xl border border-app-line">
             <table className="w-full min-w-[720px] text-[13px]">
-              <thead className="bg-app-raise text-left text-xs text-app-mute">
-                <tr>{["Customer", "Billed", "Collected", "Open", "Overdue", "Pays", "Last payment"].map((h, i) => <th key={h} className={cn("px-3 py-2 font-medium", i > 0 && i < 5 && "text-right")}>{h}</th>)}</tr>
+              <thead className="bg-app-raise text-start text-xs text-app-mute">
+                <tr>{["Customer", "Billed", "Collected", "Open", "Overdue", "Pays", "Last payment"].map((h, i) => <th key={h} className={cn("px-3 py-2 font-medium", i > 0 && i < 5 && "text-end")}>{h}</th>)}</tr>
               </thead>
               <tbody>
                 {model.balances.map((b) => (
                   <tr key={b.customerVat} className="border-t border-app-line-soft">
                     <td className="px-3 py-2.5"><span className="font-medium text-white">{b.customerName}</span><span className="block text-xs text-app-mute">P.IVA {b.customerVat}</span></td>
-                    <td className="tabular px-3 text-right">{formatEuro(b.billed)}</td>
-                    <td className="tabular px-3 text-right text-[#6fe3a5]">{formatEuro(b.collected)}</td>
-                    <td className="tabular px-3 text-right">{formatEuro(b.open)}</td>
-                    <td className={cn("tabular px-3 text-right", b.overdue ? "text-[#f59090]" : "text-app-mute")}>{formatEuro(b.overdue)}</td>
+                    <td className="tabular px-3 text-end">{formatEuro(b.billed)}</td>
+                    <td className="tabular px-3 text-end text-[#6fe3a5]">{formatEuro(b.collected)}</td>
+                    <td className="tabular px-3 text-end">{formatEuro(b.open)}</td>
+                    <td className={cn("tabular px-3 text-end", b.overdue ? "text-[#f59090]" : "text-app-mute")}>{formatEuro(b.overdue)}</td>
                     <td className="px-3">{b.avgDaysLate === null ? <span className="text-app-mute">—</span> : <Badge dark tone={b.avgDaysLate <= 0 ? "green" : b.avgDaysLate <= 15 ? "amber" : "red"}>{b.avgDaysLate === 0 ? "On time" : b.avgDaysLate < 0 ? `${-b.avgDaysLate}d early` : `${b.avgDaysLate}d late`}</Badge>}</td>
                     <td className="px-3 text-app-dim">{b.lastPayment ? formatDate(b.lastPayment) : "—"}</td>
                   </tr>
@@ -417,16 +417,16 @@ export default function MatchPage() {
             <p className="text-sm text-app-dim">Commission of {COMMISSION_RATE * 100}% on money actually collected, per account owner. No spreadsheet, no disputes: every euro links to an invoice and a bank movement.</p>
             <div className="overflow-x-auto rounded-xl border border-app-line">
               <table className="w-full min-w-[520px] text-[13px]">
-                <thead className="bg-app-raise text-left text-xs text-app-mute">
-                  <tr><th className="px-3 py-2 font-medium">Agent</th><th className="px-3 py-2 font-medium">Customers</th><th className="px-3 py-2 text-right font-medium">Collected</th><th className="px-3 py-2 text-right font-medium">Commission</th></tr>
+                <thead className="bg-app-raise text-start text-xs text-app-mute">
+                  <tr><th className="px-3 py-2 font-medium">Agent</th><th className="px-3 py-2 font-medium">Customers</th><th className="px-3 py-2 text-end font-medium">Collected</th><th className="px-3 py-2 text-end font-medium">Commission</th></tr>
                 </thead>
                 <tbody>
                   {commissions.map((c) => (
                     <tr key={c.owner} className="border-t border-app-line-soft">
                       <td className="flex items-center gap-2 px-3 py-2.5"><Avatar name={memberName(db, c.owner)} size={24} /><span className="font-medium text-white">{memberName(db, c.owner)}</span></td>
                       <td className="px-3 text-app-dim">{c.customers}</td>
-                      <td className="tabular px-3 text-right">{formatEuro(c.collected)}</td>
-                      <td className="tabular px-3 text-right font-semibold text-white">{formatEuro(Math.round(c.collected * COMMISSION_RATE))}</td>
+                      <td className="tabular px-3 text-end">{formatEuro(c.collected)}</td>
+                      <td className="tabular px-3 text-end font-semibold text-white">{formatEuro(Math.round(c.collected * COMMISSION_RATE))}</td>
                     </tr>
                   ))}
                 </tbody>

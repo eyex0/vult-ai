@@ -25,6 +25,10 @@ export interface Company {
   segment: Segment;
   employees: number;
   arr: number;
+  /** ISO currency of ARR and of the company's deals; the workspace currency when absent. */
+  currency?: string;
+  /** Tax or VAT registration number (ZATCA VAT, UAE TRN, Egyptian TIN). */
+  taxId?: string;
   city: string;
   country: string;
   ownerId: ID;
@@ -54,6 +58,7 @@ export interface Deal {
   contactId?: ID;
   stage: DealStage;
   value: number;
+  currency?: string;
   ownerId: ID;
   closeDate: string;
   source: "Inbound" | "Outbound" | "Referral" | "Partner" | "Event";
@@ -219,6 +224,11 @@ export interface Workspace {
   domain: string;
   plan: "Free" | "Plus" | "Pro" | "Enterprise";
   trialEndsAt: string;
+  /** Reporting currency (ISO 4217). */
+  currency?: string;
+  /** Country code; sets the weekend and phone numbering. */
+  country?: string;
+  calendar?: "gregory" | "islamic-umalqura";
   checklist: Record<ChecklistKey, boolean>;
 }
 

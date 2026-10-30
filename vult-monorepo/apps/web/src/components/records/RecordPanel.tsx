@@ -15,6 +15,7 @@ import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { CellEditor } from "./CellEditor";
 import { columnsFor, recordSubtitle, type AnyRecord } from "./columns";
+import { getLocale, tr } from "@/lib/i18n";
 
 const ACTIVITY_ICON: Record<Activity["kind"], typeof Mail> = {
   email: Mail, meeting: CalendarDays, call: Phone, stage: TrendingUp, note: FileText, enrich: Sparkles, created: Plus, task: Check,
@@ -60,7 +61,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
     if (!note.trim()) return;
     const now = new Date().toISOString();
     store.create("notes", { id: uid("n"), title: note.trim().split("\n")[0]!.slice(0, 60), body: note.trim(), record: ref, authorId: "m1", createdAt: now, updatedAt: now });
-    store.log(ref, "note", "Note added");
+    store.log(ref, "note", tr("Note added"));
     setNote("");
   };
   const addTask = (e: FormEvent) => {
@@ -89,7 +90,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
             <div className="h-8">
               <CellEditor
                 kind="text"
-                label="Name"
+                label={tr("Name")}
                 initial={name}
                 onCommit={(v) => {
                   if (v.trim()) store.update(kind, id, { name: v.trim() } as never);
@@ -100,7 +101,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
             </div>
           ) : (
             <h2 className="truncate text-base font-semibold text-white">
-              <button type="button" onClick={() => setEditing("name")} className="max-w-full truncate rounded px-0.5 text-left hover:bg-app-hover" aria-label={`Rename ${name}`}>
+              <button type="button" onClick={() => setEditing("name")} className="max-w-full truncate rounded px-0.5 text-start hover:bg-app-hover" aria-label={tr("Rename {name}", { name })}>
                 {name}
               </button>
             </h2>
@@ -108,12 +109,12 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
           <p className="mt-0.5 truncate text-[13px] text-app-mute">{recordSubtitle(db, kind, record)}</p>
         </div>
         <DropdownRoot>
-          <DropdownTrigger aria-label="Record actions" className="inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
+          <DropdownTrigger aria-label={tr("Record actions")} className="inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
             <MoreHorizontal className="size-4" />
           </DropdownTrigger>
           <DropdownContent align="end">
             <DropdownItem onSelect={() => navigator.clipboard?.writeText(window.location.href)}>
-              <FileText /> Copy link
+              <FileText /> {tr("Copy link")}
             </DropdownItem>
             <DropdownItem
               danger
@@ -122,11 +123,11 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                 store.remove(kind, [id], OBJECT_META[kind].singular.toLowerCase());
               }}
             >
-              <Trash2 /> Delete {OBJECT_META[kind].singular.toLowerCase()}
+              <Trash2 /> {tr(`Delete ${OBJECT_META[kind].singular.toLowerCase()}`)}
             </DropdownItem>
           </DropdownContent>
         </DropdownRoot>
-        <button type="button" onClick={onClose} aria-label="Close record" className="inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
+        <button type="button" onClick={onClose} aria-label={tr("Close record")} className="inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
           <X className="size-4" />
         </button>
       </div>
@@ -135,17 +136,17 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
         <dl className="grid grid-cols-[120px_1fr] border-b border-app-line px-3 py-2">
           {cols.map((c) => (
             <div key={c.key} className="contents">
-              <dt className="flex h-9 items-center px-2 text-[12.5px] text-app-mute">{c.label}</dt>
+              <dt className="flex h-9 items-center px-2 text-[12.5px] text-app-mute">{tr(c.label)}</dt>
               <dd className="h-9 min-w-0">
                 {editing === c.key && c.edit ? (
                   <CellEditor
                     kind={c.edit.kind}
                     options={c.edit.options}
                     initial={c.edit.raw(record)}
-                    label={c.label}
+                    label={tr(c.label)}
                     onCommit={(v) => {
                       store.update(kind, id, c.edit!.patch(v) as never);
-                      if (kind === "deals" && c.key === "stage") store.log(ref, "stage", `Stage changed to ${v}`);
+                      if (kind === "deals" && c.key === "stage") store.log(ref, "stage", tr("Stage changed to {stage}", { stage: tr(v) }));
                       setEditing(null);
                     }}
                     onCancel={() => setEditing(null)}
@@ -154,8 +155,8 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                   <button
                     type="button"
                     onClick={() => setEditing(c.key)}
-                    aria-label={`Edit ${c.label}`}
-                    className="flex h-full w-full items-center truncate rounded-md px-2 text-left text-app-text transition-colors hover:bg-app-hover"
+                    aria-label={tr("Edit {field}", { field: tr(c.label) })}
+                    className="flex h-full w-full items-center truncate rounded-md px-2 text-start text-app-text transition-colors hover:bg-app-hover"
                   >
                     {c.render(record, db)}
                   </button>
@@ -168,7 +169,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
         </dl>
 
         <div className="border-b border-app-line px-5 py-3.5">
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-app-mute">Related</h3>
+          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-app-mute">{tr("Related")}</h3>
           <ul className="flex flex-col gap-1">
             {"company" in related && related.company && (
               <li>
@@ -200,7 +201,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                       {d.stage}
                     </Badge>
                     <span className="truncate">{d.name}</span>
-                    <span className="tabular ml-auto text-xs text-app-mute">{formatMoney(d.value)}</span>
+                    <span className="tabular ms-auto text-xs text-app-mute">{formatMoney(d.value)}</span>
                   </Link>
                 </li>
               ))}
@@ -212,18 +213,18 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
           onValueChange={setTab}
           listClassName="px-3"
           items={[
-            { value: "activity", label: "Activity", count: activity.length },
-            { value: "notes", label: "Notes", count: notes.length },
-            { value: "tasks", label: "Tasks", count: tasks.length },
+            { value: "activity", label: tr("Activity"), count: activity.length },
+            { value: "notes", label: tr("Notes"), count: notes.length },
+            { value: "tasks", label: tr("Tasks"), count: tasks.length },
           ]}
         >
           <TabPanel value="activity" className="px-5 py-4">
-            <ol className="relative ml-1.5 flex flex-col gap-4 border-l border-[#2a2b2e]">
+            <ol className="relative ms-1.5 flex flex-col gap-4 border-s border-[#2a2b2e]">
               {activity.map((a, i) => {
                 const Icon = ACTIVITY_ICON[a.kind];
                 return (
-                  <motion.li key={a.id} className="relative pl-5" initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(i, 10) * 0.03 }}>
-                    <span className="absolute -left-[11px] top-0 flex size-[21px] items-center justify-center rounded-full border border-[#2a2b2e] bg-app-panel">
+                  <motion.li key={a.id} className="relative ps-5" initial={{ opacity: 0, x: getLocale() === "ar" ? 6 : -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(i, 10) * 0.03 }}>
+                    <span className="absolute -start-[11px] top-0 flex size-[21px] items-center justify-center rounded-full border border-[#2a2b2e] bg-app-panel">
                       <Icon aria-hidden className="size-3 text-app-dim" />
                     </span>
                     <p className="text-[13px] text-app-text">{a.text}</p>
@@ -234,7 +235,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                   </motion.li>
                 );
               })}
-              {activity.length === 0 && <li className="pl-5 text-app-mute">No activity yet.</li>}
+              {activity.length === 0 && <li className="ps-5 text-app-mute">{tr("No activity yet.")}</li>}
             </ol>
           </TabPanel>
           <TabPanel value="notes" className="flex flex-col gap-3 px-5 py-4">
@@ -247,7 +248,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                 rows={3}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Write a note…"
+                placeholder={tr("Write a note…")}
                 className="w-full resize-y rounded-lg border border-[#2e3033] bg-app-input px-3 py-2 text-[13px] text-white outline-none placeholder:text-app-mute focus:border-app-accent"
               />
               <Button type="submit" size="sm" variant="accent" className="self-end" disabled={!note.trim()}>
@@ -275,7 +276,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                 id="panel-task"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
-                placeholder="Add a task…"
+                placeholder={tr("Add a task…")}
                 className="h-8 flex-1 rounded-[7px] border border-[#2e3033] bg-app-input px-2.5 text-[13px] text-white outline-none placeholder:text-app-mute focus:border-app-accent"
               />
               <Button type="submit" size="sm" variant="accent" disabled={!task.trim()}>
@@ -296,11 +297,11 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                   <span className="text-xs text-app-mute">{relativeDay(t.due)}</span>
                 </li>
               ))}
-              {tasks.length === 0 && <li className="text-[13px] text-app-mute">No tasks for this record.</li>}
+              {tasks.length === 0 && <li className="text-[13px] text-app-mute">{tr("No tasks for this record.")}</li>}
             </ul>
           </TabPanel>
         </Tabs>
-        <p className="px-5 pb-5 pt-2 text-xs text-app-mute">Created {formatDate((record as { createdAt: string }).createdAt, { month: "short", day: "numeric", year: "numeric" })}</p>
+        <p className="px-5 pb-5 pt-2 text-xs text-app-mute">{tr("Created")} {formatDate((record as { createdAt: string }).createdAt, { month: "short", day: "numeric", year: "numeric" })}</p>
       </div>
     </div>
   );
@@ -314,11 +315,11 @@ export function RecordSlideOver({ kind, id, onClose }: { kind: RecordKind; id: s
         <motion.aside
           key="panel"
           role="dialog"
-          aria-label="Record details"
-          className="absolute inset-y-0 right-0 z-40 w-full max-w-[460px] border-l border-[#2a2b2e] bg-app-panel shadow-[-24px_0_60px_-20px_rgb(0_0_0/0.7)]"
-          initial={{ x: 60, opacity: 0 }}
+          aria-label={tr("Record details")}
+          className="absolute inset-y-0 end-0 z-40 w-full max-w-[460px] border-s border-[#2a2b2e] bg-app-panel shadow-[-24px_0_60px_-20px_rgb(0_0_0/0.7)]"
+          initial={{ x: getLocale() === "ar" ? -60 : 60, opacity: 0 }}
           animate={{ x: 0, opacity: 1, transition: spring }}
-          exit={{ x: 60, opacity: 0, transition: { duration: 0.16 } }}
+          exit={{ x: getLocale() === "ar" ? -60 : 60, opacity: 0, transition: { duration: 0.16 } }}
         >
           <RecordPanel key={id} kind={kind} id={id} onClose={onClose} />
         </motion.aside>

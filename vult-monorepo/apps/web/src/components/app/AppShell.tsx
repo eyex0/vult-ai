@@ -1,7 +1,7 @@
 import * as Popover from "@radix-ui/react-popover";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Check, ChevronDown, ChevronRight, CircleHelp, Hash, LogOut, Menu, PanelLeft, RotateCcw, Search, Settings, Sparkles, UserPlus, X,
+  Check, ChevronDown, ChevronRight, CircleHelp, Hash, Languages, LogOut, Menu, PanelLeft, RotateCcw, Search, Settings, Sparkles, UserPlus, X,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
@@ -26,6 +26,7 @@ import { CommandPalette } from "./CommandPalette";
 import { APP_NAV, LIVE_PAGES, RECORD_NAV } from "./nav";
 import { PageMetaProvider, usePageMetaValue } from "./PageMeta";
 import { toast } from "sonner";
+import { getLocale, physicalSide, setLocale, tr, useDocumentDirection, useLocale } from "@/lib/i18n";
 
 const CHECKLIST: { key: ChecklistKey; label: string; href: string }[] = [
   { key: "import", label: "Import your contacts", href: "/app/companies?import=1" },
@@ -72,8 +73,8 @@ function SectionToggle({ title, open, onToggle }: { title: string; open: boolean
       onClick={onToggle}
       className="group mt-3.5 flex h-6 items-center gap-1 rounded px-2 text-[11px] font-semibold uppercase tracking-[0.04em] text-app-mute hover:text-app-dim"
     >
-      <ChevronRight aria-hidden className={cn("size-3 transition-transform", open && "rotate-90")} />
-      {title}
+      <ChevronRight aria-hidden className={cn("size-3 transition-transform rtl:-scale-x-100", open && "rotate-90")} />
+      {tr(title)}
     </button>
   );
 }
@@ -84,19 +85,19 @@ function GettingStarted() {
   const theme = useThemeClass();
   return (
     <Popover.Root>
-      <Popover.Trigger className="flex w-full flex-col gap-2 rounded-[10px] border border-app-line bg-[#111214] px-3 py-2.5 text-left transition-colors hover:bg-[#151618]">
+      <Popover.Trigger className="flex w-full flex-col gap-2 rounded-[10px] border border-app-line bg-[#111214] px-3 py-2.5 text-start transition-colors hover:bg-[#151618]">
         <span className="flex justify-between text-[13px] font-[550] text-white">
-          Getting started <span className="font-normal text-app-mute">{done}/6</span>
+          {tr("Getting started")} <span className="font-normal text-app-mute">{done}/6</span>
         </span>
         <span className="h-1 overflow-hidden rounded-sm bg-app-line">
           <motion.span className="block h-full bg-accent" initial={false} animate={{ width: `${Math.max(4, (done / 6) * 100)}%` }} transition={spring} />
         </span>
-        <span className="text-xs text-app-mute">{done === 6 ? "All done — nice work!" : `Next: ${CHECKLIST.find((c) => !db.workspace.checklist[c.key])?.label.toLowerCase()}`}</span>
+        <span className="text-xs text-app-mute">{done === 6 ? tr("All done — nice work!") : tr("Next: {step}", { step: tr(CHECKLIST.find((c) => !db.workspace.checklist[c.key])?.label ?? "") })}</span>
       </Popover.Trigger>
       <Popover.Portal>
         <div className={theme}>
-          <Popover.Content side="right" align="end" sideOffset={10} collisionPadding={12} className="z-[95] w-[280px] animate-pop rounded-xl border border-[#2e3033] bg-pop p-2 text-fg shadow-dark-pop">
-            <p className="px-2 pb-1.5 pt-1 text-[13px] font-semibold">Set up your workspace</p>
+          <Popover.Content side={physicalSide("end", getLocale())} align="end" sideOffset={10} collisionPadding={12} className="z-[95] w-[280px] animate-pop rounded-xl border border-[#2e3033] bg-pop p-2 text-fg shadow-dark-pop">
+            <p className="px-2 pb-1.5 pt-1 text-[13px] font-semibold">{tr("Set up your workspace")}</p>
             <ul>
               {CHECKLIST.map((c) => {
                 const ok = db.workspace.checklist[c.key];
@@ -107,7 +108,7 @@ function GettingStarted() {
                         <span className={cn("flex size-[18px] items-center justify-center rounded-full border-[1.5px]", ok ? "border-accent bg-accent" : "border-[#3a3c40]")}>
                           {ok && <Check className="size-3 text-white" strokeWidth={3} />}
                         </span>
-                        <span className={cn(ok && "text-fg-3 line-through")}>{c.label}</span>
+                        <span className={cn(ok && "text-fg-3 line-through")}>{tr(c.label)}</span>
                       </Link>
                     </Popover.Close>
                   </li>
@@ -181,6 +182,15 @@ export function InviteModal({ open, onOpenChange }: { open: boolean; onOpenChang
   );
 }
 
+/** Switches the interface language and offers demo data that matches it (Arab-market companies in Arabic). */
+function switchLanguage(next: "en" | "ar") {
+  setLocale(next);
+  if (API_MODE) return;
+  toast(tr("Language changed"), {
+    action: { label: tr("Load matching demo data"), onClick: () => store.reset() },
+  });
+}
+
 function Sidebar({
   collapsed,
   setCollapsed,
@@ -196,6 +206,7 @@ function Sidebar({
 }) {
   const db = useDB();
   const session = useSession();
+  const locale = useLocale();
   const [, navigate] = useLocation();
   const [sections, setSections] = useState(() => readJSON("sidebar.sections", { records: true, lists: true, chats: true }));
   const [invite, setInvite] = useState(false);
@@ -209,17 +220,17 @@ function Sidebar({
 
   return (
     <aside
-      aria-label="Workspace navigation"
+      aria-label={tr("Workspace navigation")}
       className={cn(
-        "flex h-full shrink-0 flex-col border-r border-app-line bg-app-side transition-[width] duration-200 ease-[var(--ease-out-expo)]",
+        "flex h-full shrink-0 flex-col border-e border-app-line bg-app-side transition-[width] duration-200 ease-[var(--ease-out-expo)]",
         collapsed ? "w-16" : "w-[274px]",
       )}
     >
       <div className={cn("flex h-[49px] shrink-0 items-center gap-1 border-b border-app-line-soft", collapsed ? "justify-center px-2" : "px-2.5")}>
         <DropdownRoot>
           <DropdownTrigger
-            aria-label="Workspace menu"
-            className={cn("flex h-[34px] min-w-0 items-center gap-2 rounded-[7px] px-1.5 text-left text-white transition-colors hover:bg-[#17181a]", !collapsed && "flex-1")}
+            aria-label={tr("Workspace menu")}
+            className={cn("flex h-[34px] min-w-0 items-center gap-2 rounded-[7px] px-1.5 text-start text-white transition-colors hover:bg-[#17181a]", !collapsed && "flex-1")}
           >
             <span className="flex size-6 shrink-0 items-center justify-center rounded-md border border-[#2a2c31] bg-black">
               <LogoMark tone="light" size={18} />
@@ -232,16 +243,19 @@ function Sidebar({
             )}
           </DropdownTrigger>
           <DropdownContent className="w-[240px]">
-            <DropdownLabel>{session?.email ?? "Workspace"}</DropdownLabel>
+            <DropdownLabel>{session?.email ?? tr("Workspace")}</DropdownLabel>
             <DropdownItem onSelect={() => navigate("/app/settings/workspace")}>
-              <Settings /> Workspace settings
+              <Settings /> {tr("Workspace settings")}
             </DropdownItem>
             <DropdownItem onSelect={() => setInvite(true)}>
-              <UserPlus /> Invite members
+              <UserPlus /> {tr("Invite members")}
+            </DropdownItem>
+            <DropdownItem onSelect={() => switchLanguage(locale === "ar" ? "en" : "ar")}>
+              <Languages /> {locale === "ar" ? "English" : "العربية"}
             </DropdownItem>
             {!API_MODE && (
               <DropdownItem onSelect={() => store.reset()}>
-                <RotateCcw /> Reset demo data
+                <RotateCcw /> {tr("Reset demo data")}
               </DropdownItem>
             )}
             <DropdownSeparator />
@@ -250,29 +264,29 @@ function Sidebar({
                 void signOut().then(() => navigate("/"));
               }}
             >
-              <LogOut /> Sign out
+              <LogOut /> {tr("Sign out")}
             </DropdownItem>
           </DropdownContent>
         </DropdownRoot>
         {!collapsed && !mobile && (
-          <Tooltip label="Collapse sidebar">
-            <button type="button" onClick={() => setCollapsed(true)} aria-label="Collapse sidebar" className="inline-flex size-7 shrink-0 items-center justify-center rounded-md text-app-mute hover:bg-[#17181a] hover:text-white">
-              <PanelLeft className="size-[15px]" />
+          <Tooltip label={tr("Collapse sidebar")}>
+            <button type="button" onClick={() => setCollapsed(true)} aria-label={tr("Collapse sidebar")} className="inline-flex size-7 shrink-0 items-center justify-center rounded-md text-app-mute hover:bg-[#17181a] hover:text-white">
+              <PanelLeft className="size-[15px] rtl:-scale-x-100" />
             </button>
           </Tooltip>
         )}
         {mobile && (
-          <button type="button" onClick={onNavigate} aria-label="Close navigation" className="inline-flex size-8 items-center justify-center rounded-md text-app-dim hover:bg-[#17181a]">
+          <button type="button" onClick={onNavigate} aria-label={tr("Close navigation")} className="inline-flex size-8 items-center justify-center rounded-md text-app-dim hover:bg-[#17181a]">
             <X className="size-4" />
           </button>
         )}
       </div>
 
-      <nav className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-px overflow-y-auto overflow-x-hidden p-2.5" aria-label="Main">
+      <nav className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-px overflow-y-auto overflow-x-hidden p-2.5" aria-label={tr("Main")}>
         {collapsed ? (
-          <Tooltip label="Expand sidebar">
-            <button type="button" onClick={() => setCollapsed(false)} aria-label="Expand sidebar" className="mb-1 flex h-8 items-center justify-center rounded-[7px] text-app-mute hover:bg-[#17181a] hover:text-white">
-              <PanelLeft className="size-[15px]" />
+          <Tooltip label={tr("Expand sidebar")}>
+            <button type="button" onClick={() => setCollapsed(false)} aria-label={tr("Expand sidebar")} className="mb-1 flex h-8 items-center justify-center rounded-[7px] text-app-mute hover:bg-[#17181a] hover:text-white">
+              <PanelLeft className="size-[15px] rtl:-scale-x-100" />
             </button>
           </Tooltip>
         ) : null}
@@ -280,16 +294,16 @@ function Sidebar({
         <button
           type="button"
           onClick={onSearch}
-          aria-label="Search (Command K)"
+          aria-label={tr("Search (Command K)")}
           className={cn(
-            "mb-2 flex h-8 shrink-0 items-center gap-2 rounded-[7px] border border-app-line bg-[#111214] px-2 text-left text-[13px] text-app-mute transition-colors hover:bg-[#151618] hover:text-app-dim",
+            "mb-2 flex h-8 shrink-0 items-center gap-2 rounded-[7px] border border-app-line bg-[#111214] px-2 text-start text-[13px] text-app-mute transition-colors hover:bg-[#151618] hover:text-app-dim",
             collapsed && "justify-center",
           )}
         >
           <Search aria-hidden className="size-3.5 shrink-0" />
           {!collapsed && (
             <>
-              <span className="flex-1">Search</span>
+              <span className="flex-1">{tr("Search")}</span>
               <Kbd className="border-[#2e3033] text-app-dim">⌘K</Kbd>
             </>
           )}
@@ -297,7 +311,7 @@ function Sidebar({
         )}
         {/* The live product shows only what works on real data today; the rest of the CRM stays in the demo. */}
         {(API_MODE ? APP_NAV.filter((n) => LIVE_PAGES.has(n.href)) : APP_NAV).map((n) => (
-          <NavLink key={n.href} href={n.href} label={n.label} collapsed={collapsed} onNavigate={onNavigate} badge={n.label === "Inbox" ? unread : undefined} icon={<n.icon className="size-[15px]" strokeWidth={1.8} />} />
+          <NavLink key={n.href} href={n.href} label={tr(n.label)} collapsed={collapsed} onNavigate={onNavigate} badge={n.label === "Inbox" ? unread : undefined} icon={<n.icon className="size-[15px]" strokeWidth={1.8} />} />
         ))}
 
         {!API_MODE && (
@@ -308,7 +322,7 @@ function Sidebar({
           {(collapsed || sections.records) && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="flex flex-col gap-px overflow-hidden">
               {RECORD_NAV.map((n) => (
-                <NavLink key={n.href} href={n.href} label={n.label} collapsed={collapsed} onNavigate={onNavigate} icon={<n.icon className="size-[15px]" style={{ color: n.color }} strokeWidth={1.8} />} />
+                <NavLink key={n.href} href={n.href} label={tr(n.label)} collapsed={collapsed} onNavigate={onNavigate} icon={<n.icon className="size-[15px]" style={{ color: n.color }} strokeWidth={1.8} />} />
               ))}
             </motion.div>
           )}
@@ -360,12 +374,12 @@ function Sidebar({
             onClick={() => setInvite(true)}
             className="flex h-8 items-center gap-2 rounded-[7px] border border-app-line px-2.5 text-[13px] text-app-text transition-colors hover:bg-[#1a1b1e]"
           >
-            <UserPlus aria-hidden className="size-3.5" /> Invite members
+            <UserPlus aria-hidden className="size-3.5" /> {tr("Invite members")}
           </button>
           <div className="flex flex-col gap-1.5 rounded-[10px] border border-[rgb(59_91_253/0.3)] bg-[linear-gradient(180deg,rgb(59_91_253/0.18),rgb(59_91_253/0.06))] px-3 py-2.5 text-[12.5px]">
-            <span className="font-[550] text-white">{trialDays} days left in your Pro trial</span>
+            <span className="font-[550] text-white">{tr("{n} days left in your Pro trial", { n: trialDays })}</span>
             <Link href="/app/settings/billing" onClick={onNavigate} className="font-[550] text-[#9daeff] hover:text-white">
-              Choose a plan →
+              {tr("Choose a plan →")}
             </Link>
           </div>
           </>
@@ -381,14 +395,14 @@ function TopBar({ onMenu, onAsk }: { onMenu: () => void; onAsk: () => void }) {
   const meta = usePageMetaValue();
   const Icon = meta.icon;
   return (
-    <header className="flex h-[49px] shrink-0 items-center gap-2.5 border-b border-app-line px-3.5 sm:pl-4">
-      <button type="button" onClick={onMenu} aria-label="Open navigation" className="inline-flex size-8 items-center justify-center rounded-[7px] border border-app-line text-app-text hover:bg-app-hover min-[900px]:hidden">
+    <header className="flex h-[49px] shrink-0 items-center gap-2.5 border-b border-app-line px-3.5 sm:ps-4">
+      <button type="button" onClick={onMenu} aria-label={tr("Open navigation")} className="inline-flex size-8 items-center justify-center rounded-[7px] border border-app-line text-app-text hover:bg-app-hover min-[900px]:hidden">
         <Menu className="size-4" />
       </button>
       {meta.parent && (
         <>
           <Link href={meta.parent.href} className="hidden text-[13px] text-app-mute hover:text-white sm:inline">
-            {meta.parent.label}
+            {tr(meta.parent.label)}
           </Link>
           <span aria-hidden className="hidden text-[#4a4c52] sm:inline">
             /
@@ -396,14 +410,14 @@ function TopBar({ onMenu, onAsk }: { onMenu: () => void; onAsk: () => void }) {
         </>
       )}
       {Icon && <Icon aria-hidden className="size-4 shrink-0" style={{ color: meta.iconColor ?? "#a9acb6" }} strokeWidth={1.8} />}
-      <h1 className="min-w-0 truncate text-sm font-semibold text-white">{meta.title}</h1>
-      <span className="ml-auto" />
+      <h1 className="min-w-0 truncate text-sm font-semibold text-white">{tr(meta.title)}</h1>
+      <span className="ms-auto" />
       <Button href="/contact" variant="ghost" size="sm" className="hidden text-app-dim sm:inline-flex">
-        <CircleHelp className="size-3.5" /> Help
+        <CircleHelp className="size-3.5" /> {tr("Help")}
       </Button>
       {!API_MODE && (
         <Button variant="accent" size="sm" onClick={onAsk}>
-          <Sparkles className="size-3.5" /> Ask Vult
+          <Sparkles className="size-3.5" /> {tr("Ask Vult")}
         </Button>
       )}
     </header>
@@ -436,6 +450,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, []);
 
   const searchHandler = useMemo(() => () => setPalette(true), []);
+  const locale = useLocale();
+  const rtl = locale === "ar";
+  useDocumentDirection();
 
   return (
     <ThemeScope theme="dark">
@@ -446,8 +463,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             const m = document.getElementById("app-main");
             m?.setAttribute("tabindex", "-1");
             m?.focus();
-          }} className="sr-only-focusable fixed left-3 top-3 z-[100] rounded-md bg-white px-3 py-2 text-sm text-ink">
-            Skip to content
+          }} className="sr-only-focusable fixed start-3 top-3 z-[100] rounded-md bg-white px-3 py-2 text-sm text-ink">
+            {tr("Skip to content")}
           </a>
           <div className="hidden h-full min-[900px]:block">
             <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} onSearch={searchHandler} />
@@ -459,11 +476,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <motion.div
                   role="dialog"
                   aria-modal="true"
-                  aria-label="Navigation"
-                  className="absolute inset-y-0 left-0"
-                  initial={{ x: -280 }}
+                  aria-label={tr("Navigation")}
+                  className="absolute inset-y-0 start-0"
+                  initial={{ x: rtl ? 280 : -280 }}
                   animate={{ x: 0, transition: spring }}
-                  exit={{ x: -280, transition: { duration: 0.18 } }}
+                  exit={{ x: rtl ? 280 : -280, transition: { duration: 0.18 } }}
                 >
                   <Sidebar collapsed={false} setCollapsed={() => {}} onSearch={searchHandler} onNavigate={() => setMobileOpen(false)} mobile />
                 </motion.div>
@@ -472,7 +489,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           </AnimatePresence>
           <div className="flex min-w-0 flex-1 flex-col">
             <TopBar onMenu={() => setMobileOpen(true)} onAsk={() => setAsk(true)} />
-            <main id="app-main" className="relative min-h-0 flex-1 overflow-hidden">
+            {/* Keyed by language: labels built outside components (columns, constants) are re-read on a switch. */}
+            <main key={locale} id="app-main" className="relative min-h-0 flex-1 overflow-hidden">
               {children}
             </main>
           </div>

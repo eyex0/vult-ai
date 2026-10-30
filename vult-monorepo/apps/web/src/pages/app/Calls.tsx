@@ -33,7 +33,7 @@ export default function CallsPage() {
                 </p>
                 <p className="mt-1 text-[13px] text-app-dim">{c.summary}</p>
               </div>
-              <div className="shrink-0 text-right text-xs text-app-mute">
+              <div className="shrink-0 text-end text-xs text-app-mute">
                 <p>{formatDate(c.at, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
                 <p className="tabular">{c.durationMin} min</p>
               </div>

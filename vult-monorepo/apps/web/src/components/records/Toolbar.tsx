@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { Column } from "./columns";
+import { tr } from "@/lib/i18n";
 
 export type FilterOp = "contains" | "is" | "gt" | "lt";
 export interface FilterRule {
@@ -37,7 +38,7 @@ export function FilterButton<T>({ columns, nameLabel, onAdd }: { columns: Column
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
         <Button variant="ghost" size="sm" className="border border-dashed border-[#2e3033] text-app-dim">
-          <Filter className="size-3.5" /> Filter
+          <Filter className="size-3.5" /> {tr("Filter")}
         </Button>
       </Popover.Trigger>
       <Popover.Portal>
@@ -53,14 +54,14 @@ export function FilterButton<T>({ columns, nameLabel, onAdd }: { columns: Column
                 setOpen(false);
               }}
             >
-              <p className="text-[13px] font-semibold">Add a filter</p>
+              <p className="text-[13px] font-semibold">{tr("Add a filter")}</p>
               <label className="sr-only" htmlFor="flt-col">
                 Field
               </label>
               <select id="flt-col" value={key} onChange={(e) => setKey(e.target.value)} className={inputCls}>
                 {all.map((c) => (
                   <option key={c.key} value={c.key}>
-                    {c.label}
+                    {tr(c.label)}
                   </option>
                 ))}
               </select>
@@ -70,16 +71,16 @@ export function FilterButton<T>({ columns, nameLabel, onAdd }: { columns: Column
               <select id="flt-op" value={op} onChange={(e) => setOp(e.target.value as FilterOp)} className={inputCls}>
                 {(Object.keys(OP_LABEL) as FilterOp[]).map((o) => (
                   <option key={o} value={o}>
-                    {OP_LABEL[o]}
+                    {tr(OP_LABEL[o])}
                   </option>
                 ))}
               </select>
               <label className="sr-only" htmlFor="flt-val">
                 Value
               </label>
-              <input id="flt-val" autoFocus value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value" className={inputCls} />
+              <input id="flt-val" autoFocus value={value} onChange={(e) => setValue(e.target.value)} placeholder={tr("Value")} className={inputCls} />
               <Button type="submit" size="sm" variant="accent" className="mt-1">
-                <Plus className="size-3.5" /> Add filter
+                <Plus className="size-3.5" /> {tr("Add filter")}
               </Button>
             </form>
           </Popover.Content>
@@ -94,8 +95,8 @@ export function FilterChips({ rules, labelFor, onRemove }: { rules: FilterRule[]
   return (
     <>
       {rules.map((r) => (
-        <span key={r.id} className="inline-flex h-8 animate-pop items-center gap-1 rounded-[7px] border border-[#2a3060] bg-[#16182a] pl-2.5 pr-1 text-[12.5px] text-[#c9d3ff]">
-          <b className="font-[550]">{labelFor(r.key)}</b> {OP_LABEL[r.op]} “{r.value}”
+        <span key={r.id} className="inline-flex h-8 animate-pop items-center gap-1 rounded-[7px] border border-[#2a3060] bg-[#16182a] ps-2.5 pe-1 text-[12.5px] text-[#c9d3ff]">
+          <b className="font-[550]">{labelFor(r.key)}</b> {tr(OP_LABEL[r.op])} “{r.value}”
           <button type="button" onClick={() => onRemove(r.id)} aria-label={`Remove filter ${labelFor(r.key)}`} className="inline-flex size-6 items-center justify-center rounded text-[#9daeff] hover:bg-white/10">
             <X className="size-3" />
           </button>
@@ -124,13 +125,13 @@ export function ViewSettings<T>({ columns, view, onChange }: { columns: Column<T
     <Popover.Root>
       <Popover.Trigger asChild>
         <Button variant="ghost" size="sm" className="border border-[#2e3033] text-app-dim">
-          <Settings2 className="size-3.5" /> <span className="hidden sm:inline">View settings</span>
+          <Settings2 className="size-3.5" /> <span className="hidden sm:inline">{tr("View settings")}</span>
         </Button>
       </Popover.Trigger>
       <Popover.Portal>
         <div className="theme-dark">
           <Popover.Content align="end" sideOffset={6} className={cn(popCls, "w-[290px] p-2")}>
-            <p className="px-2 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-fg-3">Density</p>
+            <p className="px-2 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-fg-3">{tr("Density")}</p>
             <div className="mx-1 mb-2 grid grid-cols-2 gap-1 rounded-lg border border-app-line p-0.5">
               {(["compact", "comfortable"] as const).map((d) => (
                 <button
@@ -140,11 +141,11 @@ export function ViewSettings<T>({ columns, view, onChange }: { columns: Column<T
                   onClick={() => onChange({ ...view, density: d })}
                   className={cn("h-7 rounded-md text-[12.5px] capitalize transition-colors", view.density === d ? "bg-app-hover text-white" : "text-app-mute hover:text-white")}
                 >
-                  {d}
+                  {tr(d === "compact" ? "Compact" : "Comfortable")}
                 </button>
               ))}
             </div>
-            <p className="px-2 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-fg-3">Columns</p>
+            <p className="px-2 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-fg-3">{tr("Columns")}</p>
             <ul className="max-h-[300px] overflow-y-auto">
               {ordered.map((c, i) => {
                 const hidden = view.hidden.includes(c.key);
@@ -159,7 +160,7 @@ export function ViewSettings<T>({ columns, view, onChange }: { columns: Column<T
                     >
                       {hidden ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
                     </button>
-                    <span className={cn("flex-1 text-[13px]", hidden && "text-fg-3")}>{c.label}</span>
+                    <span className={cn("flex-1 text-[13px]", hidden && "text-fg-3")}>{tr(c.label)}</span>
                     <button type="button" aria-label={`Move ${c.label} up`} onClick={() => move(i, -1)} disabled={i === 0} className="inline-flex size-6 items-center justify-center rounded text-fg-3 opacity-0 hover:text-white disabled:opacity-0 group-hover:opacity-100 focus-visible:opacity-100">
                       <ArrowUp className="size-3" />
                     </button>

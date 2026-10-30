@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/Badge";
 import { STAGE_TONE } from "@/data/selectors";
 import { DEAL_STAGES, INDUSTRIES, SEGMENTS, type Company, type DB, type Deal, type Person, type RecordKind } from "@/data/types";
 import { formatDate, formatMoney, formatNumber, timeAgo } from "@/lib/format";
+import { normalizePhone, whatsappLink } from "@vult/arabic";
+import { getDB } from "@/data/store";
+import { tr } from "@/lib/i18n";
 
 export type EditorKind = "text" | "number" | "select" | "date" | "member" | "company" | "email";
 
@@ -11,7 +14,7 @@ export interface Column<T> {
   key: string;
   label: string;
   width: number;
-  align?: "left" | "right";
+  align?: "start" | "end";
   /** Value used for sorting. */
   value: (row: T, db: DB) => string | number;
   /** Human-readable value for search, filters and CSV, when it differs from the sort value. */
@@ -27,7 +30,7 @@ export interface Column<T> {
   defaultVisible?: boolean;
 }
 
-const member = (db: DB, id: string) => db.members.find((m) => m.id === id)?.name ?? "Unassigned";
+const member = (db: DB, id: string) => db.members.find((m) => m.id === id)?.name ?? tr("Unassigned");
 const company = (db: DB, id: string) => db.companies.find((c) => c.id === id)?.name ?? "—";
 const dateOnly = (iso: string) => iso.slice(0, 10);
 const toIso = (v: string) => new Date(v + "T12:00:00").toISOString();
@@ -36,6 +39,28 @@ function OwnerCell({ name }: { name: string }) {
   return (
     <span className="inline-flex items-center gap-2 text-[#c9cbd2]">
       <Avatar name={name} size={20} /> {name}
+    </span>
+  );
+}
+
+/** Phone in E.164 with a WhatsApp shortcut: the main business channel across the Arab world. */
+function PhoneCell({ phone }: { phone: string }) {
+  const p = normalizePhone(phone, getDB().workspace.country ?? "SA");
+  return (
+    <span className="inline-flex items-center gap-2 text-app-dim">
+      <bdi className="tabular">{p?.e164 ?? phone}</bdi>
+      {p?.mobile && (
+        <a
+          href={whatsappLink(p.e164)}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          aria-label={tr("WhatsApp")}
+          className="rounded px-1 text-[11px] font-semibold text-[#25d366] hover:bg-white/5"
+        >
+          WA
+        </a>
+      )}
     </span>
   );
 }
@@ -50,15 +75,15 @@ function CompanyCell({ name }: { name: string }) {
 
 export const COMPANY_COLUMNS: Column<Company>[] = [
   { key: "domain", label: "Domain", width: 190, value: (r) => r.domain, render: (r) => <span className="text-app-dim">{r.domain}</span>, edit: { kind: "text", raw: (r) => r.domain, patch: (v) => ({ domain: v }) }, defaultVisible: true },
-  { key: "industry", label: "Industry", width: 150, value: (r) => r.industry, render: (r) => r.industry, edit: { kind: "select", options: INDUSTRIES, raw: (r) => r.industry, patch: (v) => ({ industry: v as Company["industry"] }) }, defaultVisible: true },
+  { key: "industry", label: "Industry", width: 150, value: (r) => r.industry, render: (r) => tr(r.industry), edit: { kind: "select", options: INDUSTRIES, raw: (r) => r.industry, patch: (v) => ({ industry: v as Company["industry"] }) }, defaultVisible: true },
   {
     key: "segment", label: "Segment", width: 130, value: (r) => r.segment,
-    render: (r) => <Badge dark tone={r.segment === "Enterprise" ? "violet" : r.segment === "Mid-market" ? "blue" : "neutral"}>{r.segment}</Badge>,
+    render: (r) => <Badge dark tone={r.segment === "Enterprise" ? "violet" : r.segment === "Mid-market" ? "blue" : "neutral"}>{tr(r.segment)}</Badge>,
     edit: { kind: "select", options: SEGMENTS, raw: (r) => r.segment, patch: (v) => ({ segment: v as Company["segment"] }) }, defaultVisible: true,
   },
-  { key: "employees", label: "Employees", width: 120, align: "right", value: (r) => r.employees, render: (r) => <span className="tabular">{formatNumber(r.employees)}</span>, edit: { kind: "number", raw: (r) => r.employees, patch: (v) => ({ employees: Number(v) || 0 }) }, defaultVisible: true },
-  { key: "arr", label: "ARR", width: 130, align: "right", value: (r) => r.arr, render: (r) => <span className="tabular">{formatMoney(r.arr)}</span>, edit: { kind: "number", raw: (r) => r.arr, patch: (v) => ({ arr: Number(v) || 0 }) }, defaultVisible: true },
-  { key: "location", label: "Location", width: 180, value: (r) => `${r.city}, ${r.country}`, render: (r) => `${r.city}, ${r.country}`, edit: { kind: "text", raw: (r) => r.city, patch: (v) => ({ city: v }) }, defaultVisible: true },
+  { key: "employees", label: "Employees", width: 120, align: "end", value: (r) => r.employees, render: (r) => <span className="tabular">{formatNumber(r.employees)}</span>, edit: { kind: "number", raw: (r) => r.employees, patch: (v) => ({ employees: Number(v) || 0 }) }, defaultVisible: true },
+  { key: "arr", label: "ARR", width: 130, align: "end", value: (r) => r.arr, render: (r) => <span className="tabular">{formatMoney(r.arr, r.currency)}</span>, edit: { kind: "number", raw: (r) => r.arr, patch: (v) => ({ arr: Number(v) || 0 }) }, defaultVisible: true },
+  { key: "location", label: "Location", width: 180, value: (r) => `${r.city}, ${r.country}`, render: (r) => `${r.city}${tr(", ")}${r.country}`, edit: { kind: "text", raw: (r) => r.city, patch: (v) => ({ city: v }) }, defaultVisible: true },
   { key: "owner", label: "Owner", width: 170, value: (r, db) => member(db, r.ownerId), render: (r, db) => <OwnerCell name={member(db, r.ownerId)} />, edit: { kind: "member", raw: (r) => r.ownerId, patch: (v) => ({ ownerId: v }) }, defaultVisible: true },
   { key: "lastInteraction", label: "Last interaction", width: 150, value: (r) => r.lastInteraction, render: (r) => <span className="text-app-dim">{timeAgo(r.lastInteraction)}</span>, defaultVisible: true },
   { key: "createdAt", label: "Created", width: 120, value: (r) => r.createdAt, render: (r) => <span className="text-app-dim">{formatDate(r.createdAt)}</span> },
@@ -70,10 +95,10 @@ export const PEOPLE_COLUMNS: Column<Person>[] = [
   { key: "company", label: "Company", width: 180, value: (r, db) => company(db, r.companyId), render: (r, db) => <CompanyCell name={company(db, r.companyId)} />, edit: { kind: "company", raw: (r) => r.companyId, patch: (v) => ({ companyId: v }) }, defaultVisible: true },
   {
     key: "strength", label: "Connection", width: 140, value: (r) => ["Weak", "Medium", "Strong", "Very strong"].indexOf(r.strength), text: (r) => r.strength,
-    render: (r) => <Badge dark tone={r.strength === "Very strong" ? "green" : r.strength === "Strong" ? "blue" : r.strength === "Medium" ? "amber" : "neutral"}>{r.strength}</Badge>,
+    render: (r) => <Badge dark tone={r.strength === "Very strong" ? "green" : r.strength === "Strong" ? "blue" : r.strength === "Medium" ? "amber" : "neutral"}>{tr(r.strength)}</Badge>,
     edit: { kind: "select", options: ["Very strong", "Strong", "Medium", "Weak"], raw: (r) => r.strength, patch: (v) => ({ strength: v as Person["strength"] }) }, defaultVisible: true,
   },
-  { key: "phone", label: "Phone", width: 150, value: (r) => r.phone, render: (r) => <span className="tabular text-app-dim">{r.phone}</span>, edit: { kind: "text", raw: (r) => r.phone, patch: (v) => ({ phone: v }) }, defaultVisible: true },
+  { key: "phone", label: "Phone", width: 150, value: (r) => r.phone, render: (r) => <PhoneCell phone={r.phone} />, edit: { kind: "text", raw: (r) => r.phone, patch: (v) => ({ phone: v }) }, defaultVisible: true },
   { key: "city", label: "City", width: 140, value: (r) => r.city, render: (r) => r.city, edit: { kind: "text", raw: (r) => r.city, patch: (v) => ({ city: v }) } },
   { key: "owner", label: "Owner", width: 170, value: (r, db) => member(db, r.ownerId), render: (r, db) => <OwnerCell name={member(db, r.ownerId)} />, edit: { kind: "member", raw: (r) => r.ownerId, patch: (v) => ({ ownerId: v }) }, defaultVisible: true },
   { key: "lastInteraction", label: "Last interaction", width: 150, value: (r) => r.lastInteraction, render: (r) => <span className="text-app-dim">{timeAgo(r.lastInteraction)}</span>, defaultVisible: true },
@@ -83,13 +108,13 @@ export const DEAL_COLUMNS: Column<Deal>[] = [
   { key: "company", label: "Company", width: 180, value: (r, db) => company(db, r.companyId), render: (r, db) => <CompanyCell name={company(db, r.companyId)} />, edit: { kind: "company", raw: (r) => r.companyId, patch: (v) => ({ companyId: v }) }, defaultVisible: true },
   {
     key: "stage", label: "Stage", width: 140, value: (r) => DEAL_STAGES.indexOf(r.stage), text: (r) => r.stage,
-    render: (r) => <Badge dark dot tone={STAGE_TONE[r.stage]}>{r.stage}</Badge>,
+    render: (r) => <Badge dark dot tone={STAGE_TONE[r.stage]}>{tr(r.stage)}</Badge>,
     edit: { kind: "select", options: DEAL_STAGES, raw: (r) => r.stage, patch: (v) => ({ stage: v as Deal["stage"] }) }, defaultVisible: true,
   },
-  { key: "value", label: "Value", width: 130, align: "right", value: (r) => r.value, render: (r) => <span className="tabular">{formatMoney(r.value)}</span>, edit: { kind: "number", raw: (r) => r.value, patch: (v) => ({ value: Number(v) || 0 }) }, defaultVisible: true },
+  { key: "value", label: "Value", width: 130, align: "end", value: (r) => r.value, render: (r) => <span className="tabular">{formatMoney(r.value, r.currency)}</span>, edit: { kind: "number", raw: (r) => r.value, patch: (v) => ({ value: Number(v) || 0 }) }, defaultVisible: true },
   { key: "owner", label: "Owner", width: 170, value: (r, db) => member(db, r.ownerId), render: (r, db) => <OwnerCell name={member(db, r.ownerId)} />, edit: { kind: "member", raw: (r) => r.ownerId, patch: (v) => ({ ownerId: v }) }, defaultVisible: true },
   { key: "closeDate", label: "Close date", width: 130, value: (r) => r.closeDate, render: (r) => <span className="text-app-dim">{formatDate(r.closeDate)}</span>, edit: { kind: "date", raw: (r) => dateOnly(r.closeDate), patch: (v) => ({ closeDate: toIso(v) }) }, defaultVisible: true },
-  { key: "source", label: "Source", width: 120, value: (r) => r.source, render: (r) => r.source, edit: { kind: "select", options: ["Inbound", "Outbound", "Referral", "Partner", "Event"], raw: (r) => r.source, patch: (v) => ({ source: v as Deal["source"] }) }, defaultVisible: true },
+  { key: "source", label: "Source", width: 120, value: (r) => r.source, render: (r) => tr(r.source), edit: { kind: "select", options: ["Inbound", "Outbound", "Referral", "Partner", "Event"], raw: (r) => r.source, patch: (v) => ({ source: v as Deal["source"] }) }, defaultVisible: true },
   { key: "nextStep", label: "Next step", width: 220, value: (r) => r.nextStep, render: (r) => <span className="text-app-dim">{r.nextStep}</span>, edit: { kind: "text", raw: (r) => r.nextStep, patch: (v) => ({ nextStep: v }) }, defaultVisible: true },
   { key: "createdAt", label: "Created", width: 120, value: (r) => r.createdAt, render: (r) => <span className="text-app-dim">{formatDate(r.createdAt)}</span> },
 ];
@@ -117,5 +142,5 @@ export function cellText<T>(c: Column<T>, row: T, db: DB): string {
 export function recordSubtitle(db: DB, kind: RecordKind, r: AnyRecord): string {
   if (kind === "companies") return (r as Company).domain;
   if (kind === "people") return `${(r as Person).title} · ${company(db, (r as Person).companyId)}`;
-  return `${company(db, (r as Deal).companyId)} · ${formatMoney((r as Deal).value)}`;
+  return `${company(db, (r as Deal).companyId)} · ${formatMoney((r as Deal).value, (r as Deal).currency)}`;
 }

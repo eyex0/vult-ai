@@ -26,7 +26,7 @@ const SettingsPage = lazy(() => import("@/pages/app/Settings"));
 function Fallback() {
   return (
     <div className="flex h-full items-center justify-center bg-app" aria-busy="true">
-      <span className="size-5 animate-spin rounded-full border-2 border-app-mute border-r-transparent" />
+      <span className="size-5 animate-spin rounded-full border-2 border-app-mute border-e-transparent" />
       <span className="sr-only">Loading</span>
     </div>
   );

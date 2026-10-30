@@ -1,7 +1,9 @@
 import { useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { readJSON, writeJSON } from "@/lib/storage";
+import { getLocale } from "@/lib/i18n";
 import { createSeed, DB_VERSION, refreshMeetings } from "./seed";
+import { createArabicSeed } from "./seedArabic";
 import type { Activity, ChecklistKey, DB, RecordRef, Workspace } from "./types";
 
 type ArrayKey = { [K in keyof DB]: DB[K] extends unknown[] ? K : never }[keyof DB];
@@ -12,7 +14,12 @@ const STORAGE_KEY = "db";
 function load(): DB {
   const saved = readJSON<DB | null>(STORAGE_KEY, null);
   if (saved && saved.version === DB_VERSION) return refreshMeetings(saved);
-  return createSeed();
+  return seedFor();
+}
+
+/** Demo data matching the interface language: an Arab-market workspace in Arabic. */
+function seedFor(): DB {
+  return getLocale() === "ar" ? createArabicSeed() : createSeed();
 }
 
 let db: DB = load();
@@ -94,7 +101,7 @@ export const store = {
   },
 
   reset() {
-    commit(createSeed());
-    toast.success("Demo data reset");
+    commit(seedFor());
+    toast.success(getLocale() === "ar" ? "تمت إعادة ضبط البيانات التجريبية" : "Demo data reset");
   },
 };

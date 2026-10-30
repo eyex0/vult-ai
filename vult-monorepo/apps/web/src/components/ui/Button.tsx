@@ -33,7 +33,7 @@ const sizes: Record<Size, string> = {
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
-  /** Renders a trailing arrow that nudges right on hover. */
+  /** Renders a trailing arrow that nudges end on hover. */
   arrow?: boolean;
   href?: string;
   children?: ReactNode;

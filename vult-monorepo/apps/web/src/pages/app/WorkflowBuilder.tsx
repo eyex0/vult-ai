@@ -116,7 +116,7 @@ export default function WorkflowBuilderPage() {
         <Badge dark dot tone={STATUS_TONE[wf.status]}>
           {wf.status}
         </Badge>
-        <span className="ml-auto" />
+        <span className="ms-auto" />
         <span className="hidden text-xs text-app-mute sm:inline">
           {wf.runs7d} runs · {wf.failures7d} failed (7d)
         </span>
@@ -155,14 +155,14 @@ export default function WorkflowBuilderPage() {
                         aria-pressed={selected}
                         onClick={() => setSel(s.id)}
                         className={cn(
-                          "flex w-full items-start gap-3 rounded-xl border-[1.5px] bg-app-raise px-3.5 py-3 text-left transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5",
+                          "flex w-full items-start gap-3 rounded-xl border-[1.5px] bg-app-raise px-3.5 py-3 text-start transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5",
                           selected ? "border-app-accent shadow-[0_0_0_4px_rgb(111_135_255/0.14),0_14px_32px_-14px_rgb(59_91_253/0.6)]" : "border-[#2a2b2e]",
                           isRunning && "border-[#3ddc84] shadow-[0_0_0_4px_rgb(61_220_132/0.15)]",
                         )}
                       >
                         <span className="relative flex size-[30px] shrink-0 items-center justify-center rounded-lg" style={{ background: m.color }}>
                           <m.icon aria-hidden className="size-[15px] text-white" />
-                          {ran && <span className="absolute -right-1 -top-1 flex size-3.5 items-center justify-center rounded-full bg-[#3ddc84] text-[9px] text-black">✓</span>}
+                          {ran && <span className="absolute -end-1 -top-1 flex size-3.5 items-center justify-center rounded-full bg-[#3ddc84] text-[9px] text-black">✓</span>}
                         </span>
                         <span className="flex min-w-0 flex-col gap-0.5">
                           <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-app-mute">{m.label}</span>
@@ -171,7 +171,7 @@ export default function WorkflowBuilderPage() {
                         </span>
                       </button>
                       {i > 0 && (
-                        <span className="absolute right-2 top-2 flex gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+                        <span className="absolute end-2 top-2 flex gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
                           <button type="button" aria-label={`Move ${s.title} up`} disabled={i === 1} onClick={() => move(i, -1)} className="inline-flex size-6 items-center justify-center rounded bg-app-hover text-app-dim hover:text-white disabled:opacity-30">
                             <ArrowUp className="size-3" />
                           </button>
@@ -190,7 +190,7 @@ export default function WorkflowBuilderPage() {
           </ol>
         </div>
 
-        <aside aria-label="Step settings" className="scrollbar-thin flex max-w-full flex-[1_1_320px] flex-col gap-4 overflow-y-auto border-l border-app-line bg-[#0e0f10] p-[18px]">
+        <aside aria-label="Step settings" className="scrollbar-thin flex max-w-full flex-[1_1_320px] flex-col gap-4 overflow-y-auto border-s border-app-line bg-[#0e0f10] p-[18px]">
           <AnimatePresence mode="wait">
             <motion.div key={current.id} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.18 }} className="flex flex-col gap-4">
               <div className="flex items-center gap-2.5">

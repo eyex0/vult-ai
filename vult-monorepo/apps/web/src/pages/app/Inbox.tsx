@@ -25,7 +25,7 @@ export default function InboxPage() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2 border-b border-app-line px-4 py-2">
         <Tabs value={tab} onValueChange={setTab} variant="pill" items={[{ value: "unread", label: "Unread", count: unread }, { value: "all", label: "All", count: db.inbox.length }]} />
-        <Button variant="ghost" size="sm" className="ml-auto border border-[#2e3033] text-app-dim" disabled={!unread} onClick={() => db.inbox.forEach((i) => !i.read && store.update("inbox", i.id, { read: true }))}>
+        <Button variant="ghost" size="sm" className="ms-auto border border-[#2e3033] text-app-dim" disabled={!unread} onClick={() => db.inbox.forEach((i) => !i.read && store.update("inbox", i.id, { read: true }))}>
           <CheckCheck className="size-3.5" /> Mark all read
         </Button>
       </div>
@@ -56,7 +56,7 @@ export default function InboxPage() {
                         {body}
                       </Link>
                     ) : (
-                      <button type="button" onClick={() => store.update("inbox", i.id, { read: true })} className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-[#151618]">
+                      <button type="button" onClick={() => store.update("inbox", i.id, { read: true })} className="flex w-full items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-[#151618]">
                         {body}
                       </button>
                     )}

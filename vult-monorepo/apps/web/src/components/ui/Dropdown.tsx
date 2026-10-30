@@ -57,7 +57,7 @@ export function DropdownItem({
   return (
     <DM.Item onSelect={onSelect} className={cn(itemCls, danger && "text-danger [&_svg]:text-danger")}>
       {children}
-      {shortcut && <span className="ml-auto pl-4 text-xs text-fg-3">{shortcut}</span>}
+      {shortcut && <span className="ms-auto ps-4 text-xs text-fg-3">{shortcut}</span>}
     </DM.Item>
   );
 }
@@ -76,9 +76,9 @@ export function DropdownCheckItem({
       checked={checked}
       onCheckedChange={onCheckedChange}
       onSelect={(e) => e.preventDefault()}
-      className={cn(itemCls, "pl-7")}
+      className={cn(itemCls, "ps-7")}
     >
-      <DM.ItemIndicator className="absolute left-2 inline-flex">
+      <DM.ItemIndicator className="absolute start-2 inline-flex">
         <Check className="!text-fg" />
       </DM.ItemIndicator>
       {children}

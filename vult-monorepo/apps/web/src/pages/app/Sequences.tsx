@@ -38,7 +38,7 @@ function SequenceList() {
         <div className="overflow-x-auto rounded-xl border border-app-line">
           <table className="w-full min-w-[620px] text-[13px]">
             <thead>
-              <tr className="text-left text-app-mute">
+              <tr className="text-start text-app-mute">
                 {["Sequence", "Status", "Steps", "Enrolled", "Reply rate", "Updated"].map((h) => (
                   <th key={h} scope="col" className="border-b border-app-line px-4 py-2.5 font-medium">
                     {h}
@@ -105,7 +105,7 @@ function SequenceEditor({ seq }: { seq: Sequence }) {
         <Badge dark dot tone={STATUS_TONE[seq.status]}>
           {seq.status}
         </Badge>
-        <span className="ml-auto hidden text-xs text-app-mute sm:inline">
+        <span className="ms-auto hidden text-xs text-app-mute sm:inline">
           {seq.enrolled} enrolled · {Math.round(seq.replyRate * 100)}% reply rate
         </span>
         <Button
@@ -136,7 +136,7 @@ function SequenceEditor({ seq }: { seq: Sequence }) {
                       Step {i + 1} · {m.label}
                     </span>
                     <span className="text-xs text-app-mute">· Day {day}</span>
-                    <span className="ml-auto flex gap-0.5">
+                    <span className="ms-auto flex gap-0.5">
                       <button type="button" aria-label="Move up" disabled={i === 0} onClick={() => move(i, -1)} className="inline-flex size-7 items-center justify-center rounded text-app-dim hover:bg-app-hover hover:text-white disabled:opacity-30">
                         <ArrowUp className="size-3.5" />
                       </button>

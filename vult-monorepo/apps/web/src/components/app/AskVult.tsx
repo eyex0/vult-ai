@@ -83,7 +83,7 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
         <motion.aside
           role="dialog"
           aria-label="Ask Vult"
-          className="fixed inset-y-0 right-0 z-[70] flex w-full max-w-[420px] flex-col border-l border-[#2a2b2e] bg-app-panel shadow-[-24px_0_60px_-20px_rgb(0_0_0/0.7)]"
+          className="fixed inset-y-0 end-0 z-[70] flex w-full max-w-[420px] flex-col border-s border-[#2a2b2e] bg-app-panel shadow-[-24px_0_60px_-20px_rgb(0_0_0/0.7)]"
           initial={{ x: 48, opacity: 0 }}
           animate={{ x: 0, opacity: 1, transition: spring }}
           exit={{ x: 48, opacity: 0, transition: { duration: 0.16 } }}
@@ -93,7 +93,7 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
               <Sparkles className="size-3.5 text-white" />
             </span>
             <h2 className="text-sm font-semibold text-white">Ask Vult</h2>
-            <button type="button" autoFocus onClick={onClose} aria-label="Close Ask Vult" className="ml-auto inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
+            <button type="button" autoFocus onClick={onClose} aria-label="Close Ask Vult" className="ms-auto inline-flex size-8 items-center justify-center rounded-[7px] text-app-dim hover:bg-app-hover hover:text-white">
               <X className="size-4" />
             </button>
           </div>
@@ -103,7 +103,7 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
                 <p className="text-sm text-app-dim">Ask anything about your pipeline, records or tasks.</p>
                 <div className="mt-3 flex flex-col gap-2">
                   {["What’s closing this month?", "Which deals are at risk?", "Summarise my week"].map((s) => (
-                    <button key={s} type="button" onClick={() => send(s)} className="rounded-lg border border-app-line px-3 py-2 text-left text-[13px] text-app-text transition-colors hover:bg-app-hover">
+                    <button key={s} type="button" onClick={() => send(s)} className="rounded-lg border border-app-line px-3 py-2 text-start text-[13px] text-app-text transition-colors hover:bg-app-hover">
                       {s}
                     </button>
                   ))}
@@ -117,8 +117,8 @@ export function AskVultPanel({ open, onClose }: { open: boolean; onClose: () => 
                 animate={{ opacity: 1, y: 0 }}
                 className={
                   m.role === "user"
-                    ? "ml-8 self-end rounded-xl rounded-br-sm bg-accent px-3 py-2 text-[13.5px] text-white"
-                    : "mr-6 rounded-xl rounded-bl-sm border border-app-line bg-app-raise px-3 py-2 text-[13.5px] text-app-text [&_li]:ml-4 [&_li]:list-disc [&_p]:my-1 [&_strong]:text-white"
+                    ? "ms-8 self-end rounded-xl rounded-ee-sm bg-accent px-3 py-2 text-[13.5px] text-white"
+                    : "me-6 rounded-xl rounded-es-sm border border-app-line bg-app-raise px-3 py-2 text-[13.5px] text-app-text [&_li]:ms-4 [&_li]:list-disc [&_p]:my-1 [&_strong]:text-white"
                 }
               >
                 {m.role === "assistant" ? <Markdown>{m.text}</Markdown> : m.text}

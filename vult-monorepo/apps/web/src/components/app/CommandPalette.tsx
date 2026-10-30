@@ -9,6 +9,8 @@ import { search, type SearchHit } from "@/data/selectors";
 import { useDB } from "@/data/store";
 import { spring } from "@/lib/motion";
 import { APP_NAV, RECORD_NAV } from "./nav";
+import { matchesSearch } from "@vult/arabic";
+import { tr } from "@/lib/i18n";
 
 const GROUP_ICON: Record<SearchHit["group"], typeof Building2> = {
   Companies: Building2,
@@ -38,13 +40,13 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
     navigate(href);
   };
 
-  const pages = [...APP_NAV, ...RECORD_NAV].filter((p) => !q || p.label.toLowerCase().includes(q.toLowerCase()));
+  const pages = [...APP_NAV, ...RECORD_NAV].map((p) => ({ ...p, label: tr(p.label) })).filter((p) => !q || matchesSearch(p.label, q));
   const actions = [
-    { label: "New deal", href: "/app/deals?new=1" },
-    { label: "New company", href: "/app/companies?new=1" },
-    { label: "New task", href: "/app/tasks?new=1" },
-    { label: "New note", href: "/app/notes?new=1" },
-  ].filter((a) => !q || a.label.toLowerCase().includes(q.toLowerCase()));
+    { label: tr("New deal"), href: "/app/deals?new=1" },
+    { label: tr("New company"), href: "/app/companies?new=1" },
+    { label: tr("New task"), href: "/app/tasks?new=1" },
+    { label: tr("New note"), href: "/app/notes?new=1" },
+  ].filter((a) => !q || matchesSearch(a.label, q));
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -63,28 +65,28 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
                     animate={{ opacity: 1, y: 0, scale: 1, transition: spring }}
                     exit={{ opacity: 0, y: -6, scale: 0.98, transition: { duration: 0.12 } }}
                   >
-                    <Dialog.Title className="sr-only">Search</Dialog.Title>
-                    <Dialog.Description className="sr-only">Search records, tasks and notes, or jump to a page.</Dialog.Description>
-                    <Command shouldFilter={false} loop label="Search">
+                    <Dialog.Title className="sr-only">{tr("Search")}</Dialog.Title>
+                    <Dialog.Description className="sr-only">{tr("Search records, tasks and notes, or jump to a page.")}</Dialog.Description>
+                    <Command shouldFilter={false} loop label={tr("Search")}>
                       <div className="flex h-[52px] items-center gap-2.5 border-b border-app-line px-4">
                         <Search aria-hidden className="size-4 text-app-mute" />
                         <Command.Input
                           value={q}
                           onValueChange={setQ}
                           autoFocus
-                          placeholder="Search records, tasks and notes…"
+                          placeholder={tr("Search records, tasks and notes…")}
                           className="h-full flex-1 bg-transparent text-[15px] text-white outline-none placeholder:text-app-mute"
                         />
                         <Kbd>Esc</Kbd>
                       </div>
                       <Command.List className="scrollbar-thin max-h-[380px] overflow-y-auto p-1.5">
-                        <Command.Empty className="px-4 py-10 text-center text-app-mute">Nothing matches “{q}”.</Command.Empty>
+                        <Command.Empty className="px-4 py-10 text-center text-app-mute">{tr("Nothing matches “{q}”.", { q })}</Command.Empty>
                         {groups.map(([group, items]) => {
                           const Icon = GROUP_ICON[group];
                           return (
                             <Command.Group
                               key={group}
-                              heading={group}
+                              heading={tr(group)}
                               className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-2.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.05em] [&_[cmdk-group-heading]]:text-app-mute"
                             >
                               {items.map((h) => (
@@ -99,7 +101,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
                         })}
                         {actions.length > 0 && (
                           <Command.Group
-                            heading="Actions"
+                            heading={tr("Actions")}
                             className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-2.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.05em] [&_[cmdk-group-heading]]:text-app-mute"
                           >
                             {actions.map((a) => (
@@ -111,7 +113,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
                         )}
                         {pages.length > 0 && (
                           <Command.Group
-                            heading="Go to"
+                            heading={tr("Go to")}
                             className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-2.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.05em] [&_[cmdk-group-heading]]:text-app-mute"
                           >
                             {pages.map((p) => (
@@ -125,10 +127,10 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
                       <div className="flex items-center gap-3 border-t border-app-line px-4 py-2 text-[11.5px] text-app-mute">
                         <span className="flex items-center gap-1">
                           <Kbd>↑</Kbd>
-                          <Kbd>↓</Kbd> to move
+                          <Kbd>↓</Kbd> {tr("to move")}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Kbd>↵</Kbd> to open
+                          <Kbd>↵</Kbd> {tr("to open")}
                         </span>
                       </div>
                     </Command>

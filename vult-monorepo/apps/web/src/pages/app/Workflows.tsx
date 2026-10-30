@@ -61,7 +61,7 @@ export default function WorkflowsPage() {
                   {w.status}
                 </Badge>
                 {w.runs7d} runs · 7d
-                <span className="ml-auto">{timeAgo(w.updatedAt)}</span>
+                <span className="ms-auto">{timeAgo(w.updatedAt)}</span>
               </span>
             </Link>
           </motion.div>

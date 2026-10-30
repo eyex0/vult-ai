@@ -1,5 +1,6 @@
 import type { BadgeTone } from "@/components/ui/Badge";
 import type { Company, DB, Deal, DealStage, Person, RecordKind, RecordRef } from "./types";
+import { matchesSearch } from "@vult/arabic";
 
 export const STAGE_TONE: Record<DealStage, BadgeTone> = {
   Lead: "neutral",
@@ -57,8 +58,9 @@ export interface SearchHit {
 
 /** Search used by the ⌘K palette. Empty query returns a few recent items per group. */
 export function search(db: DB, query: string): SearchHit[] {
-  const q = query.trim().toLowerCase();
-  const match = (...fields: (string | undefined)[]) => !q || fields.some((f) => f?.toLowerCase().includes(q));
+  const q = query.trim();
+  // Arabic-aware: folds diacritics and hamza forms, and matches Latin spellings of Arabic names.
+  const match = (...fields: (string | undefined)[]) => !q || matchesSearch(fields.filter(Boolean).join(" "), q);
   const cap = q ? 6 : 3;
   const companies = db.companies
     .filter((c) => match(c.name, c.domain, c.industry))

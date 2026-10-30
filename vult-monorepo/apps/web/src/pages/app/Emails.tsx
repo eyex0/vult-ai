@@ -112,7 +112,7 @@ function EmailList({ items, onOpen }: { items: Email[]; onOpen: (e: Email) => vo
       <AnimatePresence initial={false}>
         {items.map((e, i) => (
           <motion.li key={e.id} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }} exit={{ opacity: 0 }} className="group flex items-center gap-3 border-b border-[#1a1b1d] last:border-b-0 hover:bg-[#151618]">
-            <button type="button" onClick={() => onOpen(e)} className="flex min-w-0 flex-1 items-center gap-4 px-4 py-3 text-left">
+            <button type="button" onClick={() => onOpen(e)} className="flex min-w-0 flex-1 items-center gap-4 px-4 py-3 text-start">
               <span className="w-[200px] shrink-0 truncate text-app-dim max-sm:hidden">{e.to || "No recipient"}</span>
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate font-[550] text-white">{e.subject}</span>
@@ -121,7 +121,7 @@ function EmailList({ items, onOpen }: { items: Email[]; onOpen: (e: Email) => vo
               {e.record && <span className="hidden truncate rounded-md border border-app-line px-2 py-0.5 text-xs text-app-dim lg:inline">{recordLabel(db, e.record)}</span>}
               <span className="whitespace-nowrap text-xs text-app-mute">{timeAgo(e.updatedAt)}</span>
             </button>
-            <button type="button" onClick={() => store.remove("emails", [e.id], "email")} aria-label={`Delete ${e.subject}`} className="mr-2 inline-flex size-8 items-center justify-center rounded-md text-app-mute opacity-0 transition-opacity hover:bg-app-hover hover:text-[#f59090] focus-visible:opacity-100 group-hover:opacity-100">
+            <button type="button" onClick={() => store.remove("emails", [e.id], "email")} aria-label={`Delete ${e.subject}`} className="me-2 inline-flex size-8 items-center justify-center rounded-md text-app-mute opacity-0 transition-opacity hover:bg-app-hover hover:text-[#f59090] focus-visible:opacity-100 group-hover:opacity-100">
               <Trash2 className="size-3.5" />
             </button>
           </motion.li>
@@ -199,7 +199,7 @@ export default function EmailsPage() {
                     setDraft({ id: "", folder: "drafts", to: "", subject: t.subject, body: t.body, updatedAt: "" });
                     setOpen(true);
                   }}
-                  className="flex flex-col gap-2 rounded-xl border border-app-line bg-app-panel p-4 text-left transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-[#34363c]"
+                  className="flex flex-col gap-2 rounded-xl border border-app-line bg-app-panel p-4 text-start transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-[#34363c]"
                 >
                   <FileText aria-hidden className="size-4 text-app-dim" />
                   <span className="font-semibold text-white">{t.name}</span>

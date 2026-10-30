@@ -48,7 +48,7 @@ export function ChartCard<T extends Record<string, string | number>>({
   title: string;
   subtitle?: string;
   rows: T[];
-  columns: { key: keyof T; label: string; format?: (v: T[keyof T]) => string; align?: "right" }[];
+  columns: { key: keyof T; label: string; format?: (v: T[keyof T]) => string; align?: "end" }[];
   children: ReactNode;
   className?: string;
   index?: number;
@@ -80,9 +80,9 @@ export function ChartCard<T extends Record<string, string | number>>({
         <div className="scrollbar-thin h-[240px] overflow-auto">
           <table className="w-full text-[12.5px]">
             <thead>
-              <tr className="text-left text-app-mute">
+              <tr className="text-start text-app-mute">
                 {columns.map((c) => (
-                  <th key={String(c.key)} scope="col" className={cn("border-b border-app-line px-2 py-1.5 font-medium", c.align === "right" && "text-right")}>
+                  <th key={String(c.key)} scope="col" className={cn("border-b border-app-line px-2 py-1.5 font-medium", c.align === "end" && "text-end")}>
                     {c.label}
                   </th>
                 ))}
@@ -92,7 +92,7 @@ export function ChartCard<T extends Record<string, string | number>>({
               {rows.map((r, i) => (
                 <tr key={i}>
                   {columns.map((c) => (
-                    <td key={String(c.key)} className={cn("tabular border-b border-app-line-soft px-2 py-1.5 text-app-text", c.align === "right" && "text-right")}>
+                    <td key={String(c.key)} className={cn("tabular border-b border-app-line-soft px-2 py-1.5 text-app-text", c.align === "end" && "text-end")}>
                       {c.format ? c.format(r[c.key]) : String(r[c.key])}
                     </td>
                   ))}

@@ -9,8 +9,8 @@
 }
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", "Geeza Pro", Tahoma, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Inter", "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", "Geeza Pro", Tahoma, ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
 
   /* Marketing (light) */

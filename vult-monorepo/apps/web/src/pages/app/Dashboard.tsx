@@ -77,7 +77,7 @@ export default function DashboardPage() {
     <div className="scrollbar-thin h-full overflow-y-auto">
       <div className="flex flex-wrap items-center gap-2 border-b border-app-line px-4 py-2">
         <p className="text-[13px] text-app-mute">{dash.description}</p>
-        <span className="ml-auto" />
+        <span className="ms-auto" />
         <Tabs
           value={range}
           onValueChange={(v) => setRange(v as Range)}
@@ -118,7 +118,7 @@ export default function DashboardPage() {
             rows={data.byMonth.map(({ month, value }) => ({ month, value }))}
             columns={[
               { key: "month", label: "Month" },
-              { key: "value", label: "Closed won", align: "right", format: (v) => formatMoney(Number(v)) },
+              { key: "value", label: "Closed won", align: "end", format: (v) => formatMoney(Number(v)) },
             ]}
           >
             <ResponsiveContainer width="100%" height="100%">
@@ -145,8 +145,8 @@ export default function DashboardPage() {
             rows={data.stages}
             columns={[
               { key: "stage", label: "Stage" },
-              { key: "count", label: "Deals", align: "right" },
-              { key: "value", label: "Value", align: "right", format: (v) => formatMoney(Number(v)) },
+              { key: "count", label: "Deals", align: "end" },
+              { key: "value", label: "Value", align: "end", format: (v) => formatMoney(Number(v)) },
             ]}
           >
             <ResponsiveContainer width="100%" height="100%">
@@ -167,8 +167,8 @@ export default function DashboardPage() {
             rows={data.owners}
             columns={[
               { key: "owner", label: "Owner" },
-              { key: "closed", label: "Closed deals", align: "right" },
-              { key: "rate", label: "Win rate", align: "right", format: (v) => `${v}%` },
+              { key: "closed", label: "Closed deals", align: "end" },
+              { key: "rate", label: "Win rate", align: "end", format: (v) => `${v}%` },
             ]}
           >
             <ResponsiveContainer width="100%" height="100%">
@@ -189,7 +189,7 @@ export default function DashboardPage() {
             rows={data.sources}
             columns={[
               { key: "source", label: "Source" },
-              { key: "value", label: "Value", align: "right", format: (v) => formatMoney(Number(v)) },
+              { key: "value", label: "Value", align: "end", format: (v) => formatMoney(Number(v)) },
             ]}
           >
             <ResponsiveContainer width="100%" height="100%">

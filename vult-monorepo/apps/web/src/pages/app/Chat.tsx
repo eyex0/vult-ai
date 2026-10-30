@@ -44,7 +44,7 @@ export default function ChatPage() {
               ) : (
                 <Avatar name={session?.name ?? "You"} size={28} />
               )}
-              <div className="min-w-0 flex-1 text-[14px] leading-relaxed text-app-text [&_li]:ml-4 [&_li]:list-disc [&_p]:my-1 [&_strong]:text-white">
+              <div className="min-w-0 flex-1 text-[14px] leading-relaxed text-app-text [&_li]:ms-4 [&_li]:list-disc [&_p]:my-1 [&_strong]:text-white">
                 <p className="text-xs font-semibold text-app-dim">{m.role === "assistant" ? "Vult" : session?.name ?? "You"}</p>
                 <Markdown>{m.text}</Markdown>
               </div>

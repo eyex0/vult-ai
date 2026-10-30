@@ -17,7 +17,7 @@ export function CellEditor({
   kind: EditorKind;
   options?: readonly string[];
   initial: string | number;
-  align?: "left" | "right";
+  align?: "start" | "end";
   label: string;
   onCommit: (value: string) => void;
   onCancel: () => void;
@@ -90,7 +90,7 @@ export function CellEditor({
       onChange={(e) => setValue(e.target.value)}
       onBlur={() => commit()}
       onKeyDown={onKeyDown}
-      className={cls + (align === "right" ? " text-right" : "") + " [color-scheme:dark]"}
+      className={cls + (align === "end" ? " text-end" : "") + " [color-scheme:dark]"}
     />
   );
 }

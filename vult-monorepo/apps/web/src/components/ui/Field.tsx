@@ -22,7 +22,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
   ref,
 ) {
   return (
-    <select ref={ref} className={cn(control, "h-10 cursor-pointer pr-8", className)} {...rest}>
+    <select ref={ref} className={cn(control, "h-10 cursor-pointer pe-8", className)} {...rest}>
       {children}
     </select>
   );

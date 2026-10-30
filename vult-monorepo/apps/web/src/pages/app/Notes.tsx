@@ -91,7 +91,7 @@ function Editor({ note }: { note: Note }) {
             </Tooltip>
           ))}
         </div>
-        <div role="group" aria-label="Mode" className="ml-2 flex rounded-lg border border-app-line p-0.5">
+        <div role="group" aria-label="Mode" className="ms-2 flex rounded-lg border border-app-line p-0.5">
           {(
             [
               ["write", Pencil],
@@ -109,7 +109,7 @@ function Editor({ note }: { note: Note }) {
             </button>
           ))}
         </div>
-        <span className="ml-auto text-xs text-app-mute" aria-live="polite">
+        <span className="ms-auto text-xs text-app-mute" aria-live="polite">
           {saved ? `Saved · ${timeAgo(note.updatedAt)}` : "Saving…"}
         </span>
         <Tooltip label={note.pinned ? "Unpin" : "Pin"} side="bottom">
@@ -166,7 +166,7 @@ function Editor({ note }: { note: Note }) {
                 />
               </>
             ) : (
-              <div className="prose-note min-h-[50vh] text-[15px] leading-[1.7] text-app-text [&_a]:text-[#9daeff] [&_blockquote]:border-l-2 [&_blockquote]:border-[#3a3c40] [&_blockquote]:pl-3 [&_blockquote]:text-app-dim [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_ol]:ml-5 [&_ol]:list-decimal [&_p]:my-2 [&_strong]:text-white [&_ul]:ml-5 [&_ul]:list-disc">
+              <div className="prose-note min-h-[50vh] text-[15px] leading-[1.7] text-app-text [&_a]:text-[#9daeff] [&_blockquote]:border-s-2 [&_blockquote]:border-[#3a3c40] [&_blockquote]:ps-3 [&_blockquote]:text-app-dim [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_ol]:ms-5 [&_ol]:list-decimal [&_p]:my-2 [&_strong]:text-white [&_ul]:ms-5 [&_ul]:list-disc">
                 <Markdown>{body || "_Nothing to preview yet._"}</Markdown>
               </div>
             )}
@@ -207,7 +207,7 @@ export default function NotesPage() {
 
   return (
     <div className="flex h-full">
-      <aside aria-label="Notes" className={cn("flex w-full shrink-0 flex-col border-r border-app-line md:w-[320px]", id && "hidden md:flex")}>
+      <aside aria-label="Notes" className={cn("flex w-full shrink-0 flex-col border-e border-app-line md:w-[320px]", id && "hidden md:flex")}>
         <div className="flex items-center gap-2 border-b border-app-line px-3 py-2">
           <label className="flex h-8 flex-1 items-center gap-1.5 rounded-[7px] border border-[#2e3033] bg-[#141517] px-2.5 focus-within:border-app-accent">
             <Search aria-hidden className="size-[13px] text-app-mute" />

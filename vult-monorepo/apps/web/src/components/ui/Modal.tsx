@@ -70,7 +70,7 @@ export function Modal({
                       </div>
                       <Dialog.Close
                         aria-label="Close"
-                        className="-mr-1.5 -mt-1 inline-flex size-8 items-center justify-center rounded-[7px] text-fg-3 transition-colors hover:bg-surface-hover hover:text-fg"
+                        className="-me-1.5 -mt-1 inline-flex size-8 items-center justify-center rounded-[7px] text-fg-3 transition-colors hover:bg-surface-hover hover:text-fg"
                       >
                         <X className="size-4" />
                       </Dialog.Close>

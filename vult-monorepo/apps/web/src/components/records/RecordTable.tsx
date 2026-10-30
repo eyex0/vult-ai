@@ -8,6 +8,7 @@ import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { CellEditor } from "./CellEditor";
 import type { AnyRecord, Column } from "./columns";
+import { tr } from "@/lib/i18n";
 
 export interface SortState {
   key: string;
@@ -34,13 +35,13 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
   const rowH = density === "compact" ? "h-9" : "h-11";
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
 
-  const header = (key: string, label: string, align?: "left" | "right") => {
+  const header = (key: string, label: string, align?: "start" | "end") => {
     const active = sort.key === key;
     return (
       <button
         type="button"
         onClick={() => onSort({ key, dir: active ? (sort.dir === 1 ? -1 : 1) : 1 })}
-        className={cn("flex h-9 w-full items-center gap-1.5 px-3 text-[12.5px] font-medium transition-colors hover:bg-app-hover hover:text-white", active ? "text-white" : "text-app-mute", align === "right" && "justify-end")}
+        className={cn("flex h-9 w-full items-center gap-1.5 px-3 text-[12.5px] font-medium transition-colors hover:bg-app-hover hover:text-white", active ? "text-white" : "text-app-mute", align === "end" && "justify-end")}
       >
         {label}
         {active && (sort.dir === 1 ? <ArrowUp aria-hidden className="size-3" /> : <ArrowDown aria-hidden className="size-3" />)}
@@ -55,17 +56,17 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
       <table className="w-max min-w-full border-separate border-spacing-0 text-[13px]">
         <thead>
           <tr>
-            <th scope="col" className="sticky left-0 top-0 z-30 w-11 border-b border-app-line bg-app pl-4 text-left">
+            <th scope="col" className="sticky start-0 top-0 z-30 w-11 border-b border-app-line bg-app ps-4 text-start">
               <input
                 type="checkbox"
-                aria-label="Select all"
+                aria-label={tr("Select all")}
                 checked={allSelected}
                 onChange={() => onSelect(allSelected ? new Set() : new Set(rows.map((r) => r.id)))}
                 className="size-[15px] cursor-pointer accent-accent"
               />
             </th>
-            <th scope="col" aria-sort={sort.key === "name" ? (sort.dir === 1 ? "ascending" : "descending") : "none"} className="sticky left-11 top-0 z-30 min-w-[240px] border-b border-r border-app-line bg-app p-0 text-left">
-              {header("name", nameLabel)}
+            <th scope="col" aria-sort={sort.key === "name" ? (sort.dir === 1 ? "ascending" : "descending") : "none"} className="sticky start-11 top-0 z-30 min-w-[240px] border-b border-e border-app-line bg-app p-0 text-start">
+              {header("name", tr(nameLabel))}
             </th>
             {columns.map((c) => (
               <th
@@ -73,9 +74,9 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
                 scope="col"
                 aria-sort={sort.key === c.key ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
                 style={{ minWidth: c.width }}
-                className="sticky top-0 z-20 border-b border-r border-app-line bg-app p-0 text-left last:border-r-0"
+                className="sticky top-0 z-20 border-b border-e border-app-line bg-app p-0 text-start last:border-e-0"
               >
-                {header(c.key, c.label, c.align)}
+                {header(c.key, tr(c.label), c.align)}
               </th>
             ))}
           </tr>
@@ -93,7 +94,7 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: Math.min(i, 14) * 0.018, ease: [0.16, 1, 0.3, 1] }}
               >
-                <td className={cn("sticky left-0 z-10 border-b border-app-line-soft pl-4 transition-colors", bg, rowH)}>
+                <td className={cn("sticky start-0 z-10 border-b border-app-line-soft ps-4 transition-colors", bg, rowH)}>
                   <input
                     type="checkbox"
                     aria-label={`Select ${(r as { name: string }).name}`}
@@ -107,7 +108,7 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
                     className="size-[15px] cursor-pointer accent-accent"
                   />
                 </td>
-                <td className={cn("sticky left-11 z-10 border-b border-r border-app-line-soft p-0 transition-colors", bg)}>
+                <td className={cn("sticky start-11 z-10 border-b border-e border-app-line-soft p-0 transition-colors", bg)}>
                   {editing?.id === r.id && editing.key === "name" ? (
                     <div className={rowH}>
                       <CellEditor
@@ -128,7 +129,7 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
                         type="button"
                         onClick={() => onOpen(r.id)}
                         onDoubleClick={() => setEditing({ id: r.id, key: "name" })}
-                        className="min-w-0 truncate text-left font-[550] text-white underline decoration-transparent underline-offset-[3px] transition-colors hover:decoration-[#5a5d66]"
+                        className="min-w-0 truncate text-start font-[550] text-white underline decoration-transparent underline-offset-[3px] transition-colors hover:decoration-[#5a5d66]"
                       >
                         {(r as { name: string }).name}
                       </button>
@@ -138,7 +139,7 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
                 {columns.map((c) => {
                   const isEditing = editing?.id === r.id && editing.key === c.key;
                   return (
-                    <td key={c.key} className={cn("border-b border-r border-app-line-soft p-0 transition-colors last:border-r-0", bg)}>
+                    <td key={c.key} className={cn("border-b border-e border-app-line-soft p-0 transition-colors last:border-e-0", bg)}>
                       {isEditing && c.edit ? (
                         <div className={rowH}>
                           <CellEditor
@@ -161,12 +162,12 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
                           type="button"
                           onClick={() => setEditing({ id: r.id, key: c.key })}
                           aria-label={`Edit ${c.label} for ${(r as { name: string }).name}`}
-                          className={cn("flex w-full items-center whitespace-nowrap px-3 text-left transition-colors hover:bg-white/[0.03]", rowH, c.align === "right" && "justify-end")}
+                          className={cn("flex w-full items-center whitespace-nowrap px-3 text-start transition-colors hover:bg-white/[0.03]", rowH, c.align === "end" && "justify-end")}
                         >
                           {c.render(r, db)}
                         </button>
                       ) : (
-                        <div className={cn("flex items-center whitespace-nowrap px-3", rowH, c.align === "right" && "justify-end")}>{c.render(r, db)}</div>
+                        <div className={cn("flex items-center whitespace-nowrap px-3", rowH, c.align === "end" && "justify-end")}>{c.render(r, db)}</div>
                       )}
                     </td>
                   );
@@ -177,12 +178,12 @@ export function RecordTable({ kind, nameLabel, rows, columns, sort, onSort, sele
         </tbody>
         <tfoot>
           <tr>
-            <td className="sticky bottom-0 left-0 z-10 h-9 border-t border-app-line bg-app" />
-            <td className="sticky bottom-0 left-11 z-10 border-r border-t border-app-line bg-app px-3 text-xs text-app-mute">
+            <td className="sticky bottom-0 start-0 z-10 h-9 border-t border-app-line bg-app" />
+            <td className="sticky bottom-0 start-11 z-10 border-e border-t border-app-line bg-app px-3 text-xs text-app-mute">
               {rows.length} {rows.length === 1 ? "record" : "records"}
             </td>
             {columns.map((c) => (
-              <td key={c.key} className={cn("sticky bottom-0 border-r border-t border-app-line bg-app px-3 text-xs text-app-mute last:border-r-0", c.align === "right" && "text-right")}>
+              <td key={c.key} className={cn("sticky bottom-0 border-e border-t border-app-line bg-app px-3 text-xs text-app-mute last:border-e-0", c.align === "end" && "text-end")}>
                 {c.key === "value" && total != null ? <span className="tabular text-app-dim">Sum {formatMoney(total)}</span> : null}
               </td>
             ))}
