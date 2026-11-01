@@ -33,6 +33,8 @@ export interface Company {
   country: string;
   ownerId: ID;
   description: string;
+  /** Fields the workspace added itself. */
+  custom?: Record<string, unknown>;
   createdAt: string;
   lastInteraction: string;
 }
@@ -236,6 +238,8 @@ export type ChecklistKey = "import" | "invite" | "deal" | "workflow" | "report" 
 
 export interface DB {
   version: number;
+  /** The signed-in member when the workspace is on the server. */
+  meId?: string;
   workspace: Workspace;
   members: Member[];
   companies: Company[];

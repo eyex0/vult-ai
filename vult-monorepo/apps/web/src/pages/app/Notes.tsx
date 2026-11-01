@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { recordHref, recordLabel } from "@/data/selectors";
-import { store, uid, useDB } from "@/data/store";
+import { me, store, uid, useDB } from "@/data/store";
 import type { Note } from "@/data/types";
 import { timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -187,7 +187,7 @@ export default function NotesPage() {
 
   const create = () => {
     const now = new Date().toISOString();
-    const n: Note = { id: uid("n"), title: "Untitled", body: "", authorId: "m1", createdAt: now, updatedAt: now };
+    const n: Note = { id: uid("n"), title: "Untitled", body: "", authorId: me(), createdAt: now, updatedAt: now };
     store.create("notes", n);
     navigate(`/app/notes/${n.id}`);
   };

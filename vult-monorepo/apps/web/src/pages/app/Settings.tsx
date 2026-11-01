@@ -9,7 +9,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
-import { store, useDB } from "@/data/store";
+import { me, store, useDB } from "@/data/store";
 import type { Member } from "@/data/types";
 import { API_MODE } from "@/lib/api";
 import { updateProfileName, useSession } from "@/lib/session";
@@ -134,7 +134,7 @@ function Members() {
             <select
               id={`role-${m.id}`}
               value={m.role}
-              disabled={m.id === "m1"}
+              disabled={m.id === me()}
               onChange={(e) => store.update("members", m.id, { role: e.target.value as Member["role"] })}
               className="h-8 rounded-[7px] border border-[#2e3033] bg-app-input px-2 text-[13px] text-white disabled:opacity-60"
             >
@@ -142,7 +142,7 @@ function Members() {
               <option>Member</option>
               <option>Guest</option>
             </select>
-            {m.id !== "m1" && (
+            {m.id !== me() && (
               <button type="button" aria-label={`Remove ${m.name}`} onClick={() => store.remove("members", [m.id], "member")} className="inline-flex size-8 items-center justify-center rounded-md text-app-mute hover:bg-app-hover hover:text-[#f59090]">
                 <Trash2 className="size-3.5" />
               </button>

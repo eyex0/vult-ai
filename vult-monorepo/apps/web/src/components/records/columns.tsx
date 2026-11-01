@@ -83,7 +83,7 @@ export const COMPANY_COLUMNS: Column<Company>[] = [
   },
   { key: "employees", label: "Employees", width: 120, align: "end", value: (r) => r.employees, render: (r) => <span className="tabular">{formatNumber(r.employees)}</span>, edit: { kind: "number", raw: (r) => r.employees, patch: (v) => ({ employees: Number(v) || 0 }) }, defaultVisible: true },
   { key: "arr", label: "ARR", width: 130, align: "end", value: (r) => r.arr, render: (r) => <span className="tabular">{formatMoney(r.arr, r.currency)}</span>, edit: { kind: "number", raw: (r) => r.arr, patch: (v) => ({ arr: Number(v) || 0 }) }, defaultVisible: true },
-  { key: "location", label: "Location", width: 180, value: (r) => `${r.city}, ${r.country}`, render: (r) => `${r.city}${tr(", ")}${r.country}`, edit: { kind: "text", raw: (r) => r.city, patch: (v) => ({ city: v }) }, defaultVisible: true },
+  { key: "location", label: "Location", width: 180, value: (r) => `${r.city}, ${r.country}`, render: (r) => [r.city, r.country].filter(Boolean).join(tr(", ")) || "—", edit: { kind: "text", raw: (r) => r.city, patch: (v) => ({ city: v }) }, defaultVisible: true },
   { key: "owner", label: "Owner", width: 170, value: (r, db) => member(db, r.ownerId), render: (r, db) => <OwnerCell name={member(db, r.ownerId)} />, edit: { kind: "member", raw: (r) => r.ownerId, patch: (v) => ({ ownerId: v }) }, defaultVisible: true },
   { key: "lastInteraction", label: "Last interaction", width: 150, value: (r) => r.lastInteraction, render: (r) => <span className="text-app-dim">{timeAgo(r.lastInteraction)}</span>, defaultVisible: true },
   { key: "createdAt", label: "Created", width: 120, value: (r) => r.createdAt, render: (r) => <span className="text-app-dim">{formatDate(r.createdAt)}</span> },

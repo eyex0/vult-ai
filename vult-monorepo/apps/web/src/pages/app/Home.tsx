@@ -7,10 +7,9 @@ import { answer, MODELS } from "@/components/app/AskVult";
 import { usePage } from "@/components/app/PageMeta";
 import { DropdownContent, DropdownItem, DropdownRoot, DropdownTrigger } from "@/components/ui/Dropdown";
 import { pipelineTotals, recordHref, recordLabel } from "@/data/selectors";
-import { store, useDB } from "@/data/store";
+import { me, store, useDB } from "@/data/store";
 import { formatMoney, greeting, relativeDay } from "@/lib/format";
 import { listItem, stagger } from "@/lib/motion";
-import { API_MODE } from "@/lib/api";
 import { useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { getLocale, tr } from "@/lib/i18n";
@@ -31,7 +30,7 @@ export default function AppHome() {
   // Snapshot which tasks to show on mount so completing one doesn't make it jump out of the list.
   const [taskIds] = useState(() =>
     db.tasks
-      .filter((t) => t.assigneeId === "m1" && !t.done)
+      .filter((t) => t.assigneeId === me() && !t.done)
       .sort((a, b) => (a.due ?? "z").localeCompare(b.due ?? "z"))
       .slice(0, 6)
       .map((t) => t.id),
@@ -59,12 +58,6 @@ export default function AppHome() {
   return (
     <div className="scrollbar-thin h-full overflow-y-auto">
       <motion.div variants={stagger(0.06)} initial="hidden" animate="show" className="mx-auto flex max-w-[820px] flex-col gap-7 px-4 py-[clamp(24px,5vw,56px)] sm:px-8">
-        {API_MODE && (
-          <motion.p variants={listItem} className="rounded-xl border border-app-line bg-app-panel px-4 py-3 text-[13px] text-app-dim">
-            <span className="font-medium text-app-text">{tr("Early access.")}</span> {tr("Companies, people, deals and tasks still show sample data kept in this browser.")}{" "}
-            <Link href="/app/match" className="text-app-accent hover:underline">{tr("Match")}</Link> {tr("works on your real invoices and bank movements.")}
-          </motion.p>
-        )}
         <motion.div variants={listItem}>
           <p className="text-[13px] text-app-mute">{today}</p>
           <h2 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-white">

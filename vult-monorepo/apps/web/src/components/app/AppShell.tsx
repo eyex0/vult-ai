@@ -13,7 +13,7 @@ import { Kbd } from "@/components/ui/Kbd";
 import { Modal } from "@/components/ui/Modal";
 import { ThemeScope, useThemeClass } from "@/components/ui/ThemeScope";
 import { Tooltip } from "@/components/ui/Tooltip";
-import { store, uid, useDB } from "@/data/store";
+import { loadWorkspace, store, uid, useDB } from "@/data/store";
 import type { ChecklistKey } from "@/data/types";
 import { API_MODE } from "@/lib/api";
 import { CONTACT_EMAIL } from "@/lib/site";
@@ -290,7 +290,6 @@ function Sidebar({
             </button>
           </Tooltip>
         ) : null}
-        {!API_MODE && (
         <button
           type="button"
           onClick={onSearch}
@@ -308,14 +307,11 @@ function Sidebar({
             </>
           )}
         </button>
-        )}
         {/* The live product shows only what works on real data today; the rest of the CRM stays in the demo. */}
         {(API_MODE ? APP_NAV.filter((n) => LIVE_PAGES.has(n.href)) : APP_NAV).map((n) => (
           <NavLink key={n.href} href={n.href} label={tr(n.label)} collapsed={collapsed} onNavigate={onNavigate} badge={n.label === "Inbox" ? unread : undefined} icon={<n.icon className="size-[15px]" strokeWidth={1.8} />} />
         ))}
 
-        {!API_MODE && (
-        <>
         {!collapsed && <SectionToggle title="Records" open={sections.records} onToggle={() => toggle("records")} />}
         {collapsed && <span aria-hidden className="mx-1 my-2.5 h-px bg-app-line-soft" />}
         <AnimatePresence initial={false}>
@@ -328,7 +324,7 @@ function Sidebar({
           )}
         </AnimatePresence>
 
-        {!collapsed && (
+        {!collapsed && !API_MODE && (
           <>
             <SectionToggle title="Lists" open={sections.lists} onToggle={() => toggle("lists")} />
             <AnimatePresence initial={false}>
@@ -352,18 +348,16 @@ function Sidebar({
             </AnimatePresence>
           </>
         )}
-        </>
-        )}
       </nav>
 
       {!collapsed && (
         <div className="flex shrink-0 flex-col gap-2 border-t border-app-line-soft p-2.5">
           {API_MODE ? (
             <div className="flex flex-col gap-1 rounded-[10px] border border-[rgb(166_75_48/0.3)] bg-[linear-gradient(180deg,rgb(166_75_48/0.18),rgb(166_75_48/0.06))] px-3 py-2.5 text-[12.5px]">
-              <span className="font-[550] text-white">Early access</span>
-              <span className="text-app-dim">Free while we build SILA with you. Tell us what to fix.</span>
+              <span className="font-[550] text-white">{tr("Early access")}</span>
+              <span className="text-app-dim">{tr("Free while we build SILA with you. Tell us what to fix.")}</span>
               <a href={`mailto:${CONTACT_EMAIL}?subject=SILA%20early%20access`} className="font-[550] text-[#f0b49c] hover:text-white">
-                Send feedback →
+                {tr("Send feedback →")}
               </a>
             </div>
           ) : (
@@ -438,9 +432,15 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => setMobileOpen(false), [location]);
 
+  // On the server, the workspace's CRM records load once per page load.
+  const session = useSession();
+  useEffect(() => {
+    if (API_MODE && session) void loadWorkspace(session.workspace);
+  }, [session]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!API_MODE && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPalette((p) => !p);
       }

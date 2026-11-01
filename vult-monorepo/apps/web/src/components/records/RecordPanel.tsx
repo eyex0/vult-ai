@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { DropdownContent, DropdownItem, DropdownRoot, DropdownTrigger } from "@/components/ui/Dropdown";
 import { TabPanel, Tabs } from "@/components/ui/Tabs";
 import { OBJECT_META, STAGE_TONE, memberName } from "@/data/selectors";
-import { store, uid, useDB } from "@/data/store";
+import { me, store, uid, useDB } from "@/data/store";
 import type { Activity, Company, Deal, Person, RecordKind } from "@/data/types";
 import { formatDate, formatMoney, relativeDay, timeAgo } from "@/lib/format";
 import { spring } from "@/lib/motion";
@@ -60,14 +60,14 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
     e.preventDefault();
     if (!note.trim()) return;
     const now = new Date().toISOString();
-    store.create("notes", { id: uid("n"), title: note.trim().split("\n")[0]!.slice(0, 60), body: note.trim(), record: ref, authorId: "m1", createdAt: now, updatedAt: now });
+    store.create("notes", { id: uid("n"), title: note.trim().split("\n")[0]!.slice(0, 60), body: note.trim(), record: ref, authorId: me(), createdAt: now, updatedAt: now });
     store.log(ref, "note", tr("Note added"));
     setNote("");
   };
   const addTask = (e: FormEvent) => {
     e.preventDefault();
     if (!task.trim()) return;
-    store.create("tasks", { id: uid("t"), title: task.trim(), assigneeId: "m1", done: false, priority: "Medium", record: ref, due: new Date(Date.now() + 2 * 86400000).toISOString(), createdAt: new Date().toISOString() });
+    store.create("tasks", { id: uid("t"), title: task.trim(), assigneeId: me(), done: false, priority: "Medium", record: ref, due: new Date(Date.now() + 2 * 86400000).toISOString(), createdAt: new Date().toISOString() });
     setTask("");
   };
 
@@ -227,7 +227,7 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
                     <span className="absolute -start-[11px] top-0 flex size-[21px] items-center justify-center rounded-full border border-[#2a2b2e] bg-app-panel">
                       <Icon aria-hidden className="size-3 text-app-dim" />
                     </span>
-                    <p className="text-[13px] text-app-text">{a.text}</p>
+                    <p className="text-[13px] text-app-text">{activityText(a.text)}</p>
                     <p className="text-xs text-app-mute">
                       {timeAgo(a.at)}
                       {a.actorId ? ` · ${memberName(db, a.actorId)}` : ""}
@@ -305,6 +305,12 @@ export function RecordPanel({ kind, id, onClose }: { kind: RecordKind; id: strin
       </div>
     </div>
   );
+}
+
+/** "Stage changed to Won" and "Deal created" come from the server in English; translate them for display. */
+function activityText(text: string) {
+  const stage = /^Stage changed to (.+)$/.exec(text);
+  return stage ? tr("Stage changed to {stage}", { stage: tr(stage[1]!) }) : tr(text);
 }
 
 /** Slide-over wrapper for the panel. */

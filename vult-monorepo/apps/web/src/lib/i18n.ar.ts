@@ -179,6 +179,36 @@ export const AR: Record<string, string> = {
   "No tasks for this record.": "لا توجد مهام لهذا السجل.",
   "Record details": "تفاصيل السجل",
 
+  // Server-backed workspace
+  "Not saved": "لم يتم الحفظ",
+  "Could not load your workspace": "تعذّر تحميل مساحة العمل",
+  "Loading your workspace…": "جارٍ تحميل مساحة العمل…",
+  "Company created": "تم إنشاء الشركة",
+  "Person created": "تمت إضافة الشخص",
+  "Deal created": "تم إنشاء الصفقة",
+  "No records yet.": "لا توجد سجلات بعد.",
+
+  "Book discovery call": "حجز مكالمة استكشافية",
+  "Early access": "وصول مبكر",
+  "Free while we build SILA with you. Tell us what to fix.": "مجاني وإحنا بنبني صلة معاك. قولنا إيه اللي محتاج يتصلح.",
+  "Send feedback →": "ابعت ملاحظاتك ←",
+  // New record form
+  Cancel: "إلغاء",
+  "Create company": "إنشاء الشركة",
+  "Create person": "إضافة الشخص",
+  "Create deal": "إنشاء الصفقة",
+  Country: "الدولة",
+  "Expected close": "تاريخ الإغلاق المتوقع",
+  "No company": "بدون شركة",
+  "Enter a name.": "اكتب الاسم.",
+  "Enter a domain like acme.com.": "اكتب نطاقاً مثل acme.com.",
+  "Enter a valid email address.": "اكتب بريداً إلكترونياً صحيحاً.",
+  "Enter a positive number.": "اكتب رقماً موجباً.",
+  "Ava Bennett": "سارة أحمد",
+  "Annual renewal": "تجديد سنوي",
+  Acme: "شركة الأفق",
+  "VP Sales": "مدير المبيعات",
+
   // Command palette
   "Search records, tasks and notes, or jump to a page.": "ابحث في السجلات والمهام والملاحظات، أو انتقل إلى صفحة.",
   "Search records, tasks and notes…": "ابحث في السجلات والمهام والملاحظات…",

@@ -12,7 +12,7 @@ import { RecordTable, type SortState } from "@/components/records/RecordTable";
 import { applyFilter, FilterButton, FilterChips, ViewSettings, type FilterRule, type ViewState } from "@/components/records/Toolbar";
 import { Button } from "@/components/ui/Button";
 import { OBJECT_META } from "@/data/selectors";
-import { store, useDB } from "@/data/store";
+import { store, useCrmStatus, useDB } from "@/data/store";
 import type { Deal, RecordKind } from "@/data/types";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { spring } from "@/lib/motion";
@@ -44,6 +44,7 @@ export default function RecordsPage() {
 
 function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
   const db = useDB();
+  const crmStatus = useCrmStatus();
   const meta = OBJECT_META[kind];
   const nav = RECORD_NAV.find((n) => n.href === meta.href)!;
   usePage({ title: tr(meta.plural), icon: nav.icon, iconColor: nav.color });
@@ -233,17 +234,30 @@ function RecordsView({ kind, id }: { kind: RecordKind; id?: string }) {
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-            <p className="text-sm text-app-dim">{tr("Nothing matches these filters.")}</p>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setQ("");
-                setFilters([]);
-              }}
-            >
-              {tr("Clear filters")}
-            </Button>
+            {crmStatus === "loading" ? (
+              <p className="text-sm text-app-dim" aria-busy="true">{tr("Loading your workspace…")}</p>
+            ) : rowsFor(db, kind).length === 0 ? (
+              <>
+                <p className="text-sm text-app-dim">{tr("No records yet.")}</p>
+                <Button variant="primary" size="sm" onClick={() => setNewOpen(true)}>
+                  <Plus className="size-3.5" /> {tr(`New ${meta.singular.toLowerCase()}`)}
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-app-dim">{tr("Nothing matches these filters.")}</p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setQ("");
+                    setFilters([]);
+                  }}
+                >
+                  {tr("Clear filters")}
+                </Button>
+              </>
+            )}
           </div>
         )}
         <RecordSlideOver kind={kind} id={id} onClose={() => navigate(meta.href)} />

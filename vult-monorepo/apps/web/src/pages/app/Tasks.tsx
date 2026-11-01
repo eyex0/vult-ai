@@ -10,7 +10,7 @@ import { Field, Input, Select } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { Tabs } from "@/components/ui/Tabs";
 import { memberName, recordHref, recordLabel } from "@/data/selectors";
-import { store, uid, useDB } from "@/data/store";
+import { me, store, uid, useDB } from "@/data/store";
 import type { RecordKind, Task } from "@/data/types";
 import { relativeDay } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,7 @@ export function TaskModal({ task, open, onOpenChange }: { task: Task | null; ope
   const db = useDB();
   const [title, setTitle] = useState("");
   const [due, setDue] = useState("");
-  const [assignee, setAssignee] = useState("m1");
+  const [assignee, setAssignee] = useState(me());
   const [priority, setPriority] = useState<Task["priority"]>("Medium");
   const [link, setLink] = useState("");
   const [error, setError] = useState("");
@@ -43,7 +43,7 @@ export function TaskModal({ task, open, onOpenChange }: { task: Task | null; ope
     if (!open) return;
     setTitle(task?.title ?? "");
     setDue(task?.due ? task.due.slice(0, 10) : new Date().toISOString().slice(0, 10));
-    setAssignee(task?.assigneeId ?? "m1");
+    setAssignee(task?.assigneeId ?? me());
     setPriority(task?.priority ?? "Medium");
     setLink(task?.record ? `${task.record.kind}:${task.record.id}` : "");
     setError("");
@@ -175,7 +175,7 @@ export default function TasksPage() {
 
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return db.tasks.filter((t) => (scope === "all" || t.assigneeId === "m1") && (!s || t.title.toLowerCase().includes(s)));
+    return db.tasks.filter((t) => (scope === "all" || t.assigneeId === me()) && (!s || t.title.toLowerCase().includes(s)));
   }, [db.tasks, scope, q]);
   const groups = ORDER.map((g) => [g, list.filter((t) => groupOf(t) === g).sort((a, b) => (a.due ?? "").localeCompare(b.due ?? ""))] as const).filter(([, ts]) => ts.length);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({ Completed: true });
@@ -188,7 +188,7 @@ export default function TasksPage() {
           onValueChange={setScope}
           variant="pill"
           items={[
-            { value: "mine", label: "Assigned to me", count: db.tasks.filter((t) => t.assigneeId === "m1" && !t.done).length },
+            { value: "mine", label: "Assigned to me", count: db.tasks.filter((t) => t.assigneeId === me() && !t.done).length },
             { value: "all", label: "All tasks", count: db.tasks.filter((t) => !t.done).length },
           ]}
         />

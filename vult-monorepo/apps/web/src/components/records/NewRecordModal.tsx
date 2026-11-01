@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { OBJECT_META } from "@/data/selectors";
-import { store, uid, useDB } from "@/data/store";
+import { me, store, uid, useDB } from "@/data/store";
 import { DEAL_STAGES, INDUSTRIES, SEGMENTS, type Company, type Deal, type Person, type RecordKind } from "@/data/types";
+import { tr } from "@/lib/i18n";
 
 type Form = Record<string, string>;
 
@@ -36,10 +37,10 @@ export function NewRecordModal({ kind, open, onOpenChange, onCreated }: { kind: 
 
   const validate = (): Form => {
     const e: Form = {};
-    if (!form.name?.trim()) e.name = `Give the ${meta.singular.toLowerCase()} a name.`;
-    if (kind === "companies" && form.domain && !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(form.domain)) e.domain = "Enter a domain like acme.com.";
-    if (kind === "people" && form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Enter a valid email address.";
-    if (kind === "deals" && form.value && !(Number(form.value) >= 0)) e.value = "Enter a positive number.";
+    if (!form.name?.trim()) e.name = tr("Enter a name.");
+    if (kind === "companies" && form.domain && !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(form.domain)) e.domain = tr("Enter a domain like acme.com.");
+    if (kind === "people" && form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = tr("Enter a valid email address.");
+    if (kind === "deals" && form.value && !(Number(form.value) >= 0)) e.value = tr("Enter a positive number.");
     return e;
   };
 
@@ -51,9 +52,9 @@ export function NewRecordModal({ kind, open, onOpenChange, onCreated }: { kind: 
     const id = uid(kind[0]);
     if (kind === "companies") {
       const c: Company = {
-        id, name: form.name!.trim(), domain: form.domain || form.name!.toLowerCase().replace(/[^a-z0-9]+/g, "") + ".example",
+        id, name: form.name!.trim(), domain: form.domain || "",
         industry: form.industry as Company["industry"], segment: form.segment as Company["segment"], employees: 0, arr: 0,
-        city: form.city || "—", country: form.country || "—", ownerId: "m1", description: "", createdAt: now, lastInteraction: now,
+        city: form.city || "", country: form.country || "", ownerId: me(), description: "", createdAt: now, lastInteraction: now,
       };
       store.create("companies", c);
       store.log({ kind, id }, "created", "Company created");
@@ -61,21 +62,21 @@ export function NewRecordModal({ kind, open, onOpenChange, onCreated }: { kind: 
     } else if (kind === "people") {
       const company = db.companies.find((c) => c.id === form.companyId);
       const p: Person = {
-        id, name: form.name!.trim(), email: form.email || "", title: form.title || "—", companyId: form.companyId || "", phone: "", city: company?.city ?? "",
-        strength: "Medium", ownerId: "m1", createdAt: now, lastInteraction: now,
+        id, name: form.name!.trim(), email: form.email || "", title: form.title || "", companyId: form.companyId || "", phone: "", city: company?.city ?? "",
+        strength: "Medium", ownerId: me(), createdAt: now, lastInteraction: now,
       };
       store.create("people", p);
       store.log({ kind, id }, "created", "Person created");
     } else {
       const d: Deal = {
-        id, name: form.name!.trim(), companyId: form.companyId || "", stage: form.stage as Deal["stage"], value: Number(form.value) || 0, ownerId: "m1",
-        closeDate: new Date((form.closeDate || now.slice(0, 10)) + "T12:00:00").toISOString(), source: "Inbound", nextStep: "Book discovery call", createdAt: now,
+        id, name: form.name!.trim(), companyId: form.companyId || "", stage: form.stage as Deal["stage"], value: Number(form.value) || 0, ownerId: me(),
+        closeDate: new Date((form.closeDate || now.slice(0, 10)) + "T12:00:00").toISOString(), source: "Inbound", nextStep: tr("Book discovery call"), createdAt: now,
       };
       store.create("deals", d);
       store.log({ kind, id }, "created", "Deal created");
       store.tick("deal");
     }
-    toast.success(`${meta.singular} created`);
+    toast.success(tr(`${meta.singular} created`));
     onOpenChange(false);
     onCreated?.(id);
   };
@@ -84,13 +85,13 @@ export function NewRecordModal({ kind, open, onOpenChange, onCreated }: { kind: 
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title={`New ${meta.singular.toLowerCase()}`}
+      title={tr(`New ${meta.singular.toLowerCase()}`)}
       footer={
         <>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            Cancel
+            {tr("Cancel")}
           </Button>
-          <Button onClick={submit}>Create {meta.singular.toLowerCase()}</Button>
+          <Button onClick={submit}>{tr(`Create ${meta.singular.toLowerCase()}`)}</Button>
         </>
       }
     >
@@ -102,48 +103,49 @@ export function NewRecordModal({ kind, open, onOpenChange, onCreated }: { kind: 
         }}
         className="grid gap-3.5 sm:grid-cols-2"
       >
-        <Field label="Name" error={errors.name} className="sm:col-span-2">
-          {(p) => <Input {...p} autoFocus value={form.name ?? ""} onChange={set("name")} placeholder={kind === "people" ? "Ava Bennett" : kind === "deals" ? "Annual renewal" : "Acme"} />}
+        <Field label={tr("Name")} error={errors.name} className="sm:col-span-2">
+          {(p) => <Input {...p} autoFocus value={form.name ?? ""} onChange={set("name")} placeholder={tr(kind === "people" ? "Ava Bennett" : kind === "deals" ? "Annual renewal" : "Acme")} />}
         </Field>
         {kind === "companies" && (
           <>
-            <Field label="Domain" error={errors.domain} hint="We’ll enrich the rest automatically." className="sm:col-span-2">
+            <Field label={tr("Domain")} error={errors.domain} className="sm:col-span-2">
               {(p) => <Input {...p} value={form.domain} onChange={set("domain")} placeholder="acme.com" />}
             </Field>
-            <Field label="Industry">
+            <Field label={tr("Industry")}>
               {(p) => (
                 <Select {...p} value={form.industry} onChange={set("industry")}>
                   {INDUSTRIES.map((i) => (
-                    <option key={i}>{i}</option>
+                    <option key={i} value={i}>{tr(i)}</option>
                   ))}
                 </Select>
               )}
             </Field>
-            <Field label="Segment">
+            <Field label={tr("Segment")}>
               {(p) => (
                 <Select {...p} value={form.segment} onChange={set("segment")}>
                   {SEGMENTS.map((i) => (
-                    <option key={i}>{i}</option>
+                    <option key={i} value={i}>{tr(i)}</option>
                   ))}
                 </Select>
               )}
             </Field>
-            <Field label="City">{(p) => <Input {...p} value={form.city} onChange={set("city")} />}</Field>
-            <Field label="Country">{(p) => <Input {...p} value={form.country} onChange={set("country")} />}</Field>
+            <Field label={tr("City")}>{(p) => <Input {...p} value={form.city} onChange={set("city")} />}</Field>
+            <Field label={tr("Country")}>{(p) => <Input {...p} value={form.country} onChange={set("country")} />}</Field>
           </>
         )}
         {kind === "people" && (
           <>
-            <Field label="Email" error={errors.email}>
+            <Field label={tr("Email")} error={errors.email}>
               {(p) => <Input {...p} type="email" value={form.email} onChange={set("email")} placeholder="ava@acme.com" />}
             </Field>
-            <Field label="Job title">{(p) => <Input {...p} value={form.title} onChange={set("title")} placeholder="VP Sales" />}</Field>
+            <Field label={tr("Job title")}>{(p) => <Input {...p} value={form.title} onChange={set("title")} placeholder={tr("VP Sales")} />}</Field>
           </>
         )}
         {(kind === "people" || kind === "deals") && (
-          <Field label="Company" className="sm:col-span-2">
+          <Field label={tr("Company")} className="sm:col-span-2">
             {(p) => (
               <Select {...p} value={form.companyId} onChange={set("companyId")}>
+                <option value="">{tr("No company")}</option>
                 {db.companies.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -155,19 +157,19 @@ export function NewRecordModal({ kind, open, onOpenChange, onCreated }: { kind: 
         )}
         {kind === "deals" && (
           <>
-            <Field label="Value (USD)" error={errors.value}>
+            <Field label={`${tr("Value")} (${db.workspace.currency ?? "USD"})`} error={errors.value}>
               {(p) => <Input {...p} type="number" min={0} value={form.value} onChange={set("value")} placeholder="25000" />}
             </Field>
-            <Field label="Stage">
+            <Field label={tr("Stage")}>
               {(p) => (
                 <Select {...p} value={form.stage} onChange={set("stage")}>
                   {DEAL_STAGES.map((s) => (
-                    <option key={s}>{s}</option>
+                    <option key={s} value={s}>{tr(s)}</option>
                   ))}
                 </Select>
               )}
             </Field>
-            <Field label="Expected close" className="sm:col-span-2">
+            <Field label={tr("Expected close")} className="sm:col-span-2">
               {(p) => <Input {...p} type="date" value={form.closeDate} onChange={set("closeDate")} className="[color-scheme:dark]" />}
             </Field>
           </>
@@ -191,8 +193,8 @@ export function ImportModal({ open, onOpenChange }: { open: boolean; onOpenChang
       const [name, domain] = l.split(",").map((s) => s.trim());
       if (!name) return;
       store.create("companies", {
-        id: uid("c"), name, domain: domain || name.toLowerCase().replace(/[^a-z0-9]+/g, "") + ".example", industry: "Software", segment: "SMB",
-        employees: 0, arr: 0, city: "—", country: "—", ownerId: "m1", description: "", createdAt: now, lastInteraction: now,
+        id: uid("c"), name, domain: domain || "", industry: "Software", segment: "SMB",
+        employees: 0, arr: 0, city: "", country: "", ownerId: me(), description: "", createdAt: now, lastInteraction: now,
       });
     });
     store.tick("import");

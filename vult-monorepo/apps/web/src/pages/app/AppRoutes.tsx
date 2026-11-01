@@ -67,10 +67,14 @@ export default function AppRoutes() {
           {API_MODE ? (
             // Live workspaces: only the pages backed by real data.
             <Switch>
+              <Route path="/app/home" component={AppHome} />
+              <Route path="/app/tasks" component={TasksPage} />
+              <Route path="/app/notes/:id?" component={NotesPage} />
               <Route path="/app/match" component={MatchPage} />
               <Route path="/app/settings/:tab?" component={SettingsPage} />
+              <Route path="/app/:kind/:id?" component={RecordsPage} />
               <Route>
-                <Redirect to="/app/match" />
+                <Redirect to="/app/home" />
               </Route>
             </Switch>
           ) : (
