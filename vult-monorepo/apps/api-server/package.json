@@ -15,6 +15,7 @@
     "migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {
+    "@vult/arabic": "workspace:*",
     "@vult/database": "workspace:*",
     "@vult/fatturapa": "workspace:*",
     "@vult/match": "workspace:*",

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { prisma, withTenantContext, type Prisma } from '@vult/database';
 import { authRouter } from './auth/routes.js';
+import { crmRouter } from './crm/routes.js';
 import { leadsRouter } from './leads/routes.js';
 import { CSRF_HEADER } from './auth/session.js';
 import { config } from './config.js';
@@ -30,7 +31,7 @@ app.use(helmet());
 app.use(cors({
   origin: cfg.corsOrigins,
   credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Authorization', 'Content-Type', CSRF_HEADER, 'X-Request-Id'],
   maxAge: 600
 }));
@@ -206,6 +207,7 @@ app.get('/api/v1/records/:objectSlug', asyncRoute(async (req, res) => {
   res.json({ success: true, ...result });
 }));
 
+app.use('/api/v1/crm', crmRouter());
 app.use('/api/v1', matchRouter());
 
 app.post('/api/v1/ai/search', asyncRoute(async (req, res) => {
